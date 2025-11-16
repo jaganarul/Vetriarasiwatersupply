@@ -1,0 +1,183 @@
+/* Vetriarasi Water Supply - Modern Minimal Premium Theme */
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+:root{
+  --deep-blue: #0A66C2;
+  --accent-orange: #FF9900;
+  --charcoal: #111827;
+  --soft-grey: #F3F4F6;
+  --white: #FFFFFF;
+  --muted: #6B7280; /* grey-500 */
+  --radius: 12px; /* default rounded corners */
+  --easing: cubic-bezier(0.2,0.9,0.25,1);
+  --gap: 8px; /* 8-point grid */
+}
+
+/* Base layout */
+html,body{height:100%;}
+body{
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-size:16px;
+  color:var(--charcoal);
+  background:var(--soft-grey);
+  margin:0;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Utility spacing following 8pt grid */
+.p-1{padding:4px;} .p-2{padding:8px;} .p-3{padding:16px;} .p-4{padding:24px;}
+.m-1{margin:4px;} .m-2{margin:8px;} .m-3{margin:16px;} .m-4{margin:24px;}
+
+/* Header / Navbar */
+.navbar{background:var(--white) !important; border-radius:var(--radius); box-shadow:0 6px 20px rgba(17,24,39,0.06);}
+.navbar .container{display:flex;align-items:center;gap:var(--gap);}
+.navbar-brand{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--deep-blue);}
+.navbar-brand svg{border-radius:10px}
+.navbar-brand strong{color:var(--deep-blue) !important;font-size:1.05rem;}
+
+/* Use a single site logo (SVG) across all pages without changing templates.
+   Hide the inline svg (if present) and inject the new logo via a pseudo element.
+   This ensures the logo appears on every page that includes the header. */
+.navbar-brand svg{display:none !important}
+.navbar-brand::before{
+  content: '';
+  display:inline-block;
+  width:40px;
+  height:40px;
+  margin-right:10px;
+  vertical-align:middle;
+  border-radius:10px;
+  background-image: url('/Users/mac/Downloads/Vetriarasiwatersupply/assets/images/logo.svg');
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+}
+
+@media (max-width:575px){
+  .navbar-brand::before{width:34px;height:34px;margin-right:8px}
+}
+
+.navbar .form-control{border-radius:999px; border:1px solid rgba(17,24,39,0.06); padding:10px 14px; box-shadow:none;}
+.navbar .input-group .btn{border-radius:999px; background:var(--deep-blue); border:none; color:var(--white); padding:8px 12px}
+.navbar .input-group .btn i{font-size:1rem}
+
+.navbar .nav-link{color:var(--muted); font-weight:500; padding:8px 12px}
+.navbar .nav-link:hover{color:var(--charcoal)}
+
+/* Right actions */
+.navbar .btn{border-radius:10px}
+.navbar .btn-primary{background:var(--deep-blue); border:1px solid var(--deep-blue); color:var(--white); box-shadow:0 6px 18px rgba(10,102,194,0.12);}
+.navbar .btn-outline-primary{background:transparent;border:1px solid rgba(17,24,39,0.06); color:var(--deep-blue)}
+.navbar .btn-outline-secondary{border:1px solid rgba(17,24,39,0.06); color:var(--muted)}
+.btn-dark{background:var(--charcoal);color:var(--white);border-radius:10px;border:none;padding:8px 12px}
+
+/* Product grid and cards */
+.card-product{border-radius:var(--radius); overflow:hidden; background:var(--white); border:1px solid rgba(17,24,39,0.04); transition:transform 220ms var(--easing), box-shadow 220ms var(--easing);}
+.card-product:hover{transform:translateY(-6px); box-shadow:0 18px 44px rgba(17,24,39,0.08)}
+.card-product .card-img-top, .thumbnail{height:220px; object-fit:cover; width:100%; display:block}
+.card-product .card-body{padding:16px}
+.card-product .card-title{font-size:0.98rem;font-weight:600;color:var(--charcoal);margin-bottom:6px}
+.card-product .card-text{color:var(--muted);font-size:0.9rem}
+
+.product-price{font-weight:700;color:var(--charcoal); font-size:1.02rem}
+.product-old-price{text-decoration:line-through;color:rgba(17,24,39,0.3);margin-left:8px;font-size:0.9rem}
+
+/* Buttons used across site */
+.btn-primary{background:var(--deep-blue); border-color:var(--deep-blue); color:var(--white); border-radius:10px; padding:8px 14px}
+.btn-primary:hover{background:#094fb0; box-shadow:0 10px 30px rgba(10,102,194,0.12); transform:translateY(-2px)}
+.btn-accent{background:var(--accent-orange); border:1px solid rgba(0,0,0,0.03); color:var(--white)}
+.btn-outline{background:transparent;border:1px solid rgba(17,24,39,0.06); color:var(--charcoal)}
+
+/* Forms (login, signup, checkout) */
+input.form-control, textarea.form-control, select.form-control{border-radius:10px; border:1px solid rgba(17,24,39,0.08); padding:10px 12px; box-shadow:none}
+input.form-control:focus, textarea.form-control:focus{outline:none; box-shadow:0 6px 18px rgba(10,102,194,0.06); border-color:var(--deep-blue)}
+label{font-weight:600;color:var(--muted);}
+
+/* Cart and checkout layout */
+.cart-summary{background:var(--white); border-radius:var(--radius); padding:16px; border:1px solid rgba(17,24,39,0.04);}
+.cart-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(17,24,39,0.03)}
+
+/* Order tracking timeline */
+.order-timeline{list-style:none;padding:0;margin:0}
+.order-timeline li{display:flex;gap:12px;align-items:flex-start;padding:12px 0}
+.order-dot{width:12px;height:12px;border-radius:50%;background:var(--soft-grey);box-shadow:inset 0 1px 0 rgba(255,255,255,0.6)}
+.order-dot.complete{background:var(--deep-blue)}
+
+/* Admin visual theme (only visual) */
+.admin-card{background:linear-gradient(180deg,rgba(17,24,39,0.04),var(--white)); border-radius:10px; padding:12px; border:1px solid rgba(17,24,39,0.03)}
+.table-modern th, .table-modern td{vertical-align:middle;padding:12px 8px}
+
+/* Footer */
+footer{background:transparent;padding:28px 0;color:var(--muted)}
+footer .footer-col{background:var(--white); border-radius:10px; padding:16px; border:1px solid rgba(17,24,39,0.03)}
+
+/* Badges / labels */
+.badge{border-radius:8px;padding:6px 8px;font-weight:600;background:rgba(10,102,194,0.06);color:var(--deep-blue)}
+
+/* Small helpers */
+.text-muted{color:var(--muted)}
+.text-small{font-size:0.9rem}
+
+/* Accessibility: focus visible */
+a:focus, button:focus, input:focus{outline:3px solid rgba(10,102,194,0.12); outline-offset:2px}
+
+/* Responsive tweaks */
+@media (max-width:991px){
+  .card-product .card-img-top, .thumbnail{height:180px}
+  .navbar .form-control{max-width:360px}
+}
+@media (max-width:575px){
+  .card-product .card-img-top, .thumbnail{height:160px}
+  .navbar .container{flex-direction:column;align-items:stretch;gap:12px}
+  .navbar .me-auto{order:3}
+}
+
+/* gentle image zoom on hover for product images */
+.card-product .card-img-top{transition:transform 300ms var(--easing)}
+.card-product:hover .card-img-top{transform:scale(1.04)}
+
+/* text truncation keep same selectors */
+.text-truncate{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* keep existing thumbnail/secondary-image selectors for compatibility */
+.thumbnail{cursor:pointer}
+.secondary-image{border-radius:10px; border:1px solid rgba(17,24,39,0.04);}
+
+/* small animation for hero sections if present */
+.hero-banner{border-radius:var(--radius);overflow:hidden}
+
+
+/* Header design */
+.modern-search input {
+  border-radius: 50px 0 0 50px !important;
+  padding-left: 16px;
+}
+
+.modern-search .btn {
+  border-radius: 0 50px 50px 0 !important;
+}
+
+.nav-link.modern-link {
+  font-weight: 500;
+  padding: 8px 14px !important;
+  transition: 0.2s;
+}
+
+.nav-link.modern-link:hover {
+  color: #0b74ff !important;
+  background: #f1f7ff;
+  border-radius: 8px;
+}
+
+.dropdown-menu {
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
