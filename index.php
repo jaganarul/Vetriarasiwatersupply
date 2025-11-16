@@ -24,7 +24,7 @@ $products = $stmt->fetchAll();
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vetriarasi Water Supply - Reliable Water Solutions</title>
+  <title>Vetriarasiwatersupply - Reliable Water Solutions</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/custom.css">
@@ -168,7 +168,7 @@ $products = $stmt->fetchAll();
       <div class="hero-icon mb-3">
         <i class="bi bi-droplet-half" style="color: white;"></i>
       </div>
-      <h2 class="mb-2" style="color: white; font-weight: 700; font-size: 2.5rem;">Welcome to Vetriarasi Water Supply</h2>
+      <h2 class="mb-2" style="color: white; font-weight: 700; font-size: 2.5rem;">Welcome to Vetriarasiwatersupply</h2>
       <p style="color: rgba(255,255,255,0.95); font-size: 1.1rem; margin-bottom: 20px;">Reliable water solutions for home and business — bottled water, tanker delivery and service plans.</p>
       <a href="#products" class="btn btn-light btn-lg" style="transition: all 0.3s ease;">
         <i class="bi bi-shop"></i> View Products & Plans
@@ -183,21 +183,30 @@ $products = $stmt->fetchAll();
 
   <!-- Guidance Video Sample -->
   <!-- Guidance Video Sample -->
+<!-- Guidance Video Sample -->
 <div class="row mb-5">
   <div class="col-md-8">
     <h5>User Guidance Video</h5>
     <p class="text-muted">Watch a short walkthrough on how to place an order, choose a plan, and track deliveries.</p>
 
     <div class="ratio ratio-16x9">
-      <iframe
-        src="https://www.youtube.com/embed/Kij80t8L7vE?autoplay=1&mute=1&loop=1&playlist=Kij80t8L7vE&controls=0&modestbranding=1&rel=0"
-        title="Guidance video"
-        allow="autoplay"
-        allowfullscreen>
-      </iframe>
+      <video 
+        autoplay 
+        muted 
+        loop 
+        playsinline 
+        controls 
+        style="width:100%; border-radius:10px;"
+        onended="this.play()"
+      >
+        <source src="<?php echo $base_url; ?>/uploads/Cars.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
   </div>
 </div>
+
+
     <div class="col-md-4">
       <div class="card p-3 shadow-sm">
         <h6 class="mb-2">Why choose Vetriarasi?</h6>

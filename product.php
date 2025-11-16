@@ -4,7 +4,7 @@ $id = isset($_GET['id'])? (int)$_GET['id'] : 0;
 $stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
 $stmt->execute([$id]);
 $p = $stmt->fetch();
-if(!$p){ header('Location: index.php'); exit; }
+if(!$p){ header('Location: product.php'); exit; }
 $images = [];
 if($p['images']) { $images = json_decode($p['images'], true) ?: []; }
 ?><!doctype html>

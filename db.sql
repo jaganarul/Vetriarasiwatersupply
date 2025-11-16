@@ -1,7 +1,7 @@
 -- Simple ecommerce DB schema
 
-CREATE DATABASE IF NOT EXISTS ecommerce_dbbb CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE ecommerce_dbbb;
+CREATE DATABASE IF NOT EXISTS Vetriarasiwatersupply_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE Vetriarasiwatersupply_db;
 
 -- users
 CREATE TABLE users (
@@ -59,3 +59,4 @@ CREATE TABLE order_items (
 
 -- NOTE: Create initial admin via setup.php to ensure password is hashed.
 -- Run from project root: php setup.php
+

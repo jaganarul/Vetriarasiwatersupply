@@ -12,7 +12,7 @@
 
         <p class="footer-text">
           No. 14, Babu Nagar,<br>
-          Jolarpet – 638052,<br>
+          Jolarpet – 635851,<br>
           Tirupattur, Tamil Nadu, India
         </p>
       </div>
@@ -55,7 +55,7 @@
     </div>
 
     <div class="footer-bottom">
-      <p>© <?php echo date('Y'); ?> Vetriarasi Water Supply — All Rights Reserved</p>
+      <p>© <?php echo date('Y'); ?> Vetriarasiwatersupply — All Rights Reserved</p>
       <span class="footer-tagline">Clean. Reliable. Delivered.</span>
     </div>
 
@@ -65,10 +65,10 @@
 
 <style>
   .footer-modern {
-    background: #0a0d14;
+    background: #414244ff;
     padding: 60px 0 35px;
     margin-top: 40px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
     font-family: 'Inter', sans-serif;
   }
 
@@ -92,7 +92,7 @@
     gap: 10px;
     font-size: 1.15rem;
     font-weight: 600;
-    color: #22c55e;
+    color: #369fc9ff;
     letter-spacing: 0.4px;
   }
 
@@ -138,7 +138,7 @@
 
   .footer-links a:hover,
   .footer-link:hover {
-    color: #22c55e;
+    color: #369fc9ff;
     padding-left: 5px;
   }
 
