@@ -12,7 +12,7 @@ if($p['images']) { $images = json_decode($p['images'], true) ?: []; }
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?php echo esc($p['name']); ?> - KaVi'S Naturals</title>
+  <title><?php echo esc($p['name']); ?> - Vetriarasiwatersupply</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/custom.css">
@@ -92,7 +92,7 @@ if($p['images']) { $images = json_decode($p['images'], true) ?: []; }
     .thumbnail-item:hover {
       transform: scale(1.15) translateY(-5px);
       box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
-      border-color: #22c55e;
+      border-color: #2258c5ff;
     }
 
     .thumbnail-item.active {
@@ -389,7 +389,7 @@ if($p['images']) { $images = json_decode($p['images'], true) ?: []; }
       <!-- Additional Info -->
       <div class="mt-4 p-3" style="background: #f0fdf4; border-radius: 8px; border-left: 4px solid #22c55e;">
         <p class="mb-2"><i class="bi bi-truck"></i> <strong>Free Delivery</strong> on orders above ₹500</p>
-        <p class="mb-2"><i class="bi bi-shield-check"></i> <strong>100% Authentic</strong> Natural Products</p>
+        <p class="mb-2"><i class="bi bi-shield-check"></i> <strong>100% Authentic</strong> Purified Water</p>
         <p class="mb-0"><i class="bi bi-arrow-counterclockwise"></i> <strong>Easy Returns</strong> within 7 days</p>
       </div>
     </div>

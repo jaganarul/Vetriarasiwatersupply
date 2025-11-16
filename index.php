@@ -30,7 +30,7 @@ $products = $stmt->fetchAll();
   <link rel="stylesheet" href="assets/css/custom.css">
   <style>
     .hero-banner {
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      background: linear-gradient(135deg, #138ec7ff 0%, #071215ff 100%);
       position: relative;
       overflow: hidden;
     }
@@ -75,7 +75,7 @@ $products = $stmt->fetchAll();
     }
 
     .categories-card {
-      border-left: 4px solid #22c55e;
+      border-left: 4px solid #138ec7ff;
       transition: all 0.3s ease;
       animation: slideInUp 0.6s ease-out;
     }
@@ -86,7 +86,7 @@ $products = $stmt->fetchAll();
     }
 
     .categories-card h6 {
-      color: #22c55e;
+      color: #138ec7ff;
       font-weight: 700;
     }
 
@@ -108,7 +108,7 @@ $products = $stmt->fetchAll();
     }
 
     .categories-card a:hover {
-      color: #22c55e;
+      color: #138ec7ff;
       margin-left: 5px;
       font-weight: 600;
     }
@@ -121,7 +121,7 @@ $products = $stmt->fetchAll();
       color: #1f2937;
       font-weight: 700;
       padding-bottom: 15px;
-      border-bottom: 3px solid #22c55e;
+      border-bottom: 3px solid #138ec7ff;
       margin-bottom: 25px;
       display: inline-block;
     }
@@ -182,15 +182,22 @@ $products = $stmt->fetchAll();
   </div>
 
   <!-- Guidance Video Sample -->
-  <div class="row mb-5">
-    <div class="col-md-8">
-      <h5>User Guidance Video</h5>
-      <p class="text-muted">Watch a short walkthrough on how to place an order, choose a plan, and track deliveries.</p>
-      <div class="ratio ratio-16x9">
-        <!-- Replace the src below with a real guidance video URL when available -->
-        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Guidance video" allowfullscreen></iframe>
-      </div>
+  <!-- Guidance Video Sample -->
+<div class="row mb-5">
+  <div class="col-md-8">
+    <h5>User Guidance Video</h5>
+    <p class="text-muted">Watch a short walkthrough on how to place an order, choose a plan, and track deliveries.</p>
+
+    <div class="ratio ratio-16x9">
+      <iframe
+        src="https://www.youtube.com/embed/Kij80t8L7vE?autoplay=1&mute=1&loop=1&playlist=Kij80t8L7vE&controls=0&modestbranding=1&rel=0"
+        title="Guidance video"
+        allow="autoplay"
+        allowfullscreen>
+      </iframe>
     </div>
+  </div>
+</div>
     <div class="col-md-4">
       <div class="card p-3 shadow-sm">
         <h6 class="mb-2">Why choose Vetriarasi?</h6>
@@ -209,37 +216,37 @@ $products = $stmt->fetchAll();
   <div class="row g-3 mb-5">
     <div class="col-md-3 col-sm-6">
       <div class="card p-4 text-center border-0 shadow-sm" style="transition: all 0.3s ease; animation: slideInUp 0.6s ease-out;">
-        <div style="font-size: 2.5rem; color: #22c55e; margin-bottom: 10px;">
+        <div style="font-size: 2.5rem; color: #138ec7ff; margin-bottom: 10px;">
           <i class="bi bi-check-circle"></i>
         </div>
-        <h6 style="color: #22c55e; font-weight: 700;">100% Authentic</h6>
-        <p class="text-muted small">Certified natural products</p>
+        <h6 style="color: #138ec7ff; font-weight: 700;">100% Authentic</h6>
+        <p class="text-muted small">Certified By FSSAI</p>
       </div>
     </div>
     <div class="col-md-3 col-sm-6">
       <div class="card p-4 text-center border-0 shadow-sm" style="transition: all 0.3s ease; animation: slideInUp 0.6s ease-out 0.1s both;">
-        <div style="font-size: 2.5rem; color: #22c55e; margin-bottom: 10px;">
+        <div style="font-size: 2.5rem; color: #138ec7ff; margin-bottom: 10px;">
           <i class="bi bi-truck"></i>
         </div>
-        <h6 style="color: #22c55e; font-weight: 700;">Fast Delivery</h6>
-        <p class="text-muted small">Quick shipping nationwide</p>
+        <h6 style="color: #138ec7ff; font-weight: 700;">Fast Delivery</h6>
+        <p class="text-muted small">Quick shipping Local</p>
       </div>
     </div>
     <div class="col-md-3 col-sm-6">
       <div class="card p-4 text-center border-0 shadow-sm" style="transition: all 0.3s ease; animation: slideInUp 0.6s ease-out 0.2s both;">
-        <div style="font-size: 2.5rem; color: #22c55e; margin-bottom: 10px;">
+        <div style="font-size: 2.5rem; color: #138ec7ff; margin-bottom: 10px;">
           <i class="bi bi-arrow-counterclockwise"></i>
         </div>
-        <h6 style="color: #22c55e; font-weight: 700;">Easy Returns</h6>
-        <p class="text-muted small">30-day money back guarantee</p>
+        <h6 style="color: #138ec7ff; font-weight: 700;">200 Plus</h6>
+        <p class="text-muted small">Customer Satisfaction</p>
       </div>
     </div>
     <div class="col-md-3 col-sm-6">
       <div class="card p-4 text-center border-0 shadow-sm" style="transition: all 0.3s ease; animation: slideInUp 0.6s ease-out 0.3s both;">
-        <div style="font-size: 2.5rem; color: #22c55e; margin-bottom: 10px;">
+        <div style="font-size: 2.5rem; color: #138ec7ff; margin-bottom: 10px;">
           <i class="bi bi-chat-dots"></i>
         </div>
-        <h6 style="color: #22c55e; font-weight: 700;">24/7 Support</h6>
+        <h6 style="color: #138ec7ff; font-weight: 700;">24/7 Support</h6>
         <p class="text-muted small">Dedicated customer service</p>
       </div>
     </div>
@@ -282,7 +289,7 @@ $products = $stmt->fetchAll();
               <?php endif; ?>
               <div class="card-body">
                 <h6 class="card-title h6 mb-1 text-truncate"><?php echo esc($p['name']); ?></h6>
-                <p class="mb-1 fw-600" style="color: #22c55e; font-size: 1.2rem;">₹<?php echo number_format($p['price'], 2); ?></p>
+                <p class="mb-1 fw-600" style="color: #138ec7ff; font-size: 1.2rem;">₹<?php echo number_format($p['price'], 2); ?></p>
                 <p class="text-muted small mb-3"><i class="bi bi-boxes"></i> Stock: <?php echo (int)$p['stock']; ?></p>
                 <div class="d-flex gap-2">
                   <a href="product.php?id=<?php echo $p['id']; ?>" class="btn btn-sm btn-outline-primary flex-grow-1">
