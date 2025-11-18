@@ -1,7 +1,7 @@
 <?php
 // config.php - set your DB credentials here
 $db_host = '127.0.0.1';
-$db_name = 'ecommerce_dbbb';
+$db_name = 'Vetriarasiwatersupply';
 $db_user = 'root';
 $db_pass = '';
 $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4";

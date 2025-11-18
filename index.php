@@ -181,8 +181,6 @@ $products = $stmt->fetchAll();
     </div>
   </div>
 
-  <!-- Guidance Video Sample -->
-  <!-- Guidance Video Sample -->
 <!-- Guidance Video Sample -->
 <div class="row mb-5">
   <div class="col-md-8">
@@ -207,19 +205,6 @@ $products = $stmt->fetchAll();
 </div>
 
 
-    <div class="col-md-4">
-      <div class="card p-3 shadow-sm">
-        <h6 class="mb-2">Why choose Vetriarasi?</h6>
-        <ul class="small">
-          <li>Professional delivery & support</li>
-          <li>Pure, tested water products</li>
-          <li>Flexible payment (UPI / COD)</li>
-          <li>Track orders in real time</li>
-        </ul>
-        <a href="product.php" class="btn btn-primary mt-3">Browse Products</a>
-      </div>
-    </div>
-  </div>
 
   <!-- Features Section -->
   <div class="row g-3 mb-5">
@@ -261,6 +246,8 @@ $products = $stmt->fetchAll();
     </div>
   </div>
 
+  
+
   <!-- Products Section -->
   <div id="products" class="row g-3">
     <div class="col-md-3 d-none d-md-block">
@@ -290,7 +277,7 @@ $products = $stmt->fetchAll();
                 <span class="badge bg-danger position-absolute" style="right:10px;top:10px;"><i class="bi bi-x-lg"></i> Out of Stock</span>
               <?php endif; ?>
               <?php if($p['thumbnail']): ?>
-                <img src="uploads/<?php echo esc($p['thumbnail']); ?>" class="card-img-top thumbnail" alt="<?php echo esc($p['name']); ?>">
+                <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" class="card-img-top thumbnail" alt="<?php echo esc($p['name']); ?>">
               <?php else: ?>
                 <div class="bg-light p-5 text-center" style="height: 220px; display: flex; align-items: center; justify-content: center;">
                   <span class="text-muted"><i class="bi bi-image"></i> No image</span>
@@ -321,5 +308,8 @@ $products = $stmt->fetchAll();
       </div>
     </div>
   </div>
+
+
+  
 
 <?php include __DIR__ . '/templates/footer.php'; ?>

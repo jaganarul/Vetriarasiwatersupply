@@ -4,7 +4,10 @@ $id = isset($_GET['id'])? (int)$_GET['id'] : 0;
 $stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
 $stmt->execute([$id]);
 $p = $stmt->fetch();
-if(!$p){ header('Location: product.php'); exit; }
+if(!$p){
+   header("Location: $base_url/product.php");
+    exit;
+}
 $images = [];
 if($p['images']) { $images = json_decode($p['images'], true) ?: []; }
 ?><!doctype html>
@@ -304,20 +307,20 @@ if($p['images']) { $images = json_decode($p['images'], true) ?: []; }
   <div class="col-md-6">
     <!-- Main Product Image -->
     <div class="product-image-container">
-      <img id="mainProductImage" src="uploads/<?php echo esc($p['thumbnail']); ?>" class="main-product-image" alt="<?php echo esc($p['name']); ?>" onclick="openZoom(this.src)">
+      <img id="mainProductImage" src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" class="main-product-image" alt="<?php echo esc($p['name']); ?>" onclick="openZoom(this.src)">
     </div>
 
     <!-- Thumbnail Carousel -->
     <?php if(!empty($images)): ?>
       <div class="thumbnail-carousel">
         <!-- Thumbnail of main image -->
-        <div class="thumbnail-item active" onclick="switchImage(this, 'uploads/<?php echo esc($p['thumbnail']); ?>')">
-          <img src="uploads/<?php echo esc($p['thumbnail']); ?>" alt="Main">
+        <div class="thumbnail-item active" onclick="switchImage(this, '<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>')">
+          <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" alt="Main">
         </div>
         <!-- Other images -->
         <?php foreach($images as $img): ?>
-          <div class="thumbnail-item" onclick="switchImage(this, 'uploads/<?php echo esc($img); ?>')">
-            <img src="uploads/<?php echo esc($img); ?>" alt="<?php echo esc($p['name']); ?>">
+          <div class="thumbnail-item" onclick="switchImage(this, '<?php echo $base_url; ?>/uploads/<?php echo esc($img); ?>')">
+            <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($img); ?>" alt="<?php echo esc($p['name']); ?>">
           </div>
         <?php endforeach; ?>
       </div>

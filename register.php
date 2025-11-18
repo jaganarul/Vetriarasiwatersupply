@@ -31,21 +31,93 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/custom.css">
   <title>Register</title>
+
+<style>
+.register-bg {
+    min-height: 100vh;
+    padding: 40px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg,#009ffd,#2a2a72);
+}
+.register-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 8px 35px rgba(0,0,0,0.18);
+    animation: fadeIn .7s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.register-card input {
+    height: 48px;
+    border-radius: 10px;
+}
+.register-card button {
+    height: 50px;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+}
+</style>
+
 </head>
 <body>
+
 <?php include __DIR__ . '/templates/header.php'; ?>
-<div class="container py-4">
-  <h3>Register</h3>
-  <?php if($errors): ?>
-    <div class="alert alert-danger"><?php echo esc(implode('<br>', $errors)); ?></div>
-  <?php endif; ?>
-  <form method="post">
-    <div class="mb-3"><label>Name</label><input class="form-control" name="name"></div>
-    <div class="mb-3"><label>Email</label><input class="form-control" name="email" type="email"></div>
-    <div class="mb-3"><label>Password</label><input class="form-control" name="password" type="password"></div>
-    <button class="btn btn-primary">Register</button>
-  </form>
+
+<div class="register-bg">
+
+  <div class="register-card">
+
+    <h3 class="text-center fw-bold mb-2 text-primary">Create Account</h3>
+    <p class="text-center text-muted mb-4">Register to continue</p>
+
+    <?php if($errors): ?>
+      <div class="alert alert-danger text-center">
+        <?php echo esc(implode('<br>', $errors)); ?>
+      </div>
+    <?php endif; ?>
+
+    <form method="post">
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Name</label>
+        <input class="form-control" name="name" placeholder="Enter your name">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Email</label>
+        <input class="form-control" name="email" type="email" placeholder="example@gmail.com">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Password</label>
+        <input class="form-control" name="password" type="password" placeholder="Minimum 6 characters">
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label fw-semibold">Delivery Address</label>
+        <input class="form-control" name="Delivery Address" placeholder="Enter delivery location">
+      </div>
+
+      <button class="btn btn-primary w-100">Register</button>
+
+    </form>
+
+    <p class="text-center mt-3 small text-muted">
+      Already have an account? <a href="login.php" class="fw-semibold">Login</a>
+    </p>
+
+  </div>
+
 </div>
+
 <?php include __DIR__ . '/templates/footer.php'; ?>
 </body>
 </html>

@@ -37,23 +37,9 @@ body{
 .navbar-brand svg{border-radius:10px}
 .navbar-brand strong{color:var(--deep-blue) !important;font-size:1.05rem;}
 
-/* Use a single site logo (SVG) across all pages without changing templates.
-   Hide the inline svg (if present) and inject the new logo via a pseudo element.
-   This ensures the logo appears on every page that includes the header. */
+/* Logo image styling - use explicit <img> in header templates for portability */
 .navbar-brand svg{display:none !important}
-.navbar-brand::before{
-  content: '';
-  display:inline-block;
-  width:40px;
-  height:40px;
-  margin-right:10px;
-  vertical-align:middle;
-  border-radius:10px;
-  background-image: url('/Users/mac/Downloads/Vetriarasiwatersupply/assets/images/logo.svg');
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:contain;
-}
+.navbar-brand img{width:40px;height:40px;margin-right:10px;vertical-align:middle;border-radius:8px;object-fit:contain}
 
 @media (max-width:575px){
   .navbar-brand::before{width:34px;height:34px;margin-right:8px}
@@ -179,5 +165,24 @@ a:focus, button:focus, input:focus{outline:3px solid rgba(10,102,194,0.12); outl
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Payment design */
+.card {
+    transition: 0.2s ease;
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.btn {
+    transition: 0.2s ease;
+}
+
+.btn:hover {
+    transform: scale(1.02);
+}
+
+
 
 

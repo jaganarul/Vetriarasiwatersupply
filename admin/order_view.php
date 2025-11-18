@@ -17,7 +17,8 @@ $items = $stmt->fetchAll();
 <body>
 <div class="container py-4">
   <h3>Order #<?php echo $order['id']; ?></h3>
-  <p>Customer: <?php echo esc($order['customer']); ?> (<?php echo esc($order['email']); ?>)</p>
+  <p>Customer: <?php echo esc($order['customer']); ?> (<?php echo esc($order['email']); ?> )</p>
+    <p>Delivery Address: <?php echo esc($order['Delivery Address']); ?> (<?php echo esc($order['Delivery Address']); ?> )</p>
   <p>Tracking: <?php echo esc($order['tracking_code']); ?> - Status: <?php echo esc($order['status']); ?></p>
   <h5>Items</h5>
   <ul>
