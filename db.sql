@@ -1,14 +1,16 @@
 -- Simple ecommerce DB schema
 
-CREATE DATABASE IF NOT EXISTS Vetriarasiwatersupply_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE Vetriarasiwatersupply_db;
+CREATE DATABASE IF NOT EXISTS Vetriarasiwatersupply CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE Vetriarasiwatersupply;
 
 -- users
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(150) NOT NULL,
   email VARCHAR(200) NOT NULL UNIQUE,
+  phone VARCHAR(30) NOT NULL DEFAULT '',
   password VARCHAR(255) NOT NULL,
+  address TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
@@ -39,6 +41,8 @@ CREATE TABLE orders (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   total DECIMAL(10,2) NOT NULL,
+  delivery_phone VARCHAR(30) DEFAULT NULL,
+  delivery_address TEXT DEFAULT NULL,
   tracking_code VARCHAR(100) NOT NULL UNIQUE,
   status ENUM('Pending','Processing','Shipped','Delivered','Cancelled') DEFAULT 'Pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

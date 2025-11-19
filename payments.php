@@ -29,9 +29,26 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 $calcTotal += $qty * $r['price'];
             }
             $tracking = strtoupper(uniqid('TRK'));
-            $stmtIns = $pdo->prepare('INSERT INTO orders (user_id,total,tracking_code,status) VALUES (?,?,?,?)');
-            $stmtIns->execute([$_SESSION['user_id'], $calcTotal, $tracking, 'Pending']);
-            $order_id = $pdo->lastInsertId();
+            // fetch user's current phone/address to store on the order (so admin view remains accurate)
+            $uStmt = $pdo->prepare('SELECT phone,address FROM users WHERE id = ? LIMIT 1');
+            $uStmt->execute([$_SESSION['user_id']]);
+            $u = $uStmt->fetch();
+            $delivery_phone = $u['phone'] ?? null;
+            $delivery_address = $u['address'] ?? null;
+            $stmtIns = $pdo->prepare('INSERT INTO orders (user_id,total,delivery_phone,delivery_address,tracking_code,status) VALUES (?,?,?,?,?,?)');
+            try {
+              $stmtIns->execute([$_SESSION['user_id'], $calcTotal, $delivery_phone, $delivery_address, $tracking, 'Pending']);
+              $order_id = $pdo->lastInsertId();
+            } catch (PDOException $e) {
+              // If the columns don't exist (SQLSTATE 42S22), fallback to insert without delivery fields
+              if ($e->getCode() === '42S22' || strpos($e->getMessage(), 'Unknown column') !== false) {
+                $stmtIns2 = $pdo->prepare('INSERT INTO orders (user_id,total,tracking_code,status) VALUES (?,?,?,?)');
+                $stmtIns2->execute([$_SESSION['user_id'], $calcTotal, $tracking, 'Pending']);
+                $order_id = $pdo->lastInsertId();
+              } else {
+                throw $e; // rethrow other DB errors
+              }
+            }
             $stmtItem = $pdo->prepare('INSERT INTO order_items (order_id,product_id,qty,price) VALUES (?,?,?,?)');
             $stmtUpdate = $pdo->prepare('UPDATE products SET stock = stock - ? WHERE id = ?');
             foreach($rows as $r){

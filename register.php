@@ -1,22 +1,28 @@
 <?php
 require_once 'init.php';
 $errors = [];
+
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $name = trim($_POST['name']);
     $email = trim($_POST['email']);
     $pass = $_POST['password'];
-    if(!$name || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($pass) < 6){
-        $errors[] = 'Please provide valid name, email and password (min 6 chars).';
+    $phone = trim($_POST['phone']); // new mobile field
+    $delivery = trim($_POST['delivery']); // delivery address
+
+    // Validation
+    if(!$name || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($pass) < 6 || !$phone || !$delivery){
+        $errors[] = 'Please provide valid name, email, password (min 6 chars), mobile number and delivery address.';
     } else {
-        // check exists
+        // check if email exists
         $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
         $stmt->execute([$email]);
         if($stmt->fetch()){
             $errors[] = 'Email already registered.';
         } else {
             $hash = password_hash($pass, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare('INSERT INTO users (name,email,password) VALUES (?,?,?)');
-            $stmt->execute([$name,$email,$hash]);
+            $stmt = $pdo->prepare('INSERT INTO users (name,email,phone,password,address) VALUES (?,?,?,?,?)');
+            $stmt->execute([$name, $email, $phone, $hash, $delivery]);
+
             $_SESSION['user_id'] = $pdo->lastInsertId();
             $_SESSION['user_name'] = $name;
             header('Location: index.php'); exit;
@@ -27,10 +33,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/custom.css">
-  <title>Register</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/custom.css">
+<title>Register</title>
 
 <style>
 .register-bg {
@@ -65,14 +72,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     font-weight: 600;
 }
 </style>
-
 </head>
 <body>
 
 <?php include __DIR__ . '/templates/header.php'; ?>
 
 <div class="register-bg">
-
   <div class="register-card">
 
     <h3 class="text-center fw-bold mb-2 text-primary">Create Account</h3>
@@ -88,26 +93,30 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
       <div class="mb-3">
         <label class="form-label fw-semibold">Name</label>
-        <input class="form-control" name="name" placeholder="Enter your name">
+        <input class="form-control" name="name" placeholder="Enter your name" required>
       </div>
 
       <div class="mb-3">
         <label class="form-label fw-semibold">Email</label>
-        <input class="form-control" name="email" type="email" placeholder="example@gmail.com">
+        <input class="form-control" name="email" type="email" placeholder="example@gmail.com" required>
       </div>
 
       <div class="mb-3">
         <label class="form-label fw-semibold">Password</label>
-        <input class="form-control" name="password" type="password" placeholder="Minimum 6 characters">
+        <input class="form-control" name="password" type="password" placeholder="Minimum 6 characters" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Mobile Number</label>
+        <input class="form-control" name="phone" type="tel" placeholder="Enter mobile number" required>
       </div>
 
       <div class="mb-4">
         <label class="form-label fw-semibold">Delivery Address</label>
-        <input class="form-control" name="Delivery Address" placeholder="Enter delivery location">
+        <input class="form-control" name="delivery" placeholder="Enter delivery location" required>
       </div>
 
       <button class="btn btn-primary w-100">Register</button>
-
     </form>
 
     <p class="text-center mt-3 small text-muted">
@@ -115,7 +124,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     </p>
 
   </div>
-
 </div>
 
 <?php include __DIR__ . '/templates/footer.php'; ?>

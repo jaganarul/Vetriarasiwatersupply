@@ -1,3 +1,9 @@
+<?php
+// Get cart count
+$cart = $_SESSION['cart'] ?? [];
+$cart_count = array_sum($cart); // total quantity of items
+?>
+
 <header class="glass-header sticky-top">
   <nav class="navbar navbar-expand-lg navbar-light py-2">
     <div class="container">
@@ -18,21 +24,6 @@
 
       <!-- Desktop Menu -->
       <div class="collapse navbar-collapse" id="navMain">
-
-        <!-- Search Bar -->
-        <form class="d-flex mx-lg-4 flex-grow-1" action="<?php echo $base_url; ?>/index.php" method="get">
-          <div class="input-group floating-search">
-            <input name="q"
-                   type="search"
-                   class="form-control"
-                   placeholder="Search for products..."
-                   value="<?php echo esc($_GET['q'] ?? ''); ?>">
-            <button class="btn btn-primary px-3">
-              <i class="bi bi-search"></i>
-            </button>
-          </div>
-        </form>
-
         <ul class="navbar-nav ms-lg-3 mb-2 mb-lg-0 align-items-lg-center">
 
           <li class="nav-item"><a class="nav-link modern-link" href="<?php echo $base_url; ?>/index.php">Home</a></li>
@@ -56,14 +47,20 @@
           </li>
 
           <li class="nav-item"><a class="nav-link" href="<?php echo $base_url; ?>/track.php">Track Order</a></li>
-
         </ul>
 
         <!-- Right Buttons -->
         <div class="ms-auto d-flex align-items-center gap-2">
 
-          <a class="btn btn-outline-primary btn-sm px-3" href="<?php echo $base_url; ?>/cart.php">
+          <!-- Cart with Badge -->
+          <a class="btn btn-outline-primary btn-sm px-3 position-relative" href="<?php echo $base_url; ?>/cart.php">
             <i class="bi bi-cart3"></i> Cart
+            <?php if($cart_count > 0): ?>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                <?php echo $cart_count; ?>
+                <span class="visually-hidden">items in cart</span>
+              </span>
+            <?php endif; ?>
           </a>
 
           <?php if(is_logged_in()): ?>
@@ -85,7 +82,6 @@
     </div>
   </nav>
 </header>
-
 
 <!-- ============================
       MOBILE SLIDE MENU
@@ -121,8 +117,15 @@
       <i class="bi bi-truck me-2"></i> Track Order
     </a>
 
-    <a class="mm-item" href="<?php echo $base_url; ?>/cart.php">
+    <!-- Mobile Cart with Badge -->
+    <a class="mm-item position-relative" href="<?php echo $base_url; ?>/cart.php">
       <i class="bi bi-cart3 me-2"></i> Cart
+      <?php if($cart_count > 0): ?>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          <?php echo $cart_count; ?>
+          <span class="visually-hidden">items in cart</span>
+        </span>
+      <?php endif; ?>
     </a>
 
     <?php if(is_logged_in()): ?>
@@ -153,7 +156,6 @@
 
 </div>
 
-
 <style>
 /* Glass Header */
 .glass-header {
@@ -168,10 +170,6 @@
   color:#0b74ff;
   font-family:'Inter', sans-serif;
 }
-
-/* Floating Search */
-.floating-search input { border-radius: 40px 0 0 40px; }
-.floating-search button { border-radius: 0 40px 40px 0; }
 
 /* Mobile Menu */
 .mobile-menu {

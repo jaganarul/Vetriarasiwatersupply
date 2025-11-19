@@ -5,11 +5,15 @@ $stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
 $stmt->execute([$id]);
 $p = $stmt->fetch();
 if(!$p){
-   header("Location: $base_url/product.php");
+   header("Location: $base_url/products.php");
     exit;
 }
 $images = [];
-if($p['images']) { $images = json_decode($p['images'], true) ?: []; }
+if(!empty($p['images'])) {
+    $images = json_decode($p['images'], true);
+    if(!is_array($images)) { $images = []; } // fallback if JSON invalid
+}
+
 ?><!doctype html>
 <html>
 <head>

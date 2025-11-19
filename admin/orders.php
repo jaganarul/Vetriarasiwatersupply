@@ -14,8 +14,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_order'])){
     $stmt->execute([(int)$_POST['delete_order']]);
 }
 
-// fetch orders
-$stmt = $pdo->query('SELECT o.*, u.name as customer FROM orders o JOIN users u ON o.user_id=u.id ORDER BY o.created_at DESC');
+// fetch orders sorted by date (newest first)
+$stmt = $pdo->query('
+    SELECT o.*, u.name as customer 
+    FROM orders o 
+    JOIN users u ON o.user_id=u.id 
+    ORDER BY o.created_at DESC
+');
 $orders = $stmt->fetchAll();
 ?>
 <!doctype html>
