@@ -42,17 +42,17 @@ if($code){
     position: absolute;
     left: 0;
     top: 3px;
-    background-color: #c5c5c5;
+    background-color: #d92911ff;
 }
 
 .order-status::before {
-    background-color: #28a745 !important;
-    box-shadow: 0 0 8px #28a745;
+    background-color: #08b605ff !important;
+    box-shadow: 0 0 8px #17b012ff;
 }
 
 .order-progress-bar {
     height: 8px;
-    background: #e9ecef;
+    background: #9bb7d4ff;
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 20px;
@@ -60,7 +60,7 @@ if($code){
 
 .order-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #28a745, #4cd964);
+    background: linear-gradient(90deg, #b61515ff, #4cd964);
     transition: width .5s;
 }
 
@@ -101,6 +101,15 @@ if($code){
         $progress = ($index !== false && $order['status'] != 'Cancelled')
             ? (($index) / (count($states)-1)) * 100
             : 0;
+
+        // Emojis for each status
+        $emoji = [
+            'Pending'    => '⏳',
+            'Processing' => '🔄',
+            'Shipped'    => '🚚',
+            'Delivered'  => '✅',
+            'Cancelled'  => '❌'
+        ];
     ?>
 
     <div class="card card-custom">
@@ -120,7 +129,8 @@ if($code){
             <?php
             foreach($states as $s){
                 $cls = $s === $order['status'] ? 'text-success order-status' : 'text-muted';
-                echo "<li class='$cls'>".esc($s)."</li>";
+                $label = $emoji[$s] . " " . esc($s);
+                echo "<li class='$cls'>$label</li>";
             }
             ?>
         </ul>
