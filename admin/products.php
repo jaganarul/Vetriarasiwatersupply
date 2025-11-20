@@ -86,6 +86,12 @@ body {
     <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#productModal">+ Add Product</button>
   </div>
 
+  <?php if(!empty($_SESSION['admin_msg'])): ?>
+    <div class="alert alert-info">
+      <?php echo esc($_SESSION['admin_msg']); unset($_SESSION['admin_msg']); ?>
+    </div>
+  <?php endif; ?>
+
   <div class="table-modern p-3">
     <table class="table align-middle">
       <thead>
@@ -233,7 +239,7 @@ function openEdit(p) {
       div.innerHTML = `
         <label class="form-label">Current Thumbnail</label>
         <div class="d-flex align-items-center gap-3">
-          <img src="../uploads/${p.thumbnail}" style="height:60px;border-radius:8px;">
+          <img src="${(window.location.origin + BASE_URL + '/uploads/' + p.thumbnail).replace(/\/\/+/g,'/')}" style="height:60px;border-radius:8px;">
           <label><input type="checkbox" name="remove_thumbnail" value="1"> Remove</label>
         </div>`;
       container.appendChild(div);
@@ -248,7 +254,7 @@ function openEdit(p) {
         item.className = 'd-flex align-items-center gap-3 mb-2';
 
         item.innerHTML = `
-          <img src="../uploads/${im}" style="height:60px;border-radius:8px;">
+          <img src="${(window.location.origin + BASE_URL + '/uploads/' + im).replace(/\/\/+/g,'/')}" style="height:60px;border-radius:8px;">
           <label><input type="checkbox" name="remove_images[]" value="${im}"> Remove</label>`;
 
         g.appendChild(item);

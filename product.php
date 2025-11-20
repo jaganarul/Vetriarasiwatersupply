@@ -5,7 +5,7 @@ $stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
 $stmt->execute([$id]);
 $p = $stmt->fetch();
 if(!$p){
-   header("Location: $base_url/products.php");
+   header("Location: $base_url/product.php");
     exit;
 }
 $images = [];

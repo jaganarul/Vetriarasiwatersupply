@@ -1,12 +1,17 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-require_once __DIR__ . '/../init.php';
-if (!is_admin_logged_in()) { header('Location: login.php'); exit; }
 
-// -------------------------
-// GET FORM FIELDS
-// -------------------------
+require_once __DIR__ . '/../init.php';
+
+if (!is_admin_logged_in()) {
+    header('Location: login.php');
+    exit;
+}
+
+// -------------------------------------------------
+// Read Form Data
+// -------------------------------------------------
 $id        = isset($_POST['id']) ? (int)$_POST['id'] : 0;
 $name      = trim($_POST['name'] ?? '');
 $category  = trim($_POST['category'] ?? '');
@@ -14,51 +19,83 @@ $price     = (float)($_POST['price'] ?? 0);
 $stock     = (int)($_POST['stock'] ?? 0);
 $desc      = trim($_POST['description'] ?? '');
 
-// Ensure uploads folder exists
-$uploadDir = __DIR__ . '/../uploads/';
+// -------------------------------------------------
+// Upload Directory Setup
+// -------------------------------------------------
+$uploadDir = $upload_dir ?? (__DIR__ . '/../uploads/');
+
 if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
+    mkdir($uploadDir, 0777, true);
 }
 
-// Allowed image extensions
+if (!is_writable($uploadDir)) {
+    chmod($uploadDir, 0777);
+}
+
 $allowedExt = ['jpg','jpeg','png','webp','gif'];
 
-// -------------------------
-// HANDLE THUMBNAIL
-// -------------------------
+// -------------------------------------------------
+// Thumbnail Upload Handling
+// -------------------------------------------------
 $newThumbnail = null;
 
 if (!empty($_FILES['thumbnail']['tmp_name'])) {
-    $ext = strtolower(pathinfo($_FILES['thumbnail']['name'], PATHINFO_EXTENSION));
-    if (in_array($ext, $allowedExt)) {
-        $newThumbnail = time() . "_thumb." . $ext;
-        move_uploaded_file($_FILES['thumbnail']['tmp_name'], $uploadDir . $newThumbnail);
-    }
-}
+    if ($_FILES['thumbnail']['error'] === UPLOAD_ERR_OK) {
 
-// -------------------------
-// HANDLE SECONDARY IMAGES
-// -------------------------
-$newImages = [];
-
-if (!empty($_FILES['images']['tmp_name'])) {
-    foreach ($_FILES['images']['tmp_name'] as $i => $tmp) {
-        if (!$tmp) continue;
-
-        $ext = strtolower(pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo($_FILES['thumbnail']['name'], PATHINFO_EXTENSION));
 
         if (in_array($ext, $allowedExt)) {
-            $fileName = time() . "_" . rand(1000,9999) . "." . $ext;
-            move_uploaded_file($tmp, $uploadDir . $fileName);
-            $newImages[] = $fileName;
+
+            $newThumbnail = time() . "_thumb." . $ext;
+            $dest = $uploadDir . $newThumbnail;
+
+            if (!move_uploaded_file($_FILES['thumbnail']['tmp_name'], $dest)) {
+                if (!copy($_FILES['thumbnail']['tmp_name'], $dest)) {
+                    $_SESSION['admin_msg'] = "Thumbnail upload failed.";
+                    $newThumbnail = null;
+                }
+            } else {
+                chmod($dest, 0644);
+            }
+
+        } else {
+            $_SESSION['admin_msg'] = "Invalid thumbnail format.";
         }
     }
 }
 
-//
-// -------------------------
-// UPDATE PRODUCT
-// -------------------------
+// -------------------------------------------------
+// Secondary Images Upload Handling
+// -------------------------------------------------
+$newImages = [];
+
+if (!empty($_FILES['images']['tmp_name'][0])) {
+
+    foreach ($_FILES['images']['tmp_name'] as $i => $tmp) {
+
+        $error = $_FILES['images']['error'][$i];
+
+        if ($error !== UPLOAD_ERR_OK || !$tmp) continue;
+
+        $ext = strtolower(pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION));
+
+        if (!in_array($ext, $allowedExt)) continue;
+
+        $file = time() . "_" . rand(1000,9999) . "." . $ext;
+        $dest = $uploadDir . $file;
+
+        if (!move_uploaded_file($tmp, $dest)) {
+            if (!copy($tmp, $dest)) continue;
+        }
+
+        chmod($dest, 0644);
+        $newImages[] = $file;
+    }
+}
+
+// -------------------------------------------------
+// Update Product
+// -------------------------------------------------
 if ($id > 0) {
 
     // Fetch old data
@@ -66,64 +103,44 @@ if ($id > 0) {
     $stmt->execute([$id]);
     $old = $stmt->fetch();
 
-    // Decode old JSON images
     $existingImages = $old['images'] ? json_decode($old['images'], true) : [];
     if (!is_array($existingImages)) $existingImages = [];
 
-    // -------------------------
-    // DELETE SELECTED IMAGES
-    // -------------------------
+    // Remove selected images
     $removeImages = $_POST['remove_images'] ?? [];
 
-    if (!empty($removeImages)) {
-        foreach ($removeImages as $img) {
+    foreach ($removeImages as $img) {
+        $img = basename($img);
 
-            $img = basename($img); // prevent path injection
-
-            // Remove from array
-            $index = array_search($img, $existingImages);
-            if ($index !== false) {
-                unset($existingImages[$index]);
-            }
-
-            // Delete from folder
-            $f = $uploadDir . $img;
-            if (file_exists($f)) unlink($f);
+        if (($key = array_search($img, $existingImages)) !== false) {
+            unset($existingImages[$key]);
         }
 
-        // Reindex
-        $existingImages = array_values($existingImages);
+        $file = $uploadDir . $img;
+        if (file_exists($file)) unlink($file);
     }
 
-    // -------------------------
-    // DELETE THUMBNAIL IF REQUESTED
-    // -------------------------
-    if (!empty($_POST['remove_thumbnail'])) {
-        if (!empty($old['thumbnail'])) {
-            $thumbFile = $uploadDir . $old['thumbnail'];
-            if (file_exists($thumbFile)) unlink($thumbFile);
-        }
+    $existingImages = array_values($existingImages);
+
+    // Remove thumbnail if selected
+    if (!empty($_POST['remove_thumbnail']) && !empty($old['thumbnail'])) {
+        $oldFile = $uploadDir . $old['thumbnail'];
+        if (file_exists($oldFile)) unlink($oldFile);
         $old['thumbnail'] = null;
     }
 
-    // -------------------------
-    // MERGE OLD + NEW IMAGES
-    // -------------------------
+    // Merge old + new images
     $finalImages = array_merge($existingImages, $newImages);
-    $finalImages = array_values($finalImages); // clean indexing
+    $finalImages = array_values($finalImages);
 
-    // -------------------------
-    // FINAL THUMBNAIL DECISION
-    // -------------------------
+    // Decide final thumbnail
     $finalThumbnail = $newThumbnail ?? $old['thumbnail'];
 
-    // -------------------------
-    // UPDATE QUERY
-    // -------------------------
+    // Update query
     $stmt = $pdo->prepare("
-        UPDATE products SET 
-            name=?, category=?, price=?, description=?, stock=?, 
-            thumbnail=?, images=? 
+        UPDATE products SET
+            name=?, category=?, price=?, description=?, stock=?,
+            thumbnail=?, images=?
         WHERE id=?
     ");
 
@@ -134,10 +151,12 @@ if ($id > 0) {
         $id
     ]);
 
-} else {
-    // -------------------------
-    // CREATE PRODUCT
-    // -------------------------
+}
+// -------------------------------------------------
+// Create New Product
+// -------------------------------------------------
+else {
+
     $stmt = $pdo->prepare("
         INSERT INTO products (name, category, price, description, stock, thumbnail, images)
         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -152,4 +171,3 @@ if ($id > 0) {
 
 header("Location: products.php");
 exit;
-?>
