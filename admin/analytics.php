@@ -68,7 +68,7 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
 <nav class="navbar navbar-dark">
   <div class="container d-flex align-items-center">
     <a class="navbar-brand d-flex align-items-center" href="index.php">
-        <img src="../assets/images/logo.png" alt="Logo">
+        <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo">
         <span class="text-white">Admin Dashboard</span>
     </a>
     <a class="btn btn-outline-light btn-sm" href="index.php">Dashboard</a>
@@ -105,7 +105,7 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
     <div class="col-md-3">
       <div class="card p-3">
         <h6 class="text-muted">Revenue</h6>
-        <h3>₹<?php echo number_format($revenue,2); ?></h3>
+        <h3>₹<?php echo number_format((float)($revenue ?? 0),2); ?></h3>
       </div>
     </div>
 
@@ -130,7 +130,7 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
       <tr>
         <td><?php echo $o['id']; ?></td>
         <td><?php echo $o['user_id']; ?></td>
-        <td>₹<?php echo number_format($o['total'],2); ?></td>
+        <td>₹<?php echo number_format((float)($o['total'] ?? 0),2); ?></td>
         <td><?php echo esc($o['status']); ?></td>
         <td><?php echo esc($o['tracking_code']); ?></td>
         <td><?php echo $o['created_at']; ?></td>

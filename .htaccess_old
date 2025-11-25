@@ -1,0 +1,19 @@
+# Enable rewrite engine only once
+RewriteEngine Off
+
+# Correct base path (case sensitive)
+RewriteBase /VetriarasiWaterSupply/
+
+# Don't rewrite existing files or directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Route everything else to router.php
+RewriteRule ^.*$ router.php [L,QSA]
+
+# Product route: /product/12
+RewriteRule ^product/([0-9]+)/?$ product.php?id=$1 [L,QSA]
+
+# Category route: /category/Water
+RewriteRule ^category/(.*)/?$ category.php?category=$1 [L,QSA]

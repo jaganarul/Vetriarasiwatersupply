@@ -1,5 +1,10 @@
 <?php
 require_once 'init.php';
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // fetch products with optional category or search filter
 $category = isset($_GET['category'])? trim($_GET['category']) : '';
 $q = isset($_GET['q'])? trim($_GET['q']) : '';
@@ -27,7 +32,7 @@ $products = $stmt->fetchAll();
   <title>Vetriarasiwatersupply - Reliable Water Solutions</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/custom.css">
+  <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom.css">
   <style>
     .hero-banner {
       background: linear-gradient(135deg, #138ec7ff 0%, #071215ff 100%);
@@ -302,7 +307,7 @@ $products = $stmt->fetchAll();
           $cats = $pdo->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category <> ''")->fetchAll();
           foreach($cats as $c){ if(!$c['category']) continue;
         ?>
-          <li><a href="index.php?category=<?php echo urlencode($c['category']); ?>" class="category-link">
+          <li><a href="<?php echo $base_url; ?>/category/<?php echo urlencode($c['category']); ?>" class="category-link">
             <i class="bi bi-chevron-right"></i> <?php echo esc($c['category']); ?>
           </a></li>
         <?php } ?>
@@ -341,14 +346,14 @@ $products = $stmt->fetchAll();
               <h6 class="card-title h6 mb-1 text-truncate" title="<?php echo esc($p['name']); ?>">
                 <?php echo esc($p['name']); ?>
               </h6>
-              <p class="mb-1 fw-bold text-primary fs-5">₹<?php echo number_format($p['price'], 2); ?></p>
+              <p class="mb-1 fw-bold text-primary fs-5">₹<?php echo number_format((float)($p['price'] ?? 0), 2); ?></p>
               <p class="text-muted small mb-3"><i class="bi bi-boxes"></i> Stock: <?php echo (int)$p['stock']; ?></p>
               <div class="mt-auto d-flex gap-2">
-                <a href="product.php?id=<?php echo $p['id']; ?>" class="btn btn-sm btn-outline-primary flex-grow-1" aria-label="View product <?php echo esc($p['name']); ?>">
+                <a href="<?php echo $base_url; ?>/singleproduct.php?id=<?php echo $p['id']; ?>" class="btn btn-sm btn-outline-primary flex-grow-1" aria-label="View product <?php echo esc($p['name']); ?>">
                   <i class="bi bi-eye"></i> View
                 </a>
                 <?php if($p['stock'] > 0): ?>
-                  <form method="post" action="add_to_cart.php" class="d-inline-block flex-grow-1" aria-label="Add product <?php echo esc($p['name']); ?> to cart">
+                  <form method="post" action="<?php echo $base_url; ?>/add_to_cart.php" class="d-inline-block flex-grow-1" aria-label="Add product <?php echo esc($p['name']); ?> to cart">
                     <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
                     <input type="hidden" name="qty" value="1">
                     <button class="btn btn-sm btn-success w-100">

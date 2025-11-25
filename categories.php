@@ -11,7 +11,7 @@ $cats = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/custom.css">
+  <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom.css">
   <title>Categories</title>
 </head>
 <body>
@@ -28,7 +28,7 @@ $cats = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <?php foreach ($cats as $c): ?>
           <?php $cat = $c['category']; ?>
           <a class="list-group-item list-group-item-action"
-             href="index.php?category=<?php echo urlencode($cat); ?>">
+             href="<?php echo $base_url; ?>/category/<?php echo urlencode($cat); ?>">
              <?php echo htmlspecialchars($cat); ?>
           </a>
       <?php endforeach; ?>

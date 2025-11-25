@@ -22,7 +22,9 @@ $desc      = trim($_POST['description'] ?? '');
 // -------------------------------------------------
 // Upload Directory Setup
 // -------------------------------------------------
+// Use configured upload directory (ensure it has trailing slash)
 $uploadDir = $upload_dir ?? (__DIR__ . '/../uploads/');
+$uploadDir = rtrim($uploadDir, '/\\') . '/';
 
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);

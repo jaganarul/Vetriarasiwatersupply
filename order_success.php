@@ -15,6 +15,6 @@ if(!$order) { echo 'Order not found'; exit; }
   <h3>Order Placed</h3>
   <p>Thank you! Your order #<?php echo $order['id']; ?> has been created.</p>
   <p>Tracking Code: <strong><?php echo esc($order['tracking_code']); ?></strong></p>
-  <a href="profile.php" class="btn btn-primary">Go to Profile / Orders</a>
+  <a href="<?php echo $base_url; ?>/profile.php" class="btn btn-primary">Go to Profile / Orders</a>
 </div>
 </body></html>

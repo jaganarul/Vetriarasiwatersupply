@@ -102,7 +102,7 @@ body {
 
 <!-- SIDEBAR -->
 <div class="sidebar text-center">
-  <img src="../assets/images/logo.png" class="logo-img">
+  <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo-img">
   <h5 class="text-white mb-4">Admin Panel</h5>
   <a href="index.php">Dashboard</a>
   <a href="products.php">Products</a>

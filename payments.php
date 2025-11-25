@@ -1,9 +1,9 @@
 <?php
 require_once 'init.php';
-if(!is_logged_in()){ $_SESSION['return_to'] = 'payments.php'; header('Location: login.php'); exit; }
+if(!is_logged_in()){ $_SESSION['return_to'] = 'payments.php'; header('Location: ' . $base_url . '/login'); exit; }
 $cart = $_SESSION['checkout_cart'] ?? null;
 $total = $_SESSION['checkout_total'] ?? 0;
-if(!$cart){ header('Location: cart.php'); exit; }
+if(!$cart){ header('Location: ' . $base_url . '/cart'); exit; }
 
 // Simple payments flow: choose UPI or COD. For UPI we show instructions then confirm, for COD we create order immediately.
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -36,19 +36,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $delivery_phone = $u['phone'] ?? null;
             $delivery_address = $u['address'] ?? null;
             $stmtIns = $pdo->prepare('INSERT INTO orders (user_id,total,delivery_phone,delivery_address,tracking_code,status) VALUES (?,?,?,?,?,?)');
-            try {
-              $stmtIns->execute([$_SESSION['user_id'], $calcTotal, $delivery_phone, $delivery_address, $tracking, 'Pending']);
-              $order_id = $pdo->lastInsertId();
-            } catch (PDOException $e) {
-              // If the columns don't exist (SQLSTATE 42S22), fallback to insert without delivery fields
-              if ($e->getCode() === '42S22' || strpos($e->getMessage(), 'Unknown column') !== false) {
-                $stmtIns2 = $pdo->prepare('INSERT INTO orders (user_id,total,tracking_code,status) VALUES (?,?,?,?)');
-                $stmtIns2->execute([$_SESSION['user_id'], $calcTotal, $tracking, 'Pending']);
-                $order_id = $pdo->lastInsertId();
-              } else {
-                throw $e; // rethrow other DB errors
-              }
-            }
+            $stmtIns->execute([$_SESSION['user_id'], $calcTotal, $delivery_phone, $delivery_address, $tracking, 'Pending']);
+            $order_id = $pdo->lastInsertId();
             $stmtItem = $pdo->prepare('INSERT INTO order_items (order_id,product_id,qty,price) VALUES (?,?,?,?)');
             $stmtUpdate = $pdo->prepare('UPDATE products SET stock = stock - ? WHERE id = ?');
             foreach($rows as $r){
@@ -66,7 +55,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             unset($_SESSION['cart']);
             unset($_SESSION['checkout_cart']);
             unset($_SESSION['checkout_total']);
-            header('Location: order_success.php?order='.$order_id);
+            header('Location: ' . $base_url . '/order_success.php?order=' . $order_id);
             exit;
         } catch(Exception $e){
             $pdo->rollBack();
@@ -84,7 +73,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/custom.css">
+  <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom.css">
   <title>Payments - Vetriarasiwatersupply</title>
 </head>
 <body>
@@ -92,7 +81,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 <div class="container py-4">
   <h3>Payment</h3>
   <?php if(!empty($error)): ?><div class="alert alert-danger"><?php echo esc($error); ?></div><?php endif; ?>
-  <p>Total payable: <strong>₹<?php echo number_format($total,2); ?></strong></p>
+  <p>Total payable: <strong>₹<?php echo number_format((float)($total ?? 0),2); ?></strong></p>
 
   <?php if(!empty($show_upi)): ?>
     <div class="card p-3 mb-3">
@@ -105,7 +94,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         <button class="btn btn-success">I have paid (Confirm)</button>
       </form>
     </div>
-    <a href="payments.php" class="btn btn-secondary">Back</a>
+    <a href="<?php echo $base_url; ?>/payments" class="btn btn-secondary">Back</a>
   <?php else: ?>
     <div class="row">
       <div class="col-md-6">

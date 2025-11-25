@@ -72,7 +72,7 @@ body {
 <nav class="navbar navbar-custom mb-4">
   <div class="container d-flex align-items-center">
       <a class="navbar-brand d-flex align-items-center" href="index.php">
-          <img src="../assets/images/logo.png" alt="Logo">
+          <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo">
           <span class="fw-bold">Admin Panel</span>
       </a>
       <a class="btn btn-outline-primary ms-auto" href="index.php">Dashboard</a>
@@ -116,12 +116,12 @@ body {
             <?php endif; ?>
           </td>
           <td><?php echo esc($p['name']); ?></td>
-          <td>₹<?php echo number_format($p['price'],2); ?></td>
+          <td>₹<?php echo number_format((float)($p['price'] ?? 0), 2); ?></td>
           <td><?php echo (int)$p['stock']; ?></td>
           <td>
             <button class="btn btn-sm btn-primary"
               onclick="openEditFromButton(this)"
-              data-product='<?php echo htmlspecialchars(json_encode($p), ENT_QUOTES, "UTF-8"); ?>'>
+              data-product='<?php echo htmlspecialchars((string)json_encode($p), ENT_QUOTES, "UTF-8"); ?>'>
               Edit
             </button>
 
@@ -239,7 +239,7 @@ function openEdit(p) {
       div.innerHTML = `
         <label class="form-label">Current Thumbnail</label>
         <div class="d-flex align-items-center gap-3">
-          <img src="${(window.location.origin + BASE_URL + '/uploads/' + p.thumbnail).replace(/\/\/+/g,'/')}" style="height:60px;border-radius:8px;">
+          <img src="${BASE_URL + '/uploads/' + p.thumbnail}" style="height:60px;border-radius:8px;">
           <label><input type="checkbox" name="remove_thumbnail" value="1"> Remove</label>
         </div>`;
       container.appendChild(div);
@@ -254,7 +254,7 @@ function openEdit(p) {
         item.className = 'd-flex align-items-center gap-3 mb-2';
 
         item.innerHTML = `
-          <img src="${(window.location.origin + BASE_URL + '/uploads/' + im).replace(/\/\/+/g,'/')}" style="height:60px;border-radius:8px;">
+          <img src="${BASE_URL + '/uploads/' + im}" style="height:60px;border-radius:8px;">
           <label><input type="checkbox" name="remove_images[]" value="${im}"> Remove</label>`;
 
         g.appendChild(item);

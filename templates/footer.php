@@ -36,7 +36,7 @@
       <div>
         <h4 class="footer-heading">Quick Links</h4>
         <ul class="footer-links">
-          <li><a href="<?php echo $base_url; ?>/index.php">Shop</a></li>
+          <li><a href="<?php echo $base_url; ?>">Shop</a></li>
           <li><a href="<?php echo $base_url; ?>/profile.php">My Profile</a></li>
           <li><a href="<?php echo $base_url; ?>/cart.php">Shopping Cart</a></li>
           <li><a href="<?php echo $base_url; ?>/track.php">Track Order</a></li>
@@ -61,6 +61,9 @@
 
   </div>
 </footer>
+
+<!-- Bootstrap bundle (JS) for dropdowns, collapse etc -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
   .footer-modern {

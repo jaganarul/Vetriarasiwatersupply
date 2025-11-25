@@ -22,7 +22,7 @@ if($cart){
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom.css">
   <title>Cart</title>
 
 <style>
@@ -87,7 +87,7 @@ if($cart){
     <?php if(!$products): ?>
         <div class="alert alert-info text-center py-4 fs-5">
             Your cart is empty.  
-            <br><a href="products.php" class="btn btn-primary btn-sm mt-3">Browse Products</a>
+            <br><a href="<?php echo $base_url; ?>/product.php" class="btn btn-primary btn-sm mt-3">Browse Products</a>
         </div>
 
     <?php else: ?>
@@ -120,11 +120,11 @@ if($cart){
                     </td>
 
                     <td class="fw-bold text-success">
-                        ₹<?php echo number_format($p['price'],2); ?>
+                        ₹<?php echo number_format((float)($p['price'] ?? 0),2); ?>
                     </td>
 
                     <td>
-                        <form method="post" action="update_cart.php" class="d-flex gap-2 align-items-center">
+                        <form method="post" action="<?php echo $base_url; ?>/update_cart.php" class="d-flex gap-2 align-items-center">
                             <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
                             <input type="number" name="qty" value="<?php echo $p['qty']; ?>" min="1" max="<?php echo $p['stock']; ?>" class="form-control" style="width:80px;">
                             <button class="btn btn-sm btn-outline-primary">Update</button>
@@ -132,11 +132,11 @@ if($cart){
                     </td>
 
                     <td class="fw-bold text-dark">
-                        ₹<?php echo number_format($p['subtotal'],2); ?>
+                        ₹<?php echo number_format((float)($p['subtotal'] ?? 0),2); ?>
                     </td>
 
                     <td>
-                        <form method="post" action="remove_from_cart.php">
+                        <form method="post" action="<?php echo $base_url; ?>/remove_from_cart.php">
                             <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
                             <button class="btn btn-sm btn-danger px-3">Remove</button>
                         </form>
@@ -148,10 +148,10 @@ if($cart){
 
         <div class="d-flex justify-content-between align-items-center mt-4">
             <div class="total-box">
-                Total: ₹<?php echo number_format($total,2); ?>
+                Total: ₹<?php echo number_format((float)($total ?? 0),2); ?>
             </div>
 
-            <a href="checkout.php" class="btn btn-success checkout-btn px-4">
+            <a href="<?php echo $base_url; ?>/checkout.php" class="btn btn-success checkout-btn px-4">
                 Proceed to Checkout →
             </a>
         </div>

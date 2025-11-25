@@ -8,10 +8,12 @@ if($id){
     $stmt->execute([$id]);
     $r = $stmt->fetch();
     if($r){
-        if($r['thumbnail'] && file_exists(__DIR__.'/../uploads/'.$r['thumbnail'])) @unlink(__DIR__.'/../uploads/'.$r['thumbnail']);
+        $uploadDir = $upload_dir ?? (__DIR__ . '/../uploads/');
+        $uploadDir = rtrim($uploadDir, '/\\') . '/';
+        if($r['thumbnail'] && file_exists($uploadDir.$r['thumbnail'])) @unlink($uploadDir.$r['thumbnail']);
         if($r['images']){
             $imgs = json_decode($r['images'], true) ?: [];
-            foreach($imgs as $im) if($im && file_exists(__DIR__.'/../uploads/'.$im)) @unlink(__DIR__.'/../uploads/'.$im);
+            foreach($imgs as $im) if($im && file_exists($uploadDir.$im)) @unlink($uploadDir.$im);
         }
     }
     $stmt = $pdo->prepare('DELETE FROM products WHERE id = ?');

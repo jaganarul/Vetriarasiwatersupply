@@ -91,7 +91,7 @@ $delivery_phone = $order['delivery_phone'] ?? $order['phone'] ?? 'Not provided';
       <?php foreach($items as $it): ?>
         <li class="list-group-item d-flex justify-content-between align-items-center">
           <span><?php echo esc($it['name']); ?> x <?php echo (int)$it['qty']; ?></span>
-          <span>₹<?php echo number_format($it['price'],2); ?></span>
+          <span>₹<?php echo number_format((float)($it['price'] ?? 0),2); ?></span>
         </li>
       <?php endforeach; ?>
     </ul>

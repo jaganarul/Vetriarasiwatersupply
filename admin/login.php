@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/../init.php';
 
 // Default credentials (hidden from UI)
 $default_email = 'admin@Vetriarasiwatersupply.com';
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="login-box">
 
   <!-- LOGO HERE -->
-  <img src="/Vetriarasiwatersupply/assets/images/logo.png" class="logo" alt="Logo">
+  <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo" alt="Logo">
 
   <h4 class="text-center mb-3">Admin Login</h4>
 

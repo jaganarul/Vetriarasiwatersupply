@@ -1,5 +1,5 @@
 <?php
 require_once 'init.php';
 session_unset(); session_destroy();
-header('Location: index.php'); exit;
+header('Location: ' . $base_url . '/'); exit;
 ?>

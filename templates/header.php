@@ -26,7 +26,7 @@ $cart_count = array_sum($cart); // total quantity of items
       <div class="collapse navbar-collapse" id="navMain" role="navigation">
         <ul class="navbar-nav ms-lg-3 mb-2 mb-lg-0 align-items-lg-center">
 
-          <li class="nav-item"><a class="nav-link modern-link" href="<?php echo $base_url; ?>/index.php">Home</a></li>
+          <li class="nav-item"><a class="nav-link modern-link" href="<?php echo $base_url; ?>">Home</a></li>
           <li class="nav-item"><a class="nav-link modern-link" href="<?php echo $base_url; ?>/product.php">Products</a></li>
           <li class="nav-item"><a class="nav-link modern-link" href="<?php echo $base_url; ?>/about.php">About</a></li>
           <li class="nav-item"><a class="nav-link modern-link" href="<?php echo $base_url; ?>/contact.php">Contact</a></li>
@@ -40,7 +40,7 @@ $cart_count = array_sum($cart); // total quantity of items
               <?php foreach($catRows as $cr): if(!$cr['category']) continue; ?>
                 <li>
                   <a class="dropdown-item py-2"
-                     href="<?php echo $base_url; ?>/index.php?category=<?php echo urlencode($cr['category']); ?>">
+                    href="<?php echo $base_url; ?>/category/<?php echo urlencode($cr['category']); ?>">
                     <?php echo esc($cr['category']); ?>
                   </a>
                 </li>
@@ -66,7 +66,7 @@ $cart_count = array_sum($cart); // total quantity of items
           </a>
 
           <?php if(is_logged_in()): ?>
-            <a class="btn btn-link fw-semibold text-truncate" href="<?php echo $base_url; ?>/profile.php" title="<?php echo esc($_SESSION['user_name']); ?>">
+            <a class="btn btn-link fw-semibold text-truncate" href="<?php echo $base_url; ?>/profile" title="<?php echo esc($_SESSION['user_name']); ?>">
               <?php echo esc($_SESSION['user_name']); ?>
             </a>
             <a class="btn btn-link text-danger" href="<?php echo $base_url; ?>/logout.php">Logout</a>
@@ -75,7 +75,7 @@ $cart_count = array_sum($cart); // total quantity of items
             <a class="btn btn-outline-secondary btn-sm px-3" href="<?php echo $base_url; ?>/register.php">Register</a>
           <?php endif; ?>
 
-          <a class="btn btn-dark btn-sm px-3 rounded-pill" href="<?php echo $base_url; ?>/admin/login.php" title="Admin Login">
+          <a class="btn btn-dark btn-sm px-3 rounded-pill" href="<?php echo $base_url; ?>/admin" title="Admin Login">
             Admin
           </a>
 
@@ -98,11 +98,11 @@ $cart_count = array_sum($cart); // total quantity of items
   </div>
 
   <nav class="mobile-inner" role="menu">
-    <a class="mm-item" href="<?php echo $base_url; ?>/index.php" role="menuitem">
+    <a class="mm-item" href="<?php echo $base_url; ?>" role="menuitem">
       <i class="bi bi-house-door me-2"></i> Home
     </a>
 
-    <a class="mm-item" href="<?php echo $base_url; ?>/product.php" role="menuitem">
+    <a class="mm-item" href="<?php echo $base_url; ?>/products.php" role="menuitem">
       <i class="bi bi-bucket me-2"></i> Products
     </a>
 
@@ -133,7 +133,7 @@ $cart_count = array_sum($cart); // total quantity of items
       <a class="mm-item" href="<?php echo $base_url; ?>/profile.php" role="menuitem">
         <i class="bi bi-person-circle me-2"></i> Profile
       </a>
-      <a class="mm-item text-danger" href="<?php echo $base_url; ?>/logout.php" role="menuitem">
+      <a class="mm-item text-danger" href="<?php echo $base_url; ?>/logout" role="menuitem">
         <i class="bi bi-box-arrow-right me-2"></i> Logout
       </a>
     <?php else: ?>
@@ -148,7 +148,7 @@ $cart_count = array_sum($cart); // total quantity of items
     <div class="mobile-section">Categories</div>
 
     <?php foreach($catRows as $cr): if(!$cr['category']) continue; ?>
-      <a class="mm-item" href="<?php echo $base_url; ?>/index.php?category=<?php echo urlencode($cr['category']); ?>" role="menuitem">
+      <a class="mm-item" href="<?php echo $base_url; ?>/category.php?name=<?php echo urlencode($cr['category']); ?>" role="menuitem">
         <i class="bi bi-tag me-2"></i> <?php echo esc($cr['category']); ?>
       </a>
     <?php endforeach; ?>
@@ -288,19 +288,6 @@ window.addEventListener('scroll', function() {
 });
 </script>
 
-<header class="glass-header sticky-top shadow-sm" style="position:relative; overflow: visible;">
-
-  <!-- Floating water wave background -->
-  <div class="header-wave-bg" aria-hidden="true"></div>
-
-  <nav class="navbar navbar-expand-lg navbar-light py-2">
-    <div class="container">
-      <!-- (Your existing header content here, unchanged) -->
-      ...
-    </div>
-  </nav>
-</header>
-
 <style>
 .header-wave-bg {
   position: absolute;
@@ -317,8 +304,8 @@ window.addEventListener('scroll', function() {
 }
 
 .glass-header {
-  position: relative; /* ensure container positioned for overlay */
-  z-index: 1; /* nav content sits above waves */
+  position: relative;
+  z-index: 1;
 }
 
 /* Smooth horizontal wave motion to simulate water floating */
@@ -327,8 +314,7 @@ window.addEventListener('scroll', function() {
     background-position-x: 0;
   }
   to {
-    background-position-x: 1600px; /* move large distance horizontally */
+    background-position-x: 1600px;
   }
 }
 </style>
-

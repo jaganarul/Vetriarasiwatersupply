@@ -10,7 +10,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     if($u && password_verify($pass, $u['password'])){
         $_SESSION['user_id'] = $u['id'];
         $_SESSION['user_name'] = $u['name'];
-        header('Location: index.php'); exit;
+        // If login was triggered due to needing authentication for a specific page
+        // use the `return_to` session key. Otherwise redirect to the home page.
+        $redirect = $base_url . '/';
+        if (!empty($_SESSION['return_to'])) {
+            $redirect = $base_url . '/' . ltrim($_SESSION['return_to'], '/');
+            unset($_SESSION['return_to']);
+        }
+        header('Location: ' . $redirect);
+        exit;
     } else {
         $errors[] = 'Invalid credentials.';
     }
@@ -21,7 +29,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/custom.css">
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom.css">
 <title>Login</title>
 
 <style>
@@ -116,7 +124,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         </form>
 
         <p class="text-center mt-3 small text-muted">
-            Don’t have an account? <a href="register.php">Register</a>
+            Don’t have an account? <a href="<?php echo $base_url; ?>/register">Register</a>
         </p>
 
     </div>

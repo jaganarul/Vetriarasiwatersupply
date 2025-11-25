@@ -69,7 +69,7 @@ body {
 <!-- NAVBAR -->
 <nav class="navbar navbar-dark px-3 mb-4">
   <div class="container-fluid d-flex align-items-center">
-    <img src="../assets/images/logo.png" class="logo">
+    <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo">
     <span class="navbar-brand mb-0 h4">Admin – Manage Orders</span>
   </div>
 </nav>
@@ -98,7 +98,7 @@ body {
         <tr>
           <td><?php echo $o['id']; ?></td>
           <td><?php echo esc($o['customer']); ?></td>
-          <td>₹<?php echo number_format($o['total'],2); ?></td>
+          <td>₹<?php echo number_format((float)($o['total'] ?? 0),2); ?></td>
           <td><span class="badge bg-primary"><?php echo esc($o['status']); ?></span></td>
           <td><?php echo esc($o['tracking_code']); ?></td>
           <td><?php echo esc($o['created_at']); ?></td>

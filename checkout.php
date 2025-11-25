@@ -1,7 +1,7 @@
 <?php
 require_once 'init.php';
-if(empty($_SESSION['cart'])) { header('Location: cart.php'); exit; }
-if(!is_logged_in()){ $_SESSION['return_to'] = 'checkout.php'; header('Location: login.php'); exit; }
+if(empty($_SESSION['cart'])) { header('Location: ' . $base_url . '/cart.php'); exit; }
+if(!is_logged_in()){ $_SESSION['return_to'] = 'checkout.php'; header('Location: ' . $base_url . '/login'); exit; }
 
 // Prepare checkout summary and redirect to payments page where user chooses UPI or COD
 $cart = $_SESSION['cart'];
@@ -23,6 +23,6 @@ foreach($rows as $r){
 // Save checkout data into session and redirect to payments selection
 $_SESSION['checkout_cart'] = $_SESSION['cart'];
 $_SESSION['checkout_total'] = $total;
-header('Location: payments.php');
+header('Location: ' . $base_url . '/payments.php');
 exit;
 ?>
