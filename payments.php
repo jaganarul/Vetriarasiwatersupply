@@ -35,8 +35,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $u = $uStmt->fetch();
             $delivery_phone = $u['phone'] ?? null;
             $delivery_address = $u['address'] ?? null;
-            $stmtIns = $pdo->prepare('INSERT INTO orders (user_id,total,delivery_phone,delivery_address,tracking_code,status) VALUES (?,?,?,?,?,?)');
-            $stmtIns->execute([$_SESSION['user_id'], $calcTotal, $delivery_phone, $delivery_address, $tracking, 'Pending']);
+            // Ensure the `is_new` column exists on orders so admin can be notified of new orders
+            // Ensure the `is_new` column exists on orders so admin can be notified of new orders
+            $hasOrdersTbl = $pdo->query("SHOW TABLES LIKE 'orders'")->fetch();
+            if($hasOrdersTbl){
+              $col = $pdo->query("SHOW COLUMNS FROM orders LIKE 'is_new'")->fetch();
+              if(!$col){
+                $pdo->exec("ALTER TABLE orders ADD COLUMN is_new TINYINT(1) NOT NULL DEFAULT 1");
+              }
+            }
+
+            $stmtIns = $pdo->prepare('INSERT INTO orders (user_id,total,delivery_phone,delivery_address,tracking_code,status,is_new) VALUES (?,?,?,?,?,?,?)');
+            $stmtIns->execute([$_SESSION['user_id'], $calcTotal, $delivery_phone, $delivery_address, $tracking, 'Pending', 1]);
             $order_id = $pdo->lastInsertId();
             $stmtItem = $pdo->prepare('INSERT INTO order_items (order_id,product_id,qty,price) VALUES (?,?,?,?)');
             $stmtUpdate = $pdo->prepare('UPDATE products SET stock = stock - ? WHERE id = ?');

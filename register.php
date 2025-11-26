@@ -120,7 +120,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     </form>
 
     <p class="text-center mt-3 small text-muted">
-      Already have an account? <a href="<?php echo $base_url; ?>/login" class="fw-semibold">Login</a>
+      Already have an account? <a href="<?php echo $base_url; ?>/login.php" class="fw-semibold">Login</a>
     </p>
 
   </div>

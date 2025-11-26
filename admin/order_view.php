@@ -10,6 +10,14 @@ $stmt->execute([$id]);
 $order = $stmt->fetch();
 if(!$order) { echo 'Not found'; exit; }
 
+// Mark the order as read/seen for admin notifications (if is_new column exists)
+try{
+  $col = $pdo->query("SHOW COLUMNS FROM orders LIKE 'is_new'")->fetch();
+  if($col && !empty($order['is_new'])){
+    $pdo->prepare('UPDATE orders SET is_new = 0 WHERE id = ?')->execute([$id]);
+  }
+} catch(Exception $e) { /* no-op on error */ }
+
 // fetch order items
 $stmt = $pdo->prepare('SELECT oi.*, p.name FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?');
 $stmt->execute([$id]);

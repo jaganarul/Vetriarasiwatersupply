@@ -4,7 +4,8 @@ if(!is_admin_logged_in()) { header('Location: login.php'); exit; }
 
 // update status
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset($_POST['status'])){
-    $stmt = $pdo->prepare('UPDATE orders SET status = ?, updated_at = NOW() WHERE id = ?');
+    // When admin updates status, mark the order as handled (is_new = 0)
+    $stmt = $pdo->prepare('UPDATE orders SET status = ?, updated_at = NOW(), is_new = 0 WHERE id = ?');
     $stmt->execute([$_POST['status'], (int)$_POST['order_id']]);
 }
 
@@ -12,6 +13,16 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset($
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_order'])){
     $stmt = $pdo->prepare('DELETE FROM orders WHERE id = ?');
     $stmt->execute([(int)$_POST['delete_order']]);
+}
+
+// mark new/read
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_new'])){
+  $stmt = $pdo->prepare('UPDATE orders SET is_new = 1 WHERE id = ?');
+  $stmt->execute([(int)$_POST['mark_new']]);
+}
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_read'])){
+  $stmt = $pdo->prepare('UPDATE orders SET is_new = 0 WHERE id = ?');
+  $stmt->execute([(int)$_POST['mark_read']]);
 }
 
 // fetch orders sorted by date (newest first)
@@ -96,7 +107,12 @@ body {
     <tbody>
       <?php foreach($orders as $o): ?>
         <tr>
-          <td><?php echo $o['id']; ?></td>
+          <td>
+            <?php echo $o['id']; ?>
+            <?php if(isset($o['is_new']) && $o['is_new'] == 1): ?>
+              <span class="badge bg-danger ms-2">New</span>
+            <?php endif; ?>
+          </td>
           <td><?php echo esc($o['customer']); ?></td>
           <td>₹<?php echo number_format((float)($o['total'] ?? 0),2); ?></td>
           <td><span class="badge bg-primary"><?php echo esc($o['status']); ?></span></td>
@@ -125,6 +141,18 @@ body {
                 <a class="btn btn-sm btn-outline-secondary" href="order_view.php?id=<?php echo $o['id']; ?>">
                   View
                 </a>
+
+                <?php if(isset($o['is_new']) && $o['is_new'] == 1): ?>
+                  <form method="post" style="display:inline-block;">
+                    <input type="hidden" name="mark_read" value="<?php echo $o['id']; ?>">
+                    <button class="btn btn-sm btn-outline-success">Mark Read</button>
+                  </form>
+                <?php else: ?>
+                  <form method="post" style="display:inline-block;">
+                    <input type="hidden" name="mark_new" value="<?php echo $o['id']; ?>">
+                    <button class="btn btn-sm btn-outline-warning">Mark New</button>
+                  </form>
+                <?php endif; ?>
 
                 <!-- DELETE BUTTON -->
                 <form method="post" onsubmit="return confirm('Are you sure you want to delete this order?');">

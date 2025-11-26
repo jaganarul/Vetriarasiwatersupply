@@ -14,6 +14,36 @@ $orders = $pdo->query('SELECT id,user_id,total,status,tracking_code,created_at F
 // Contact messages
 $pdo->exec("CREATE TABLE IF NOT EXISTS messages (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(200), email VARCHAR(255), message TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB;");
 $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 50')->fetchAll();
+
+// --- New: Sales for last 30 days (used by the modern chart)
+// This query returns one row per date (for last 30 days), date ascending
+$salesStmt = $pdo->query("
+    SELECT
+      DATE(created_at) AS d,
+      COALESCE(SUM(total),0) AS s
+    FROM orders
+    WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
+    GROUP BY DATE(created_at)
+    ORDER BY DATE(created_at) ASC
+");
+$salesRows = $salesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Build labels for full 30-day window even if some days have no rows
+$labels30 = [];
+$values30 = [];
+$start = new DateTime('-29 days');
+$end = new DateTime('today');
+$period = new DatePeriod($start, new DateInterval('P1D'), (clone $end)->modify('+1 day'));
+
+$salesMap = [];
+foreach($salesRows as $r){
+  $salesMap[$r['d']] = (float)$r['s'];
+}
+foreach($period as $dt){
+  $key = $dt->format('Y-m-d');
+  $labels30[] = $key;
+  $values30[] = isset($salesMap[$key]) ? $salesMap[$key] : 0;
+}
 ?>
 <!doctype html>
 <html>
@@ -22,12 +52,15 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <title>Admin Analytics</title>
 
 <style>
     body {
         background: #f5f7fa;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial;
     }
     .navbar {
         background: #1f2937 !important;
@@ -59,6 +92,19 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
         border-radius: 10px !important;
         margin-bottom: 7px;
         box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    /* Modern chart card */
+    .chart-modern {
+      background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 30px rgba(11,22,40,0.04);
+    }
+
+    /* small responsive tweaks */
+    @media (max-width: 576px) {
+      .chart-modern { padding: 12px; }
     }
 </style>
 
@@ -111,6 +157,23 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
 
   </div>
 
+  <!-- NEW: Modern Sales Chart (last 30 days) -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="chart-modern">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div>
+            <h5 class="mb-0">Sales — Last 30 days</h5>
+            <small class="text-muted">Y axis fixed from 0 to 5000</small>
+          </div>
+          <div class="text-end">
+            <small class="text-muted">Range: <?php echo htmlspecialchars($labels30[0] ?? ''); ?> — <?php echo htmlspecialchars(end($labels30) ?? ''); ?></small>
+          </div>
+        </div>
+        <canvas id="modernSalesChart" height="120" aria-label="Sales chart last 30 days" role="img"></canvas>
+      </div>
+    </div>
+  </div>
 
   <h5 class="mt-4 mb-3">Recent Orders</h5>
   
@@ -158,5 +221,85 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
   <?php endif; ?>
 
 </div>
+
+<!-- Chart script -->
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+
+  const ctx = document.getElementById('modernSalesChart');
+  if(!ctx) return;
+
+  // Data from PHP
+  const labels = <?php echo json_encode($labels30, JSON_HEX_TAG); ?>;
+  const values = <?php echo json_encode($values30, JSON_NUMERIC_CHECK); ?>;
+
+  // Create gradient for the area under the line
+  const c = ctx.getContext('2d');
+  const gradient = c.createLinearGradient(0,0,0,200);
+  gradient.addColorStop(0, 'rgba(54,162,235,0.28)');
+  gradient.addColorStop(1, 'rgba(54,162,235,0.02)');
+
+  // Modern chart options
+  const config = {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Daily revenue (₹)',
+        data: values,
+        fill: true,
+        backgroundColor: gradient,
+        borderColor: 'rgba(54,162,235,1)',
+        pointBackgroundColor: 'rgba(255,255,255,1)',
+        pointBorderColor: 'rgba(54,162,235,1)',
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        tension: 0.35,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context){
+              let v = context.parsed.y;
+              return '₹' + (v===null ? '0' : v.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}));
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 10 }
+        },
+        y: {
+          suggestedMin: 0,
+          suggestedMax: 5000,
+          min: 0,
+          max: 5000,
+          ticks: {
+            callback: function(val){ return '₹' + val; }
+          },
+          grid: { color: 'rgba(0,0,0,0.04)' }
+        }
+      }
+    }
+  };
+
+  try {
+    new Chart(c, config);
+  } catch (err) {
+    console.error('Chart init error', err);
+    ctx.insertAdjacentHTML('afterend', '<div class="text-danger small mt-2">Chart failed to load.</div>');
+  }
+});
+</script>
+
 </body>
 </html>
