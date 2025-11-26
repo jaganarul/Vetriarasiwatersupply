@@ -5,6 +5,10 @@ $cart_count = array_sum($cart); // total quantity of items
 ?>
 
 <header class="glass-header sticky-top shadow-sm">
+
+  <!-- Wave Background -->
+  <div class="header-wave-bg"></div>
+
   <nav class="navbar navbar-expand-lg navbar-light py-2">
     <div class="container">
 
@@ -164,15 +168,17 @@ $cart_count = array_sum($cart); // total quantity of items
   border-bottom: 1px solid rgba(255,255,255,0.4);
   transition: background 0.3s ease;
   z-index: 1030;
+  position: relative;
+  overflow: hidden; /* important for wave */
 }
 
-/* Change header background on scroll for subtle depth */
+/* Change header background on scroll */
 .glass-header.scrolled {
   background: rgba(255,255,255,0.85);
   box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
 }
 
-/* Brand text style */
+/* Brand text */
 .brand-text {
   font-size: 1.5rem;
   font-weight: 700;
@@ -263,32 +269,8 @@ $cart_count = array_sum($cart); // total quantity of items
   padding-left: 9px;
   user-select: none;
 }
-</style>
 
-<script>
-document.getElementById("openMobileMenu").onclick = function() {
-  document.getElementById("mobileMenu").style.left = "0px";
-  document.getElementById("mobileMenu").setAttribute("aria-hidden", "false");
-  document.getElementById("mobileMenu").focus();
-};
-
-document.getElementById("closeMobileMenu").onclick = function() {
-  document.getElementById("mobileMenu").style.left = "-290px";
-  document.getElementById("mobileMenu").setAttribute("aria-hidden", "true");
-};
-
-// Optional: Change header background on scroll for subtle effect
-window.addEventListener('scroll', function() {
-  const header = document.querySelector('.glass-header');
-  if(window.scrollY > 30) {
-    header.classList.add('scrolled');
-  } else {
-    header.classList.remove('scrolled');
-  }
-});
-</script>
-
-<style>
+/* Floating Wave */
 .header-wave-bg {
   position: absolute;
   bottom: 0;
@@ -303,12 +285,7 @@ window.addEventListener('scroll', function() {
   z-index: 0;
 }
 
-.glass-header {
-  position: relative;
-  z-index: 1;
-}
-
-/* Smooth horizontal wave motion to simulate water floating */
+/* Wave Animation */
 @keyframes waveMove {
   from {
     background-position-x: 0;
@@ -318,3 +295,26 @@ window.addEventListener('scroll', function() {
   }
 }
 </style>
+
+<script>
+document.getElementById("openMobileMenu").onclick = function() {
+  document.getElementById("mobileMenu").style.left = "0px";
+  document.getElementById("mobileMenu").setAttribute("aria-hidden", "false");
+  document.getElementById("mobileMenu").focus();
+};
+
+document.getElementById("closeMobileMenu").onclick = function() {
+  document.getElementById("mobileMenu").style.left = "-290px";
+  document.getElementById("mobileMenu").setAttribute("aria-hidden", "true");
+};
+
+// Optional: Change header background on scroll
+window.addEventListener('scroll', function() {
+  const header = document.querySelector('.glass-header');
+  if(window.scrollY > 30) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
+});
+</script>

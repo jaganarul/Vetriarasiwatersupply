@@ -11,5 +11,5 @@ if(!$p) { header('Location: ' . $base_url . '/'); exit; }
 if($qty > $p['stock']) $qty = $p['stock'];
 if(!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
 if(isset($_SESSION['cart'][$pid])) $_SESSION['cart'][$pid] += $qty; else $_SESSION['cart'][$pid] = $qty;
-header('Location: ' . $base_url . '/cart'); exit;
+header('Location: ' . $base_url . '/cart.php'); exit;
 ?>

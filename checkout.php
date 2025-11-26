@@ -1,7 +1,7 @@
 <?php
 require_once 'init.php';
 if(empty($_SESSION['cart'])) { header('Location: ' . $base_url . '/cart.php'); exit; }
-if(!is_logged_in()){ $_SESSION['return_to'] = 'checkout.php'; header('Location: ' . $base_url . '/login'); exit; }
+if(!is_logged_in()){ $_SESSION['return_to'] = 'checkout.php'; header('Location: ' . $base_url . '/login.php'); exit; }
 
 // Prepare checkout summary and redirect to payments page where user chooses UPI or COD
 $cart = $_SESSION['cart'];
