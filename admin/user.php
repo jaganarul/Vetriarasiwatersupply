@@ -22,12 +22,18 @@ $users = $stmt->fetchAll();
     .logo {
         height: 40px;
     }
+    @media (max-width: 992px){
+      .sidebar { position: fixed; left: -260px; top: 0; height: 100vh; width: 240px; z-index: 1050; transition: left 0.35s ease; }
+      .sidebar.open { left: 0; }
+      .main { margin-left: 0; }
+    }
 </style>
 </head>
 
 <body>
 <nav class="navbar navbar-dark bg-dark mb-3">
-    <div class="container">
+    <div class="container d-flex align-items-center">
+        <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
         <a class="navbar-brand d-flex align-items-center" href="index.php">
             <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo me-2">
             Admin Panel
@@ -78,6 +84,18 @@ $users = $stmt->fetchAll();
   </table>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const btn = document.getElementById('sidebarToggle');
+    if(!btn) return;
+    btn.addEventListener('click', function(){
+        const s = document.querySelector('.sidebar');
+        if(!s) return;
+        s.classList.toggle('open');
+    });
+});
+</script>
 
 </body>
 </html>

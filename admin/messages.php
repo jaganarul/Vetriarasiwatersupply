@@ -62,15 +62,53 @@ if($hasMessages){
 <style>
   .logo { height: 40px; }
   .message-card { background: #fff; border-radius: 12px; box-shadow:0 6px 18px rgba(0,0,0,0.08); padding:18px; }
+
+  @media (max-width: 992px){
+    .sidebar { position: fixed; left: -260px; top: 0; height: 100vh; width: 240px; z-index: 1050; transition: left 0.35s ease; }
+    .sidebar.open { left: 0; }
+    .main { margin-left: 0; }
+  }
 </style>
 </head>
 <body>
 <nav class="navbar navbar-dark bg-dark mb-3">
-  <div class="container">
+  <div class="container d-flex align-items-center">
+    <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
     <a class="navbar-brand d-flex align-items-center" href="index.php">
       <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo me-2"> Admin Panel
     </a>
-  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const btn = document.getElementById('sidebarToggle');
+  if(!btn) return;
+  btn.addEventListener('click', function(){
+    const s = document.querySelector('.sidebar');
+    if(!s) return;
+    const overlayId = 'adminSidebarOverlay';
+    if(s.classList.contains('open')){
+      s.classList.remove('open');
+      const ov = document.getElementById(overlayId);
+      if(ov) ov.remove();
+      document.body.style.overflow = '';
+    } else {
+      s.classList.add('open');
+      const ov = document.createElement('div');
+      ov.id = overlayId;
+      ov.style.position = 'fixed';
+      ov.style.top = '0';
+      ov.style.left = '0';
+      ov.style.right = '0';
+      ov.style.bottom = '0';
+      ov.style.background = 'rgba(0,0,0,0.2)';
+      ov.style.zIndex = '1040';
+      ov.addEventListener('click', function(){ s.classList.remove('open'); ov.remove(); document.body.style.overflow = ''; });
+      document.body.appendChild(ov);
+      document.body.style.overflow = 'hidden';
+    }
+  });
+});
+</script>
 </nav>
 
 <div class="container">

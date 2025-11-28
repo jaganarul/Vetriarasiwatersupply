@@ -16,13 +16,14 @@ function is_active($matchPaths, $currentPath) {
 }
 ?>
 
-<header class="glass-header sticky-top shadow-sm" role="banner">
+<header class="glass-header sticky-top shadow-sm" role="banner" id="siteHeader">
 
   <!-- Wave Background (always visible) -->
   <div class="header-wave-bg" aria-hidden="true"></div>
 
-  <nav class="navbar navbar-expand-lg navbar-light py-2">
-    <div class="container">
+  <!-- Single Navbar (desktop shown on >=992, hidden on small) -->
+  <nav class="navbar navbar-expand-lg navbar-light py-2" role="navigation" aria-label="Main navigation">
+    <div class="container d-flex align-items-center">
 
       <!-- Return (back) button -->
       <button id="backButton" class="btn btn-sm btn-light me-2 d-flex align-items-center" aria-label="Go back" title="Go back">
@@ -33,20 +34,20 @@ function is_active($matchPaths, $currentPath) {
 
       <!-- Logo -->
       <a href="<?php echo $base_url; ?>/" class="d-flex align-items-center text-decoration-none brand-link" title="Home">
-        <img src="<?php echo $base_url; ?>/assets/images/logo.png" 
+           <img src="<?php echo $base_url; ?>/assets/images/logo.png"
              alt="Vetriarasiwatersupply"
-             class="me-2 site-logo"
+             class="me-2 site-logo img-fluid"
              loading="lazy">
         <span class="brand-text">Vetriarasiwatersupply</span>
       </a>
 
-      <!-- Mobile Menu Button (keeps your id) -->
-      <button class="navbar-toggler border-0 ms-auto" type="button" id="openMobileMenu" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
+      <!-- Mobile Menu Button (visible on small screens) -->
+      <button class="navbar-toggler border-0 ms-auto" type="button" id="openMobileMenu" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false" data-bs-toggle="collapse" data-bs-target="#navMain">
         <i class="bi bi-list fs-3" aria-hidden="true"></i>
       </button>
 
-      <!-- Desktop Menu (kept for large screens, but hidden on small devices) -->
-      <div class="collapse navbar-collapse" id="navMain" role="navigation">
+      <!-- Desktop Menu (visible on >=992) -->
+      <div class="collapse navbar-collapse justify-content-end" id="navMain" role="navigation" aria-label="Desktop navigation">
         <ul class="navbar-nav ms-lg-3 mb-2 mb-lg-0 align-items-lg-center">
 
           <li class="nav-item">
@@ -54,7 +55,7 @@ function is_active($matchPaths, $currentPath) {
                href="<?php echo $base_url; ?>/">Home</a>
           </li>
 
-          <!-- FIXED: products -> product.php (consistent) -->
+          <!-- products -> product.php -->
           <li class="nav-item">
             <a class="nav-link modern-link <?php echo is_active('/product.php', $currentPath) ? 'active' : ''; ?>"
                href="<?php echo $base_url; ?>/product.php">Products</a>
@@ -94,11 +95,11 @@ function is_active($matchPaths, $currentPath) {
         </ul>
 
         <!-- Right Buttons -->
-        <div class="ms-auto d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 ms-3">
 
           <!-- Cart with Badge -->
-          <a class="btn btn-outline-primary btn-sm px-3 position-relative" href="<?php echo $base_url; ?>/cart.php" aria-label="View cart with <?php echo $cart_count; ?> items">
-            <i class="bi bi-cart3" aria-hidden="true"></i> <span class="d-none d-sm-inline">Cart</span>
+          <a class="btn btn-outline-primary btn-sm px-3 position-relative d-flex align-items-center" href="<?php echo $base_url; ?>/cart.php" aria-label="View cart with <?php echo $cart_count; ?> items">
+            <i class="bi bi-cart3 me-1" aria-hidden="true"></i> <span class="d-none d-sm-inline">Cart</span>
             <?php if($cart_count > 0): ?>
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm cart-badge" style="font-size:0.75rem;">
                 <?php echo $cart_count; ?>
@@ -111,7 +112,7 @@ function is_active($matchPaths, $currentPath) {
             <a class="btn btn-link fw-semibold text-truncate" href="<?php echo $base_url; ?>/profile" title="<?php echo esc($_SESSION['user_name']); ?>">
               <?php echo esc($_SESSION['user_name']); ?>
             </a>
-            <a class="btn btn-link text-danger" href="<?php echo $base_url; ?>/logout.php">Logout</a>
+            <a class="btn btn-link text-danger" href="<?php echo $base_url; ?>/logout.php">Logout.php</a>
           <?php else: ?>
             <a class="btn btn-primary btn-sm px-3" href="<?php echo $base_url; ?>/login.php">Login</a>
             <a class="btn btn-outline-secondary btn-sm px-3" href="<?php echo $base_url; ?>/register.php">Register</a>
@@ -123,12 +124,13 @@ function is_active($matchPaths, $currentPath) {
 
         </div>
       </div>
+
     </div>
   </nav>
 </header>
 
-<!-- MOBILE SLIDE MENU -->
-<div id="mobileMenu" class="mobile-menu" aria-hidden="true" tabindex="-1">
+<!-- MOBILE SLIDE MENU (single mobile menu, used on small screens) -->
+<nav id="mobileMenu" class="mobile-menu" aria-hidden="true" tabindex="-1" role="navigation" aria-label="Mobile menu">
 
   <div class="mobile-top-strip" aria-hidden="true"></div>
 
@@ -137,12 +139,11 @@ function is_active($matchPaths, $currentPath) {
     <button id="closeMobileMenu" class="btn-close" aria-label="Close menu"></button>
   </div>
 
-  <nav class="mobile-inner" role="menu" aria-label="Main mobile menu">
+  <div class="mobile-inner" role="menu" aria-label="Main mobile menu">
     <a class="mm-item <?php echo is_active('/', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>" role="menuitem">
       <i class="bi bi-house-door me-2" aria-hidden="true"></i> Home
     </a>
 
-    <!-- FIXED: mobile product link to product.php -->
     <a class="mm-item <?php echo is_active('/product.php', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>/product.php" role="menuitem">
       <i class="bi bi-bucket me-2" aria-hidden="true"></i> Products
     </a>
@@ -174,7 +175,7 @@ function is_active($matchPaths, $currentPath) {
       <a class="mm-item <?php echo is_active('/profile.php', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>/profile.php" role="menuitem">
         <i class="bi bi-person-circle me-2" aria-hidden="true"></i> Profile
       </a>
-      <a class="mm-item text-danger" href="<?php echo $base_url; ?>/logout" role="menuitem">
+      <a class="mm-item text-danger" href="<?php echo $base_url; ?>/logout.php" role="menuitem">
         <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> Logout
       </a>
     <?php else: ?>
@@ -194,9 +195,9 @@ function is_active($matchPaths, $currentPath) {
         <i class="bi bi-tag me-2" aria-hidden="true"></i> <?php echo esc($cr['category']); ?>
       </a>
     <?php endforeach; ?>
-  </nav>
+  </div>
 
-</div>
+</nav>
 
 <style>
 /* Glass Header */
@@ -239,12 +240,14 @@ function is_active($matchPaths, $currentPath) {
 @media (max-width: 991px) {
   .brand-text { font-size: 1rem; max-width: 140px; }
   .site-logo { height: 30px; }
-  .navbar-collapse { display: none !important; } /* force hide desktop nav on mobile */
+  /* hide desktop nav on small devices to avoid visual duplication */
+  .navbar-collapse { display: none !important; }
 }
 
-/* Desktop: show collapse normally */
+/* Desktop: show collapse normally (>=992) */
 @media (min-width: 992px) {
-  .navbar-toggler { display: none; } /* hide toggler on large screens (we can keep desktop menu if needed) */
+  .navbar-toggler { display: none; } /* hide toggler on large screens */
+  .navbar-collapse { display: flex !important; } /* ensure desktop menu visible */
 }
 
 /* Return/back button */
@@ -303,7 +306,7 @@ function is_active($matchPaths, $currentPath) {
 .admin-btn { white-space: nowrap; }
 .navbar-toggler { z-index: 1070; }
 
-/* --- Make full brand name visible on small screens --- */
+/* --- Make full brand name visible on very small screens --- */
 @media (max-width: 576px) {
   /* Allow the brand text to wrap and take full space on mobile */
   .brand-link { display: inline-flex; align-items: center; gap: 8px; }
@@ -387,8 +390,11 @@ function is_active($matchPaths, $currentPath) {
 
   if(openBtn){
     openBtn.addEventListener('click', function(e){
-      e.preventDefault();
-      openMenu();
+      // Only open the overlay on narrow viewports; allow Bootstrap collapse to handle larger screens
+      if(window.innerWidth < 992){
+        e.preventDefault();
+        openMenu();
+      }
     });
   }
   if(closeBtn){
@@ -413,13 +419,16 @@ function is_active($matchPaths, $currentPath) {
     else header.classList.remove('scrolled');
   });
 
-  // Make navbar-toggler still toggle collapse for devices >=992 if needed
+  // Keep the desktop collapse toggle accessible for >=992 loops if needed
   var bsToggler = document.querySelector('.navbar-toggler');
   var navMain = document.getElementById('navMain');
   if(bsToggler && navMain){
+    // Keep the bootstrap collapse mechanism: toggle only if not handled by our overlay
     bsToggler.addEventListener('click', function(){
-      // toggle bootstrap collapse classes for accessibility
-      navMain.classList.toggle('show');
+      // On larger screens, let Bootstrap handle the collapse. On small screens (overlay), the overlay will be used.
+      if(window.innerWidth >= 992){
+        navMain.classList.toggle('show');
+      }
     });
   }
 

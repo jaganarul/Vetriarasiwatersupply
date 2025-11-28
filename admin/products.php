@@ -27,6 +27,12 @@ body {
   border-bottom: 1px solid #ddd;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
+
+@media (max-width: 992px){
+  .sidebar { position: fixed; left: -260px; top: 0; height: 100vh; width: 240px; z-index: 1050; transition: left 0.35s ease; }
+  .sidebar.open { left: 0; }
+  .main { margin-left: 0; padding-top: 12px; }
+}
 .navbar-brand img {
   height: 45px;
   margin-right: 10px;
@@ -71,6 +77,7 @@ body {
 <!-- TOP NAV WITH LOGO -->
 <nav class="navbar navbar-custom mb-4">
   <div class="container d-flex align-items-center">
+      <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
       <a class="navbar-brand d-flex align-items-center" href="index.php">
           <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo">
           <span class="fw-bold">Admin Panel</span>
@@ -136,6 +143,38 @@ body {
     </table>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const btn = document.getElementById('sidebarToggle');
+  if(!btn) return;
+  btn.addEventListener('click', function(){
+    const s = document.querySelector('.sidebar');
+    if(!s) return;
+    const overlayId = 'adminSidebarOverlay';
+    if(s.classList.contains('open')){
+      s.classList.remove('open');
+      const ov = document.getElementById(overlayId);
+      if(ov) ov.remove();
+      document.body.style.overflow = '';
+    } else {
+      s.classList.add('open');
+      const ov = document.createElement('div');
+      ov.id = overlayId;
+      ov.style.position = 'fixed';
+      ov.style.top = '0';
+      ov.style.left = '0';
+      ov.style.right = '0';
+      ov.style.bottom = '0';
+      ov.style.background = 'rgba(0,0,0,0.2)';
+      ov.style.zIndex = '1040';
+      ov.addEventListener('click', function(){ s.classList.remove('open'); ov.remove(); document.body.style.overflow = ''; });
+      document.body.appendChild(ov);
+      document.body.style.overflow = 'hidden';
+    }
+  });
+});
+</script>
 
 <!-- PRODUCT MODAL -->
 <div class="modal fade" id="productModal" tabindex="-1">

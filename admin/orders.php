@@ -25,13 +25,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_read'])){
   $stmt->execute([(int)$_POST['mark_read']]);
 }
 
-// fetch orders sorted by date (newest first)
-$stmt = $pdo->query('
-    SELECT o.*, u.name as customer 
-    FROM orders o 
-    JOIN users u ON o.user_id=u.id 
+$sql = '
+    SELECT o.*, u.name as customer,
+      (SELECT method FROM payments p WHERE p.order_id = o.id ORDER BY p.created_at DESC LIMIT 1) AS pay_method,
+      (SELECT status FROM payments p WHERE p.order_id = o.id ORDER BY p.created_at DESC LIMIT 1) AS pay_status
+    FROM orders o
+    JOIN users u ON o.user_id = u.id
     ORDER BY o.created_at DESC
-');
+';
+$stmt = $pdo->query($sql);
 $orders = $stmt->fetchAll();
 ?>
 <!doctype html>
@@ -61,9 +63,15 @@ body {
 }
 .table tbody tr:hover {
     background: #f1f1f1;
-}
+@media (max-width: 992px){
 .btn-danger {
     background: #dc3545;
+
+@media (max-width: 992px){
+  .sidebar { position: fixed; left: -260px; top: 0; height: 100vh; width: 240px; z-index: 1050; transition: left 0.35s ease; }
+  .sidebar.open { left: 0; }
+  .main { margin-left: 0; }
+}
     border: none;
 }
 .card-box {
@@ -80,6 +88,7 @@ body {
 <!-- NAVBAR -->
 <nav class="navbar navbar-dark px-3 mb-4">
   <div class="container-fluid d-flex align-items-center">
+    <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
     <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo">
     <span class="navbar-brand mb-0 h4">Admin – Manage Orders</span>
   </div>
@@ -98,6 +107,7 @@ body {
         <th>Customer</th>
         <th>Total</th>
         <th>Status</th>
+        <th>Payment</th>
         <th>Tracking</th>
         <th>Date</th>
         <th>Actions</th>
@@ -105,7 +115,7 @@ body {
     </thead>
 
     <tbody>
-      <?php foreach($orders as $o): ?>
+    <?php foreach($orders as $o): ?>
         <tr>
           <td>
             <?php echo $o['id']; ?>
@@ -116,6 +126,17 @@ body {
           <td><?php echo esc($o['customer']); ?></td>
           <td>₹<?php echo number_format((float)($o['total'] ?? 0),2); ?></td>
           <td><span class="badge bg-primary"><?php echo esc($o['status']); ?></span></td>
+          <td>
+            <?php if(!empty($o['pay_method'])): ?>
+              <?php if(strtoupper($o['pay_method']) === 'UPI'): ?>
+                <span class="badge bg-success">Paid (UPI)</span>
+              <?php else: ?>
+                <span class="badge bg-info text-dark"><?php echo esc($o['pay_method']); ?> <?php if(!empty($o['pay_status'])): ?>(<?php echo esc($o['pay_status']); ?>)<?php endif; ?></span>
+              <?php endif; ?>
+            <?php else: ?>
+              <span class="text-muted small">Not recorded</span>
+            <?php endif; ?>
+          </td>
           <td><?php echo esc($o['tracking_code']); ?></td>
           <td><?php echo esc($o['created_at']); ?></td>
 
@@ -170,6 +191,38 @@ body {
   </table>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const btn = document.getElementById('sidebarToggle');
+  if(!btn) return;
+  btn.addEventListener('click', function(){
+    const s = document.querySelector('.sidebar');
+    if(!s) return;
+    const overlayId = 'adminSidebarOverlay';
+    if(s.classList.contains('open')){
+      s.classList.remove('open');
+      const ov = document.getElementById(overlayId);
+      if(ov) ov.remove();
+      document.body.style.overflow = '';
+    } else {
+      s.classList.add('open');
+      const ov = document.createElement('div');
+      ov.id = overlayId;
+      ov.style.position = 'fixed';
+      ov.style.top = '0';
+      ov.style.left = '0';
+      ov.style.right = '0';
+      ov.style.bottom = '0';
+      ov.style.background = 'rgba(0,0,0,0.2)';
+      ov.style.zIndex = '1040';
+      ov.addEventListener('click', function(){ s.classList.remove('open'); ov.remove(); document.body.style.overflow = ''; });
+      document.body.appendChild(ov);
+      document.body.style.overflow = 'hidden';
+    }
+  });
+});
+</script>
 
 </div>
 

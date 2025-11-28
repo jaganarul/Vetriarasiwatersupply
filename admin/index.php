@@ -171,7 +171,8 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
     .calc-btn { min-width: 55px; }
 
     @media (max-width: 992px){
-      .sidebar { position: relative; height: auto; width: 100%; }
+      .sidebar { position: fixed; left: -260px; top: 0; height: 100vh; width: 240px; z-index: 1050; transition: left 0.35s ease; }
+      .sidebar.open { left: 0; }
       .main { margin-left: 0; padding-top: 12px; }
     }
 </style>
@@ -194,7 +195,8 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
 <!-- MAIN CONTENT -->
 <div class="main">
 <nav class="navbar navbar-light bg-white shadow-sm px-4">
-  <div class="container-fluid">
+  <div class="container-fluid d-flex align-items-center">
+    <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
     <span class="navbar-brand mb-0 h5">Welcome, <?php echo esc($_SESSION['admin_name']); ?></span>
   </div>
 </nav>
@@ -526,6 +528,39 @@ document.addEventListener('DOMContentLoaded', function(){
       if(e.key.toLowerCase() === 'c') { screen.value = ''; }
     });
   }
+});
+</script>
+
+<script>
+// sidebar toggle for small screens
+document.addEventListener('DOMContentLoaded', function(){
+  const btn = document.getElementById('sidebarToggle');
+  if(!btn) return;
+  btn.addEventListener('click', function(){
+    const s = document.querySelector('.sidebar');
+    if(!s) return;
+    const overlayId = 'adminSidebarOverlay';
+    if(s.classList.contains('open')){
+      s.classList.remove('open');
+      const ov = document.getElementById(overlayId);
+      if(ov) ov.remove();
+      document.body.style.overflow = '';
+    } else {
+      s.classList.add('open');
+      const ov = document.createElement('div');
+      ov.id = overlayId;
+      ov.style.position = 'fixed';
+      ov.style.top = '0';
+      ov.style.left = '0';
+      ov.style.right = '0';
+      ov.style.bottom = '0';
+      ov.style.background = 'rgba(0,0,0,0.2)';
+      ov.style.zIndex = '1040';
+      ov.addEventListener('click', function(){ s.classList.remove('open'); ov.remove(); document.body.style.overflow = ''; });
+      document.body.appendChild(ov);
+      document.body.style.overflow = 'hidden';
+    }
+  });
 });
 </script>
 

@@ -23,6 +23,19 @@ $stmt = $pdo->prepare('SELECT oi.*, p.name FROM order_items oi JOIN products p O
 $stmt->execute([$id]);
 $items = $stmt->fetchAll();
 
+// fetch payment info (last payment, if any) - safe check if payments table exists
+$payment = null;
+try{
+  $hasPayments = (bool)$pdo->query("SHOW TABLES LIKE 'payments'")->fetch();
+  if($hasPayments){
+    $stmt = $pdo->prepare('SELECT method, status, created_at FROM payments WHERE order_id = ? ORDER BY created_at DESC LIMIT 1');
+    $stmt->execute([$id]);
+    $payment = $stmt->fetch();
+  }
+} catch(Exception $e){
+  $payment = null; // ignore and continue
+}
+
 // safely get delivery address and phone (prefer order-stored values)
 $delivery_address = $order['delivery_address'] ?? $order['address'] ?? 'Not provided';
 $delivery_phone = $order['delivery_phone'] ?? $order['phone'] ?? 'Not provided';
@@ -91,6 +104,20 @@ $delivery_phone = $order['delivery_phone'] ?? $order['phone'] ?? 'Not provided';
         <p class="mb-1"><i class="bi bi-telephone-fill"></i> <?php echo esc($delivery_phone); ?></p>
         <p class="mb-1"><i class="bi bi-geo-alt-fill"></i> <?php echo esc($delivery_address); ?></p>
         <p class="mb-0"><i class="bi bi-truck"></i> Tracking: <?php echo esc($order['tracking_code']); ?></p>
+        <?php if($payment): ?>
+        <p class="mb-0 mt-2"><strong>Payment:</strong>
+          <?php if(strtoupper($payment['method']) === 'UPI'): ?>
+            <span class="badge bg-success">UPI</span>
+          <?php elseif(strtoupper($payment['method']) === 'COD'): ?>
+            <span class="badge bg-info text-dark">COD</span>
+          <?php else: ?>
+            <span class="badge bg-secondary"><?php echo esc($payment['method']); ?></span>
+          <?php endif; ?>
+          <small class="text-muted ms-2"><?php echo esc($payment['status']); ?><?php echo $payment['status'] ? ' • ' . esc($payment['created_at']) : ''; ?></small>
+        </p>
+        <?php else: ?>
+        <p class="mb-0 mt-2"><strong>Payment:</strong> <span class="text-muted">Not recorded</span></p>
+        <?php endif; ?>
       </div>
     </div>
 
