@@ -49,7 +49,7 @@ try {
           if ($rawCat === '') continue;
 
           // Build both possible URLs; choose depending on USE_PRETTY_URLS
-          $prettyUrl = $base_url . '/category/' . rawurlencode($rawCat);
+          $prettyUrl = $base_url . '/category.php/' . rawurlencode($rawCat);
           $queryUrl  = $base_url . '/category.php?name=' . urlencode($rawCat);
 
           $href = USE_PRETTY_URLS ? $prettyUrl : $queryUrl;

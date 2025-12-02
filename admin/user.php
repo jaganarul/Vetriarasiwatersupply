@@ -35,7 +35,7 @@ $users = $stmt->fetchAll();
     <div class="container d-flex align-items-center">
         <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
         <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo me-2">
+            <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo me-2 img-fluid">
             Admin Panel
         </a>
     </div>
@@ -47,7 +47,8 @@ $users = $stmt->fetchAll();
       <h3>Users</h3>
   </div>
 
-  <table class="table table-striped table-bordered shadow-sm">
+    <div class="table-responsive">
+    <table class="table table-striped table-bordered shadow-sm">
       <thead class="table-dark">
            <tr>
               <th>ID</th>
@@ -70,18 +71,19 @@ $users = $stmt->fetchAll();
               <td><?php echo $u['created_at']; ?></td>
               <td>
 
-                <a href="user_view.php?id=<?php echo $u['id']; ?>" 
-                   class="btn btn-sm btn-primary">View</a>
+                     <a href="user_view.php?id=<?php echo $u['id']; ?>" 
+                         class="btn btn-sm btn-primary w-100 w-md-auto">View</a>
 
-                <a href="user_delete.php?id=<?php echo $u['id']; ?>" 
+                     <a href="user_delete.php?id=<?php echo $u['id']; ?>" 
                    onclick="return confirm('Delete this user?');"
-                   class="btn btn-sm btn-danger">Delete</a>
+                         class="btn btn-sm btn-danger w-100 w-md-auto">Delete</a>
 
               </td>
           </tr>
       <?php endforeach; ?>
       </tbody>
-  </table>
+    </table>
+    </div>
 
 </div>
 

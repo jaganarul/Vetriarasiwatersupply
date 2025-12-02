@@ -51,7 +51,7 @@ $products = $stmt->fetchAll();
           <?php if ($thumb): ?>
             <img 
               src="<?php echo $base_url; ?>/uploads/<?php echo esc($thumb); ?>" 
-              class="card-img-top" 
+              class="card-img-top img-fluid" 
               alt="<?php echo esc($p['name']); ?>"
             >
           <?php else: ?>

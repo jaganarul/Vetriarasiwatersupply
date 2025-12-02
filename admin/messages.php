@@ -75,7 +75,7 @@ if($hasMessages){
   <div class="container d-flex align-items-center">
     <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
     <a class="navbar-brand d-flex align-items-center" href="index.php">
-      <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo me-2"> Admin Panel
+      <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo me-2 img-fluid"> Admin Panel
     </a>
 </div>
 <script>

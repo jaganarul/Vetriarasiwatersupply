@@ -120,7 +120,7 @@ foreach($period as $dt){
   <div class="container d-flex align-items-center">
     <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
     <a class="navbar-brand d-flex align-items-center" href="index.php">
-        <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo">
+        <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo" class="img-fluid">
         <span class="text-white">Admin Dashboard</span>
     </a>
     <a class="btn btn-outline-light btn-sm" href="index.php">Dashboard</a>
@@ -183,6 +183,7 @@ foreach($period as $dt){
 
   <h5 class="mt-4 mb-3">Recent Orders</h5>
   
+  <div class="table-responsive">
   <table class="table table-striped">
     <thead class="table-dark">
       <tr>
@@ -207,6 +208,7 @@ foreach($period as $dt){
       <?php endforeach; ?>
     </tbody>
   </table>
+  </div>
 
 
   <h5 class="mt-5 mb-3">Customer Messages</h5>

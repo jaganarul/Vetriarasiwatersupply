@@ -89,7 +89,7 @@ body {
 <nav class="navbar navbar-dark px-3 mb-4">
   <div class="container-fluid d-flex align-items-center">
     <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
-    <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo">
+    <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo img-fluid">
     <span class="navbar-brand mb-0 h4">Admin – Manage Orders</span>
   </div>
 </nav>
@@ -100,6 +100,7 @@ body {
 
   <h3 class="mb-3">Orders List</h3>
 
+  <div class="table-responsive">
   <table class="table table-hover">
     <thead>
       <tr>
@@ -141,44 +142,44 @@ body {
           <td><?php echo esc($o['created_at']); ?></td>
 
           <td>
-            <div class="d-flex flex-column gap-1">
+            <div class="d-flex flex-column flex-md-row align-items-start gap-1">
 
               <!-- STATUS UPDATE FORM -->
-              <form method="post" class="d-flex gap-2">
+              <form method="post" class="d-flex flex-column flex-md-row gap-2" style="min-width:160px;">
                 <input type="hidden" name="order_id" value="<?php echo $o['id']; ?>">
 
-                <select name="status" class="form-select form-select-sm">
+                <select name="status" class="form-select form-select-sm flex-grow-1">
                   <?php foreach(['Pending','Processing','Shipped','Delivered','Cancelled'] as $s): ?>
                     <option <?php echo $o['status']==$s? 'selected':''; ?>><?php echo $s; ?></option>
                   <?php endforeach; ?>
                 </select>
 
-                <button class="btn btn-sm btn-primary">Update</button>
+                <button class="btn btn-sm btn-primary w-100 w-md-auto">Update</button>
               </form>
 
-              <div class="d-flex gap-2">
+                <div class="d-flex gap-2 flex-column flex-md-row">
 
                 <!-- VIEW BUTTON -->
-                <a class="btn btn-sm btn-outline-secondary" href="order_view.php?id=<?php echo $o['id']; ?>">
+                <a class="btn btn-sm btn-outline-secondary w-100 w-md-auto" href="order_view.php?id=<?php echo $o['id']; ?>">
                   View
                 </a>
 
                 <?php if(isset($o['is_new']) && $o['is_new'] == 1): ?>
                   <form method="post" style="display:inline-block;">
                     <input type="hidden" name="mark_read" value="<?php echo $o['id']; ?>">
-                    <button class="btn btn-sm btn-outline-success">Mark Read</button>
+                    <button class="btn btn-sm btn-outline-success w-100 w-md-auto">Mark Read</button>
                   </form>
                 <?php else: ?>
                   <form method="post" style="display:inline-block;">
                     <input type="hidden" name="mark_new" value="<?php echo $o['id']; ?>">
-                    <button class="btn btn-sm btn-outline-warning">Mark New</button>
+                    <button class="btn btn-sm btn-outline-warning w-100 w-md-auto">Mark New</button>
                   </form>
                 <?php endif; ?>
 
                 <!-- DELETE BUTTON -->
                 <form method="post" onsubmit="return confirm('Are you sure you want to delete this order?');">
                   <input type="hidden" name="delete_order" value="<?php echo $o['id']; ?>">
-                  <button class="btn btn-sm btn-danger">Delete</button>
+                  <button class="btn btn-sm btn-danger w-100 w-md-auto">Delete</button>
                 </form>
 
               </div>

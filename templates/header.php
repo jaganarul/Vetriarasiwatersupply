@@ -21,12 +21,12 @@ function is_active($matchPaths, $currentPath) {
   <!-- Wave Background (always visible) -->
   <div class="header-wave-bg" aria-hidden="true"></div>
 
-  <!-- Single Navbar (desktop shown on >=992, hidden on small) -->
+  <!-- Single Navbar (desktop shown on >=992, mobile uses off-canvas overlay) -->
   <nav class="navbar navbar-expand-lg navbar-light py-2" role="navigation" aria-label="Main navigation">
     <div class="container d-flex align-items-center">
 
       <!-- Return (back) button -->
-      <button id="backButton" class="btn btn-sm btn-light me-2 d-flex align-items-center" aria-label="Go back" title="Go back">
+      <button id="backButton" class="btn btn-sm btn-light me-2 d-flex align-items-center" aria-label="Go back" title="Go back" type="button">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16" aria-hidden="true">
           <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
         </svg>
@@ -42,12 +42,12 @@ function is_active($matchPaths, $currentPath) {
       </a>
 
       <!-- Mobile Menu Button (visible on small screens) -->
-      <button class="navbar-toggler border-0 ms-auto" type="button" id="openMobileMenu" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <button class="navbar-toggler border-0 ms-auto" type="button" id="openMobileMenu" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
         <i class="bi bi-list fs-3" aria-hidden="true"></i>
       </button>
 
-      <!-- Desktop Menu (visible on >=992) -->
-      <div class="collapse navbar-collapse justify-content-end" id="navMain" role="navigation" aria-label="Desktop navigation">
+      <!-- Desktop Menu (visible on >=992). We use d-lg-flex so it displays as flex on large screens -->
+      <div class="collapse navbar-collapse d-lg-flex justify-content-end" id="navMain" role="navigation" aria-label="Desktop navigation">
         <ul class="navbar-nav ms-lg-3 mb-2 mb-lg-0 align-items-lg-center">
 
           <li class="nav-item">
@@ -80,7 +80,7 @@ function is_active($matchPaths, $currentPath) {
               <?php foreach($catRows as $cr): if(!$cr['category']) continue; ?>
                 <li>
                   <a class="dropdown-item py-2"
-                    href="<?php echo $base_url; ?>/category/<?php echo urlencode($cr['category']); ?>">
+                    href="<?php echo $base_url; ?>/category.php/<?php echo urlencode($cr['category']); ?>">
                     <?php echo esc($cr['category']); ?>
                   </a>
                 </li>
@@ -112,7 +112,7 @@ function is_active($matchPaths, $currentPath) {
             <a class="btn btn-link fw-semibold text-truncate" href="<?php echo $base_url; ?>/profile" title="<?php echo esc($_SESSION['user_name']); ?>">
               <?php echo esc($_SESSION['user_name']); ?>
             </a>
-            <a class="btn btn-link text-danger" href="<?php echo $base_url; ?>/logout.php">Logout.php</a>
+            <a class="btn btn-link text-danger" href="<?php echo $base_url; ?>/logout.php">Logout</a>
           <?php else: ?>
             <a class="btn btn-primary btn-sm px-3" href="<?php echo $base_url; ?>/login.php">Login</a>
             <a class="btn btn-outline-secondary btn-sm px-3" href="<?php echo $base_url; ?>/register.php">Register</a>
@@ -136,7 +136,7 @@ function is_active($matchPaths, $currentPath) {
 
   <div class="mobile-header">
     <span class="fw-bold fs-5">Menu</span>
-    <button id="closeMobileMenu" class="btn-close" aria-label="Close menu"></button>
+    <button id="closeMobileMenu" class="btn-close" aria-label="Close menu" type="button"></button>
   </div>
 
   <div class="mobile-inner" role="menu" aria-label="Main mobile menu">
@@ -236,15 +236,13 @@ function is_active($matchPaths, $currentPath) {
 /* Responsive logo */
 .site-logo { height: 36px; width: auto; }
 
-/* On small screens make brand smaller and hide desktop nav */
+/* On small screens make brand smaller */
 @media (max-width: 991px) {
   .brand-text { font-size: 1rem; max-width: 140px; }
   .site-logo { height: 30px; }
-  /* hide desktop nav on small devices to avoid visual duplication */
-  .navbar-collapse { display: none !important; }
 }
 
-/* Desktop: show collapse normally (>=992) */
+/* Desktop: ensure toggler hidden on large screens */
 @media (min-width: 992px) {
   .navbar-toggler { display: none; } /* hide toggler on large screens */
   .navbar-collapse { display: flex !important; } /* ensure desktop menu visible */
@@ -253,7 +251,7 @@ function is_active($matchPaths, $currentPath) {
 /* Return/back button */
 #backButton { border: none; background: rgba(255,255,255,0.9); box-shadow: 0 1px 6px rgba(11,22,40,0.06); }
 
-/* Mobile Menu */
+/* Mobile Menu (off-canvas overlay) */
 .mobile-menu {
   position: fixed;
   top: 0;
@@ -289,7 +287,7 @@ function is_active($matchPaths, $currentPath) {
 .header-wave-bg {
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: -60%;
   width: 220%;
   height: 56px;
   background:
@@ -327,6 +325,13 @@ function is_active($matchPaths, $currentPath) {
   .navbar .container { gap: 6px; flex-wrap: wrap; }
 }
 
+/* Ensure mobile overlay does not create page horizontal scroll */
+.mobile-menu,
+.header-wave-bg,
+.glass-header {
+  max-width: 100%;
+  box-sizing: border-box;
+}
 </style>
 
 <script>
@@ -346,7 +351,7 @@ function is_active($matchPaths, $currentPath) {
     });
   }
 
-  // Mobile menu open/close
+  // Mobile menu open/close (overlay)
   var mobileMenu = $id('mobileMenu');
   var openBtn = $id('openMobileMenu');
   var closeBtn = $id('closeMobileMenu');
@@ -390,10 +395,14 @@ function is_active($matchPaths, $currentPath) {
 
   if(openBtn){
     openBtn.addEventListener('click', function(e){
-      // Only open the overlay on narrow viewports; allow Bootstrap collapse to handle larger screens
+      // Use overlay only on narrow viewports (<992). On large screens, Bootstrap will handle collapse.
       if(window.innerWidth < 992){
         e.preventDefault();
         openMenu();
+      } else {
+        // allow default bootstrap collapse toggle to work on >=992 if needed
+        var navMain = document.getElementById('navMain');
+        if(navMain) navMain.classList.toggle('show');
       }
     });
   }
@@ -419,18 +428,12 @@ function is_active($matchPaths, $currentPath) {
     else header.classList.remove('scrolled');
   });
 
-  // Keep the desktop collapse toggle accessible for >=992 loops if needed
-  var bsToggler = document.querySelector('.navbar-toggler');
-  var navMain = document.getElementById('navMain');
-  if(bsToggler && navMain){
-    // Keep the bootstrap collapse mechanism: toggle only if not handled by our overlay
-    bsToggler.addEventListener('click', function(){
-      // On larger screens, let Bootstrap handle the collapse. On small screens (overlay), the overlay will be used.
-      if(window.innerWidth >= 992){
-        navMain.classList.toggle('show');
-      }
-    });
-  }
+  // make sure overlay closes when resizing to large screen
+  window.addEventListener('resize', function(){
+    if(window.innerWidth >= 992){
+      if(mobileMenu && mobileMenu.classList.contains('open')) closeMenu();
+    }
+  });
 
 })();
 </script>

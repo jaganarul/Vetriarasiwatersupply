@@ -46,6 +46,9 @@ body {
   overflow: hidden;
 }
 
+/* Admin thumbnail control */
+.admin-thumb{ max-width: 96px; display:inline-block; }
+
 .table-modern thead {
   background: #0d6efd;
   color: white;
@@ -79,7 +82,7 @@ body {
   <div class="container d-flex align-items-center">
       <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
       <a class="navbar-brand d-flex align-items-center" href="index.php">
-          <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo">
+          <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo" class="img-fluid">
           <span class="fw-bold">Admin Panel</span>
       </a>
       <a class="btn btn-outline-primary ms-auto" href="index.php">Dashboard</a>
@@ -100,6 +103,7 @@ body {
   <?php endif; ?>
 
   <div class="table-modern p-3">
+    <div class="table-responsive">
     <table class="table align-middle">
       <thead>
         <tr>
@@ -117,7 +121,7 @@ body {
           <td><?php echo $p['id']; ?></td>
           <td>
             <?php if($p['thumbnail']): ?>
-              <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" style="height:60px;border-radius:8px;">
+              <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" class="img-fluid rounded admin-thumb" alt="<?php echo esc($p['name']); ?>" loading="lazy">
             <?php else: ?>
               <span class="text-muted small">No Image</span>
             <?php endif; ?>
@@ -126,7 +130,7 @@ body {
           <td>₹<?php echo number_format((float)($p['price'] ?? 0), 2); ?></td>
           <td><?php echo (int)$p['stock']; ?></td>
           <td>
-            <button class="btn btn-sm btn-primary"
+            <button class="btn btn-sm btn-primary w-100 w-md-auto"
               onclick="openEditFromButton(this)"
               data-product='<?php echo htmlspecialchars((string)json_encode($p), ENT_QUOTES, "UTF-8"); ?>'>
               Edit
@@ -134,13 +138,14 @@ body {
 
             <form method="post" action="product_delete.php" class="d-inline-block" onsubmit="return confirm('Delete this product?');">
               <input type="hidden" name="id" value="<?php echo $p['id']; ?>">
-              <button class="btn btn-sm btn-danger">Delete</button>
+              <button class="btn btn-sm btn-danger w-100 w-md-auto">Delete</button>
             </form>
           </td>
         </tr>
       <?php endforeach; ?>
       </tbody>
     </table>
+    </div>
   </div>
 </div>
 
@@ -278,7 +283,7 @@ function openEdit(p) {
       div.innerHTML = `
         <label class="form-label">Current Thumbnail</label>
         <div class="d-flex align-items-center gap-3">
-          <img src="${BASE_URL + '/uploads/' + p.thumbnail}" style="height:60px;border-radius:8px;">
+          <img src="${BASE_URL + '/uploads/' + p.thumbnail}" class="img-fluid rounded admin-thumb" alt="Thumbnail" loading="lazy">
           <label><input type="checkbox" name="remove_thumbnail" value="1"> Remove</label>
         </div>`;
       container.appendChild(div);
@@ -293,7 +298,7 @@ function openEdit(p) {
         item.className = 'd-flex align-items-center gap-3 mb-2';
 
         item.innerHTML = `
-          <img src="${BASE_URL + '/uploads/' + im}" style="height:60px;border-radius:8px;">
+          <img src="${BASE_URL + '/uploads/' + im}" class="img-fluid rounded admin-thumb" alt="Image" loading="lazy">
           <label><input type="checkbox" name="remove_images[]" value="${im}"> Remove</label>`;
 
         g.appendChild(item);

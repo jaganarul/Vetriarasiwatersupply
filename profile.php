@@ -18,6 +18,7 @@ $orders = $stmt->fetchAll();
   <p>Name: <?php echo esc($_SESSION['user_name']); ?></p>
   <h5>Your Orders</h5>
   <?php if(!$orders): ?><div class="alert alert-info">No orders yet.</div><?php else: ?>
+    <div class="table-responsive">
     <table class="table">
       <thead><tr><th>Order</th><th>Total</th><th>Status</th><th>Tracking</th><th>Date</th></tr></thead>
       <tbody>
@@ -32,6 +33,7 @@ $orders = $stmt->fetchAll();
         <?php endforeach; ?>
       </tbody>
     </table>
+    </div>
   <?php endif; ?>
 </div>
 <?php include __DIR__ . '/templates/footer.php'; ?>

@@ -58,7 +58,9 @@ if (!empty($product['images'])) {
     .product-wrapper { background: #fff; border-radius: 12px; padding: 20px; }
     .product-title { font-size: 28px; font-weight: 700; color: #222; }
     .product-category { font-size: 14px; color: #6c757d; }
-    .product-price { font-size: 32px; font-weight: 700; color: #007bff; }
+
+    .product-price { font-size: 32px; font-weight: 700; color: #007bff; margin-bottom: 12px; }
+
     .product-description { font-size: 16px; line-height: 1.6; }
 
     #mainImage {
@@ -94,6 +96,31 @@ if (!empty($product['images'])) {
     .btn-add-cart:hover {
       background: #218838;
     }
+
+    /* Ratings */
+    .stars i { font-size: 18px; color: #ffc107; }
+    .product-rating span { font-size: 14px; color: #6c757d; }
+
+    /* Highlighted description */
+    .highlight-desc {
+      background: #fff9e6;
+      border-left: 4px solid #ffc107;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    /* Offer section */
+    .special-offer {
+      background: #e6f7ff;
+      border-left: 4px solid #0d6efd;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+      font-weight: 500;
+      margin-top: 12px;
+    }
+
   </style>
 
 </head>
@@ -126,7 +153,7 @@ if (!empty($product['images'])) {
         <?php if (!empty($images)): ?>
           <div class="thumb-gallery d-flex gap-2 flex-wrap">
             <?php foreach ($images as $im): ?>
-              <img 
+              <img class="img-fluid"
                 src="<?php echo $base_url; ?>/uploads/<?php echo esc($im); ?>"
                 data-src="<?php echo $base_url; ?>/uploads/<?php echo esc($im); ?>"
               >
@@ -147,19 +174,44 @@ if (!empty($product['images'])) {
           Category: <?php echo esc($product['category']); ?>
         </p>
 
+        <!-- Ratings -->
+        <div class="product-rating mb-2 d-flex align-items-center gap-2">
+            <?php
+            $rating = 4.5; // demo rating
+            $fullStars = floor($rating);
+            $halfStar = ($rating - $fullStars) >= 0.5 ? true : false;
+            ?>
+            <div class="stars">
+                <?php for($i=0; $i<$fullStars; $i++): ?>
+                    <i class="bi bi-star-fill"></i>
+                <?php endfor; ?>
+                <?php if($halfStar): ?>
+                    <i class="bi bi-star-half"></i>
+                <?php endif; ?>
+                <?php for($i=0; $i<(5-ceil($rating)); $i++): ?>
+                    <i class="bi bi-star"></i>
+                <?php endfor; ?>
+            </div>
+            <span class="text-muted">(<?php echo rand(20, 500); ?> ratings)</span>
+        </div>
+
         <div class="product-price">
           ₹<?php echo number_format((float)$product['price'], 2); ?>
         </div>
 
-        <p class="product-description mt-3">
+        <div class="highlight-desc mt-3">
           <?php echo nl2br(esc($product['description'])); ?>
-        </p>
+        </div>
 
         <p class="mt-2">
           <strong>Stock:</strong> <?php echo (int)$product['stock']; ?>
         </p>
 
         <?php if ($product['stock'] > 0): ?>
+          <div class="special-offer">
+              Special Offer: Buy now and get 5% off! 🎉
+          </div>
+
           <form method="post" action="<?php echo $base_url; ?>/add_to_cart.php" class="mt-3">
             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
 

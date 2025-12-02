@@ -182,7 +182,7 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
 
 <!-- SIDEBAR -->
 <div class="sidebar text-center">
-  <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo-img" alt="Logo">
+  <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo-img img-fluid" alt="Logo">
   <h5 class="text-white mb-4">Admin Panel</h5>
   <a href="index.php">Dashboard</a>
   <a href="products.php">Products</a>
@@ -322,6 +322,7 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
       </div>
 
       <h5 class="mt-3 mb-2">Recent Orders</h5>
+      <div class="table-responsive">
       <table class="table table-striped">
         <thead class="table-dark">
           <tr>
@@ -346,6 +347,7 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
           <?php endforeach; ?>
         </tbody>
       </table>
+      </div>
 
     </div>
 

@@ -22,6 +22,7 @@ if($cart){
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom.css">
   <title>Cart</title>
 
@@ -31,6 +32,7 @@ if($cart){
     padding: 28px 12px;
     max-width: 1180px;
     margin: 0 auto;
+    min-height: 70vh;
 }
 
 /* Card wrapper for desktop */
@@ -44,9 +46,11 @@ if($cart){
 
 /* Table (desktop) */
 .cart-table img {
-    border-radius: 8px;
+    border-radius: 12px;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
+.cart-table img:hover { transform: scale(1.05); }
 .cart-table th {
     background: #f1f5ff;
     border-bottom: 2px solid #dbe3ff;
@@ -80,17 +84,19 @@ if($cart){
 .cart-mobile-item {
     display: flex;
     gap: 12px;
-    padding: 12px;
-    border-radius: 12px;
+    padding: 16px;
+    border-radius: 14px;
     background: #fff;
-    box-shadow: 0 8px 24px rgba(7,20,40,0.06);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.06);
     align-items: center;
+    transition: transform 0.2s ease;
 }
+.cart-mobile-item:hover { transform: translateY(-2px); }
 .cart-mobile-thumb {
     width: 84px;
     height: 84px;
     flex-shrink: 0;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
     display: inline-block;
     background: linear-gradient(90deg,#eef8ff,#f7fdff);
@@ -101,11 +107,12 @@ if($cart){
 .mobile-actions { display:flex; gap:8px; width:100%; margin-top:6px; }
 .mobile-actions .btn { flex:1; }
 
+/* Quantity selector styling */
+.qty-input, .form-select { border-radius: 10px; }
+
 /* Responsive behaviors */
 @media (max-width: 991.98px) {
-  /* hide desktop table */
   .cart-table { display: none; }
-  /* show mobile list */
   .cart-mobile-list { display: flex; flex-direction: column; }
   .d-desktop-only { display: none !important; }
   .total-box { min-width: 160px; font-size: 16px; }
@@ -125,17 +132,27 @@ if($cart){
   }
   .sticky-checkout .total-box { flex: 1; text-align: left; padding-left: 14px; padding-right: 14px; }
   .sticky-checkout .checkout-btn { min-width: 140px; }
-  /* give page bottom padding so content not hidden */
   body { padding-bottom: 92px; }
 }
 
-/* small polished interactions */
-.qty-input { width: 86px; }
-.remove-btn { min-width: 84px; }
-
-/* fade */
+/* fade animation */
 @keyframes fadeIn { from {opacity:0; transform:translateY(8px);} to {opacity:1; transform:none;} }
 
+/* Suggested products (Amazon style) */
+.suggested-products {
+    margin-top: 32px;
+}
+.suggested-products h5 {
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+.suggested-products .card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+.suggested-products .card:hover { transform: translateY(-4px); }
+.suggested-products img { border-radius: 12px; object-fit: cover; height:160px; width:100%; }
 </style>
 </head>
 
@@ -165,7 +182,7 @@ if($cart){
                       <th>Item</th>
                       <th>Product</th>
                       <th>Price</th>
-                      <th width="160">Qty</th>
+                      <th class="col-qty">Qty</th>
                       <th>Subtotal</th>
                       <th></th>
                   </tr>
@@ -174,41 +191,34 @@ if($cart){
               <tbody>
               <?php foreach($products as $p): ?>
                   <tr>
-                      <td style="width:110px;">
-                          <?php if($p['thumbnail']): ?>
-                              <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" height="72" width="96" alt="<?php echo esc($p['name']); ?>">
-                          <?php else: ?>
-                              <div style="width:96px;height:72px;background:#f1f7fb;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9aa9bd;">
-                                <i class="bi bi-image" aria-hidden="true"></i>
-                              </div>
-                          <?php endif; ?>
+                      <td>
+                        <?php if($p['thumbnail']): ?>
+                          <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" alt="<?php echo esc($p['name']); ?>" class="cart-thumb img-fluid rounded" loading="lazy">
+                        <?php else: ?>
+                          <div class="cart-placeholder">
+                            <i class="bi bi-image"></i>
+                          </div>
+                        <?php endif; ?>
                       </td>
 
-                      <td class="fw-semibold">
-                          <?php echo esc($p['name']); ?>
-                      </td>
-
-                      <td class="fw-bold text-success">
-                          ₹<?php echo number_format((float)($p['price'] ?? 0),2); ?>
-                      </td>
+                      <td class="fw-semibold"><?php echo esc($p['name']); ?></td>
+                      <td class="fw-bold text-success">₹<?php echo number_format((float)($p['price'] ?? 0),2); ?></td>
 
                       <td>
                           <form method="post" action="<?php echo $base_url; ?>/update_cart.php" class="d-flex gap-2 align-items-center">
                               <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
-                              <input type="number" name="qty" value="<?php echo $p['qty']; ?>" min="1" max="<?php echo $p['stock']; ?>" class="form-control qty-input" aria-label="Quantity for <?php echo esc($p['name']); ?>">
+                              <input type="number" name="qty" value="<?php echo $p['qty']; ?>" min="1" max="<?php echo $p['stock']; ?>" class="form-control qty-input">
                               <button class="btn btn-outline-primary btn-sm">Update</button>
                           </form>
                       </td>
 
-                      <td class="fw-bold text-dark">
-                          ₹<?php echo number_format((float)($p['subtotal'] ?? 0),2); ?>
-                      </td>
+                      <td class="fw-bold text-dark">₹<?php echo number_format((float)($p['subtotal'] ?? 0),2); ?></td>
 
                       <td>
-                          <form method="post" action="<?php echo $base_url; ?>/remove_from_cart.php">
-                              <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
-                              <button class="btn btn-sm btn-danger remove-btn">Remove</button>
-                          </form>
+                        <form method="post" action="<?php echo $base_url; ?>/remove_from_cart.php">
+                          <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
+                          <button class="btn btn-sm btn-danger remove-btn">Remove</button>
+                        </form>
                       </td>
                   </tr>
               <?php endforeach; ?>
@@ -219,41 +229,40 @@ if($cart){
         <!-- Mobile stacked list -->
         <div class="cart-mobile-list">
           <?php foreach($products as $p): ?>
-            <article class="cart-mobile-item" aria-labelledby="prod-<?php echo $p['id']; ?>">
-              <div class="cart-mobile-thumb" role="img" aria-label="<?php echo esc($p['name']); ?>">
+            <article class="cart-mobile-item">
+              <div class="cart-mobile-thumb">
                 <?php if($p['thumbnail']): ?>
-                  <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" alt="<?php echo esc($p['name']); ?>">
+                  <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" alt="<?php echo esc($p['name']); ?>" class="img-fluid rounded">
                 <?php else: ?>
-                  <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#9aa9bd;"><i class="bi bi-image"></i></div>
+                  <div class="text-center text-muted"><i class="bi bi-image"></i></div>
                 <?php endif; ?>
               </div>
 
               <div style="flex:1; min-width:0;">
-                <h6 id="prod-<?php echo $p['id']; ?>" class="mb-1" style="font-weight:700;"><?php echo esc($p['name']); ?></h6>
+                <h6 class="mb-1 fw-bold"><?php echo esc($p['name']); ?></h6>
                 <div class="d-flex justify-content-between align-items-center">
                   <div>
                     <div class="price text-success fw-bold">₹<?php echo number_format((float)($p['price'] ?? 0),2); ?></div>
-                    <div class="stock-muted small">Stock: <?php echo (int)$p['stock']; ?></div>
+                    <div class="small text-muted">Stock: <?php echo (int)$p['stock']; ?></div>
                   </div>
-                  <div style="min-width:120px; text-align:right;">
+                  <div class="text-end">
                     <div class="small text-muted">Subtotal</div>
                     <div class="fw-bold">₹<?php echo number_format((float)($p['subtotal'] ?? 0),2); ?></div>
                   </div>
                 </div>
 
                 <div class="mobile-actions">
-                  <form method="post" action="<?php echo $base_url; ?>/update_cart.php" class="d-flex gap-2 align-items-center" style="flex:1;">
+                  <form method="post" action="<?php echo $base_url; ?>/update_cart.php" class="d-flex gap-2">
                     <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
-                    <input type="number" name="qty" value="<?php echo $p['qty']; ?>" min="1" max="<?php echo $p['stock']; ?>" class="form-control form-control-sm" aria-label="Quantity for <?php echo esc($p['name']); ?>">
-                    <button class="btn btn-sm btn-outline-primary">Update</button>
+                    <input type="number" name="qty" value="<?php echo $p['qty']; ?>" min="1" max="<?php echo $p['stock']; ?>" class="form-control form-control-sm">
+                    <button class="btn btn-outline-primary btn-sm">Update</button>
                   </form>
 
                   <form method="post" action="<?php echo $base_url; ?>/remove_from_cart.php">
                     <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
-                    <button class="btn btn-sm btn-danger">Remove</button>
+                    <button class="btn btn-danger btn-sm">Remove</button>
                   </form>
                 </div>
-
               </div>
             </article>
           <?php endforeach; ?>
@@ -263,26 +272,38 @@ if($cart){
         <div class="d-none d-md-flex justify-content-between align-items-center mt-4">
             <div></div>
             <div class="d-flex gap-3 align-items-center">
-                <div class="total-box">
-                    Total: ₹<?php echo number_format((float)($total ?? 0),2); ?>
-                </div>
-
-                <a href="<?php echo $base_url; ?>/checkout.php" class="btn btn-success checkout-btn px-4">
-                    Proceed to Checkout →
-                </a>
+                <div class="total-box">Total: ₹<?php echo number_format((float)($total ?? 0),2); ?></div>
+                <a href="<?php echo $base_url; ?>/checkout.php" class="btn btn-success checkout-btn px-4">Proceed to Checkout →</a>
             </div>
         </div>
 
     </div> <!-- /cart-card -->
 
     <!-- Sticky checkout for small screens -->
-    <div class="sticky-checkout d-md-none" aria-hidden="false">
-      <div class="total-box">
-        Total: ₹<?php echo number_format((float)($total ?? 0),2); ?>
+    <div class="sticky-checkout d-md-none">
+      <div class="total-box">Total: ₹<?php echo number_format((float)($total ?? 0),2); ?></div>
+      <a href="<?php echo $base_url; ?>/checkout.php" class="btn btn-success checkout-btn px-3">Checkout</a>
+    </div>
+
+    <!-- Suggested Products -->
+    <div class="suggested-products">
+      <h5>You might also like</h5>
+      <div class="row g-3">
+        <?php
+        // demo suggested products: pick 4 random products (replace with real query in production)
+        $suggested = $pdo->query('SELECT * FROM products ORDER BY RAND() LIMIT 4')->fetchAll();
+        foreach($suggested as $sp): ?>
+          <div class="col-6 col-md-3">
+            <div class="card p-2">
+              <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($sp['thumbnail']); ?>" alt="<?php echo esc($sp['name']); ?>">
+              <div class="mt-2">
+                <h6 class="mb-1"><?php echo esc($sp['name']); ?></h6>
+                <div class="fw-bold text-success">₹<?php echo number_format((float)$sp['price'],2); ?></div>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
       </div>
-      <a href="<?php echo $base_url; ?>/checkout.php" class="btn btn-success checkout-btn px-3">
-        Checkout
-      </a>
     </div>
 
     <?php endif; ?>
@@ -291,23 +312,16 @@ if($cart){
 
 <?php include __DIR__ . '/templates/footer.php'; ?>
 
-<!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Accessibility nicety: if user updates qty via keyboard, let them press Enter to submit
-  document.querySelectorAll('.cart-card form').forEach(function(form){
-    form.addEventListener('submit', function(){});
+document.querySelectorAll('input[type="number"][name="qty"]').forEach(inp=>{
+  inp.addEventListener('input',function(){
+    let max=parseInt(this.getAttribute('max')||'0',10);
+    let val=parseInt(this.value||'0',10);
+    if(max>0&&val>max) this.value=max;
+    if(val<1) this.value=1;
   });
-
-  // Optional: quick validation to prevent quantity > stock (client-side)
-  document.querySelectorAll('input[type="number"][name="qty"]').forEach(function(inp){
-    inp.addEventListener('input', function(){
-      var max = parseInt(this.getAttribute('max') || '0', 10);
-      var val = parseInt(this.value || '0', 10);
-      if(max > 0 && val > max) this.value = max;
-      if(val < 1) this.value = 1;
-    });
-  });
+});
 </script>
 
 </body>

@@ -272,7 +272,7 @@ $products = $stmt->fetchAll();
       <i class="bi bi-shop"></i> View Products & Plans
     </a>
   </div>
-  <div class="d-none d-md-block" style="max-width:350px; position: relative; z-index:2;">
+  <div class="d-none d-md-block hero-right">
     <div style="font-size:120px; opacity:0.9; animation: float 4s ease-in-out infinite;">
       💧
     </div>
@@ -397,7 +397,7 @@ $products = $stmt->fetchAll();
           $cats = $pdo->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category <> ''")->fetchAll();
           foreach($cats as $c){ if(!$c['category']) continue;
         ?>
-          <li><a href="<?php echo $base_url; ?>/category/<?php echo urlencode($c['category']); ?>" class="category-link">
+          <li><a href="<?php echo $base_url; ?>/category.php/<?php echo urlencode($c['category']); ?>" class="category-link">
             <i class="bi bi-chevron-right"></i> <?php echo esc($c['category']); ?>
           </a></li>
         <?php } ?>
@@ -422,8 +422,8 @@ $products = $stmt->fetchAll();
               </span>
             <?php endif; ?>
             <?php if($p['thumbnail']): ?>
-              <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" 
-                   class="card-img-top thumbnail rounded-top" 
+                  <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" 
+                    class="card-img-top thumbnail rounded-top img-fluid" 
                    alt="<?php echo esc($p['name']); ?>" 
                    loading="lazy"
                    decoding="async">
