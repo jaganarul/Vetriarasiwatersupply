@@ -18,15 +18,14 @@ function is_active($matchPaths, $currentPath) {
 
 <header class="glass-header sticky-top shadow-sm" role="banner" id="siteHeader">
 
-  <!-- Wave Background (always visible) -->
+  <!-- Wave Background (covers full header, non-interactive) -->
   <div class="header-wave-bg" aria-hidden="true"></div>
 
-  <!-- Single Navbar (desktop shown on >=992, mobile uses off-canvas overlay) -->
   <nav class="navbar navbar-expand-lg navbar-light py-2" role="navigation" aria-label="Main navigation">
     <div class="container d-flex align-items-center">
 
-      <!-- Return (back) button -->
-      <button id="backButton" class="btn btn-sm btn-light me-2 d-flex align-items-center" aria-label="Go back" title="Go back" type="button">
+      <!-- Return (back) button - now visible on mobile and desktop; solid style and left aligned -->
+      <button id="backButton" class="btn btn-water btn-sm me-2 d-flex align-items-center" aria-label="Go back" title="Go back" type="button">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16" aria-hidden="true">
           <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
         </svg>
@@ -41,8 +40,8 @@ function is_active($matchPaths, $currentPath) {
         <span class="brand-text">Vetriarasiwatersupply</span>
       </a>
 
-      <!-- Mobile Menu Button (visible on small screens) -->
-      <button class="navbar-toggler border-0 ms-auto" type="button" id="openMobileMenu" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
+      <!-- Mobile Menu Button (visible on small screens only) - solid on mobile and right aligned -->
+      <button class="navbar-toggler btn btn-water-outline ms-auto d-lg-none" type="button" id="openMobileMenu" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
         <i class="bi bi-list fs-3" aria-hidden="true"></i>
       </button>
 
@@ -129,7 +128,7 @@ function is_active($matchPaths, $currentPath) {
   </nav>
 </header>
 
-<!-- MOBILE SLIDE MENU (single mobile menu, used on small screens) -->
+<!-- MOBILE SLIDE MENU (unchanged structure) -->
 <nav id="mobileMenu" class="mobile-menu" aria-hidden="true" tabindex="-1" role="navigation" aria-label="Mobile menu">
 
   <div class="mobile-top-strip" aria-hidden="true"></div>
@@ -191,7 +190,7 @@ function is_active($matchPaths, $currentPath) {
 
     <?php foreach($catRows as $cr): if(!$cr['category']) continue; ?>
       <a class="mm-item <?php echo (strpos($currentPath, '/category') === 0 && strpos($currentPath, urlencode($cr['category'])) !== false) ? 'active' : ''; ?>"
-         href="<?php echo $base_url; ?>/category.php?name=<?php echo urlencode($cr['category']); ?>" role="menuitem">
+         href="<?php echo $base_url; ?>/category.php/<?php echo urlencode($cr['category']); ?>" role="menuitem">
         <i class="bi bi-tag me-2" aria-hidden="true"></i> <?php echo esc($cr['category']); ?>
       </a>
     <?php endforeach; ?>
@@ -200,34 +199,42 @@ function is_active($matchPaths, $currentPath) {
 </nav>
 
 <style>
+/* -------- Water / Glass header styling (updated) -------- */
+:root{
+  --water-1: #e8fbff; /* very light aqua */
+  --water-2: #d8f7ff; /* soft aqua */
+  --water-accent: #00b7e6; /* accent */
+  --water-deep: #0b74ff; /* used in wave */
+}
+
 /* Glass Header */
 .glass-header {
-  backdrop-filter: blur(12px);
-  background: rgba(255,255,255,0.75);
-  border-bottom: 1px solid rgba(255,255,255,0.5);
-  transition: background 0.3s ease, padding 0.2s ease;
+  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, rgba(232,251,255,0.92) 0%, rgba(216,247,255,0.88) 100%);
+  border-bottom: 1px solid rgba(13,108,128,0.06);
+  transition: background 0.25s ease, padding 0.18s ease;
   z-index: 1035;
   position: relative;
   overflow: visible; /* allow wave visible */
-  padding-bottom: 46px; /* make room for wave so it doesn't overlap content */
+  padding-bottom: 56px; /* room for wave visual */
 }
 
-/* Change header background on scroll */
+/* On scroll slightly darker */
 .glass-header.scrolled {
-  background: rgba(255,255,255,0.90);
+  background: linear-gradient(180deg, rgba(216,247,255,0.98) 0%, rgba(200,238,250,0.96) 100%);
   box-shadow: 0 6px 20px rgba(11,22,40,0.06);
-  padding-bottom: 36px;
+  padding-bottom: 46px;
 }
 
 /* Brand text */
 .brand-text {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0b74ff;
+  color: var(--water-deep);
   font-family: 'Inter', sans-serif;
   user-select: none;
   white-space: nowrap;
-  transition: color 0.3s ease, font-size 0.2s ease;
+  transition: color 0.25s ease, font-size 0.18s ease;
   max-width: 220px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -236,22 +243,84 @@ function is_active($matchPaths, $currentPath) {
 /* Responsive logo */
 .site-logo { height: 36px; width: auto; }
 
-/* On small screens make brand smaller */
-@media (max-width: 991px) {
-  .brand-text { font-size: 1rem; max-width: 140px; }
-  .site-logo { height: 30px; }
+/* back button updated style (solid water colored) */
+.btn-water {
+  background: linear-gradient(180deg, rgba(0,183,230,0.12), rgba(11,116,255,0.06));
+  border: 1px solid rgba(11,116,255,0.12);
+  color: var(--water-deep);
+  box-shadow: 0 1px 6px rgba(11,22,40,0.04);
+}
+.btn-water:active, .btn-water:focus { box-shadow: 0 2px 10px rgba(11,22,40,0.06); outline: none; }
+
+/* toggler (menu) solid outline variant for mobile */
+.btn-water-outline {
+  background: white;
+  border: 1px solid rgba(11,116,255,0.12);
+  color: var(--water-deep);
+  padding: .35rem .6rem;
+  border-radius: .35rem;
+  box-shadow: 0 1px 6px rgba(11,22,40,0.04);
 }
 
-/* Desktop: ensure toggler hidden on large screens */
+/* Desktop: ensure toggler hidden on large screens (keep original behavior) */
 @media (min-width: 992px) {
   .navbar-toggler { display: none; } /* hide toggler on large screens */
   .navbar-collapse { display: flex !important; } /* ensure desktop menu visible */
 }
 
-/* Return/back button */
-#backButton { border: none; background: rgba(255,255,255,0.9); box-shadow: 0 1px 6px rgba(11,22,40,0.06); }
+/* Mobile friendly brand wrap */
+@media (max-width: 991px) {
+  .brand-text { font-size: 1rem; max-width: 140px; color: var(--water-deep); }
+  .site-logo { height: 30px; }
+  .navbar .container { gap: 6px; flex-wrap: wrap; align-items:center; }
+}
 
-/* Mobile Menu (off-canvas overlay) */
+/* Floating Wave now covers whole header area but stays at back and non-interactive */
+.header-wave-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path fill="%2300b7e6" fill-opacity="0.10" d="M0 110 C150 180 350 40 600 110 C850 180 1050 30 1200 110 V220 H0 Z" /></svg>') repeat-x;
+  background-size: 60% 100%;
+  animation: waveMove 10s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  transform: translateZ(0);
+}
+
+/* ensure nav content sits above wave */
+.glass-header .navbar,
+.glass-header .container,
+.glass-header .brand-link,
+.glass-header .navbar-nav,
+.glass-header .btn { position: relative; z-index: 1080; }
+
+/* Slightly adjust wave movement */
+@keyframes waveMove { from { background-position-x: 0; } to { background-position-x: 2000px; } }
+
+.cart-badge, .mobile-cart-badge { z-index: 1090; }
+.admin-btn { white-space: nowrap; }
+.navbar-toggler { z-index: 1090; }
+
+/* --- Make full brand name visible on very small screens --- */
+@media (max-width: 576px) {
+  .brand-link { display: inline-flex; align-items: center; gap: 8px; }
+  .brand-text {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    max-width: none !important;
+    display: inline-block;
+    font-size: 1rem;
+    line-height: 1.05;
+  }
+  .site-logo { height: 30px; }
+}
+
+/* Mobile menu (unchanged sizing but keep consistent) */
 .mobile-menu {
   position: fixed;
   top: 0;
@@ -270,60 +339,16 @@ function is_active($matchPaths, $currentPath) {
 }
 .mobile-menu.open { left: 0; }
 
-/* top strip & header */
+/* keep mobile inner styles you already had */
 .mobile-top-strip { height: 6px; background: linear-gradient(to right, #0b74ff, #4bb8ff, #00d4ff); }
 .mobile-header { display:flex; justify-content:space-between; align-items:center; padding: 14px 16px; border-bottom:1px solid rgba(0,0,0,0.05); }
 .mobile-header .btn-close { font-size: 1.2rem; color: #444; border: none; background: transparent; }
 
-/* Menu items */
-.mobile-inner { padding: 10px 0; display: flex; flex-direction: column; }
 .mm-item { display:flex; align-items:center; padding: 12px 18px; font-size: 1rem; font-weight: 500; text-decoration: none; color:#222; transition: background 0.18s ease, transform 0.18s ease; border-radius: 6px; margin: 6px 12px; user-select: none; }
 .mm-item:hover, .mm-item:focus { background: rgba(11,116,255,0.08); transform: translateX(6px); outline: none; }
 
 /* active states */
-.nav-link.active, .mm-item.active { color: #0b74ff !important; font-weight: 700; background: rgba(11,116,255,0.06); }
-
-/* Floating Wave always visible and not interfering with clicks */
-.header-wave-bg {
-  position: absolute;
-  bottom: 0;
-  left: -60%;
-  width: 220%;
-  height: 56px;
-  background:
-    url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path fill="%230b74ff" fill-opacity="0.28" d="M0 30 C150 80 350 0 600 30 C850 60 1050 10 1200 30 V80 H0 Z" /></svg>') repeat-x;
-  background-size: 60% 100%;
-  animation: waveMove 8s linear infinite;
-  pointer-events: none;
-  z-index: 0;
-  transform: translateZ(0);
-}
-@keyframes waveMove { from { background-position-x: 0; } to { background-position-x: 1600px; } }
-
-.cart-badge, .mobile-cart-badge { z-index: 5; }
-.admin-btn { white-space: nowrap; }
-.navbar-toggler { z-index: 1070; }
-
-/* --- Make full brand name visible on very small screens --- */
-@media (max-width: 576px) {
-  /* Allow the brand text to wrap and take full space on mobile */
-  .brand-link { display: inline-flex; align-items: center; gap: 8px; }
-  .brand-text {
-    white-space: normal !important;    /* allow wrapping */
-    overflow: visible !important;     /* no clipping */
-    text-overflow: clip !important;
-    max-width: none !important;       /* remove previously set max-width */
-    display: inline-block;
-    font-size: 1rem;                  /* slightly smaller to fit but still readable */
-    line-height: 1.05;
-  }
-
-  /* Slightly reduce logo height so the combined width fits better */
-  .site-logo { height: 30px; }
-
-  /* If the header becomes too crowded, allow brand to move to a new line */
-  .navbar .container { gap: 6px; flex-wrap: wrap; }
-}
+.nav-link.active, .mm-item.active { color: var(--water-deep) !important; font-weight: 700; background: rgba(11,116,255,0.06); }
 
 /* Ensure mobile overlay does not create page horizontal scroll */
 .mobile-menu,
@@ -338,7 +363,7 @@ function is_active($matchPaths, $currentPath) {
 (function(){
   function $id(id){ return document.getElementById(id); }
 
-  // Back button behavior
+  // Back button behavior (unchanged, still uses history fallback)
   var backBtn = $id('backButton');
   if(backBtn){
     backBtn.addEventListener('click', function(e){
@@ -351,7 +376,7 @@ function is_active($matchPaths, $currentPath) {
     });
   }
 
-  // Mobile menu open/close (overlay)
+  // Mobile menu open/close (overlay) - unchanged logic, but ensures toggler works as solid button
   var mobileMenu = $id('mobileMenu');
   var openBtn = $id('openMobileMenu');
   var closeBtn = $id('closeMobileMenu');
@@ -395,12 +420,10 @@ function is_active($matchPaths, $currentPath) {
 
   if(openBtn){
     openBtn.addEventListener('click', function(e){
-      // Use overlay only on narrow viewports (<992). On large screens, Bootstrap will handle collapse.
       if(window.innerWidth < 992){
         e.preventDefault();
         openMenu();
       } else {
-        // allow default bootstrap collapse toggle to work on >=992 if needed
         var navMain = document.getElementById('navMain');
         if(navMain) navMain.classList.toggle('show');
       }

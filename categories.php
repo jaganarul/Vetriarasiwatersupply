@@ -7,7 +7,7 @@ require_once __DIR__ . '/init.php';
 define('USE_PRETTY_URLS', false);
 
 // Fallback for base_url in case it's not set (prevents broken hrefs)
-$base_url = isset($base_url) ? rtrim($base_url, '/') : '';
+$base_url = isset($base_url) ? rtrim($base_url, 'category.php') : '';
 
 // fetch distinct categories safely
 $cats = [];
@@ -50,7 +50,7 @@ try {
 
           // Build both possible URLs; choose depending on USE_PRETTY_URLS
           $prettyUrl = $base_url . '/category.php/' . rawurlencode($rawCat);
-          $queryUrl  = $base_url . '/category.php?name=' . urlencode($rawCat);
+          $queryUrl  = $base_url . '/category.php/?name=' . urlencode($rawCat);
 
           $href = USE_PRETTY_URLS ? $prettyUrl : $queryUrl;
       ?>

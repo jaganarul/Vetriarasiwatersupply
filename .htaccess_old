@@ -17,3 +17,14 @@ RewriteRule ^product/([0-9]+)/?$ product.php?id=$1 [L,QSA]
 
 # Category route: /category/Water
 RewriteRule ^category/(.*)/?$ category.php?category=$1 [L,QSA]
+# .htaccess (Apache, enable mod_rewrite)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Rewrite /category/slug  -> /category.php?name=slug
+  RewriteRule ^category/([^/]+)/?$ /category.php?name=$1 [L,QSA]
+
+  # Optional: If you previously used category.php/<slug> style, support that too:
+  RewriteRule ^category.php/([^/]+)/?$ /category.php?name=$1 [L,QSA]
+</IfModule>
