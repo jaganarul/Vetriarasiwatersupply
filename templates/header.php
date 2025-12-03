@@ -79,7 +79,7 @@ function is_active($matchPaths, $currentPath) {
               <?php foreach($catRows as $cr): if(!$cr['category']) continue; ?>
                 <li>
                   <a class="dropdown-item py-2"
-                    href="<?php echo $base_url; ?>/category.php/<?php echo urlencode($cr['category']); ?>">
+                    href="<?php echo $base_url; ?>/category/<?php echo urlencode($cr['category']); ?>">
                     <?php echo esc($cr['category']); ?>
                   </a>
                 </li>
@@ -190,7 +190,7 @@ function is_active($matchPaths, $currentPath) {
 
     <?php foreach($catRows as $cr): if(!$cr['category']) continue; ?>
       <a class="mm-item <?php echo (strpos($currentPath, '/category') === 0 && strpos($currentPath, urlencode($cr['category'])) !== false) ? 'active' : ''; ?>"
-         href="<?php echo $base_url; ?>/category.php/<?php echo urlencode($cr['category']); ?>" role="menuitem">
+         href="<?php echo $base_url; ?>/category/<?php echo urlencode($cr['category']); ?>" role="menuitem">
         <i class="bi bi-tag me-2" aria-hidden="true"></i> <?php echo esc($cr['category']); ?>
       </a>
     <?php endforeach; ?>

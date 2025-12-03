@@ -103,6 +103,8 @@ if($cart){
 }
 .cart-mobile-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
 
+.cart-thumb { width:92px; height:92px; object-fit:cover; }
+
 /* Buttons on mobile */
 .mobile-actions { display:flex; gap:8px; width:100%; margin-top:6px; }
 .mobile-actions .btn { flex:1; }
@@ -190,7 +192,7 @@ if($cart){
 
               <tbody>
               <?php foreach($products as $p): ?>
-                  <tr>
+                  <tr data-product-id="<?php echo (int)$p['id']; ?>">
                       <td>
                         <?php if($p['thumbnail']): ?>
                           <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" alt="<?php echo esc($p['name']); ?>" class="cart-thumb img-fluid rounded" loading="lazy">
@@ -205,19 +207,20 @@ if($cart){
                       <td class="fw-bold text-success">₹<?php echo number_format((float)($p['price'] ?? 0),2); ?></td>
 
                       <td>
-                          <form method="post" action="<?php echo $base_url; ?>/update_cart.php" class="d-flex gap-2 align-items-center">
+                          <!-- added class and explicit type submit -->
+                          <form method="post" action="<?php echo $base_url; ?>/update_cart.php" class="d-flex gap-2 align-items-center update-cart-form">
                               <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
-                              <input type="number" name="qty" value="<?php echo $p['qty']; ?>" min="1" max="<?php echo $p['stock']; ?>" class="form-control qty-input">
-                              <button class="btn btn-outline-primary btn-sm">Update</button>
+                              <input type="number" name="qty" value="<?php echo $p['qty']; ?>" min="1" max="<?php echo $p['stock']; ?>" class="form-control qty-input" style="width:90px;">
+                              <button type="submit" class="btn btn-outline-primary btn-sm">Update</button>
                           </form>
                       </td>
 
-                      <td class="fw-bold text-dark">₹<?php echo number_format((float)($p['subtotal'] ?? 0),2); ?></td>
+                      <td class="fw-bold text-dark subtotal-cell">₹<?php echo number_format((float)($p['subtotal'] ?? 0),2); ?></td>
 
                       <td>
-                        <form method="post" action="<?php echo $base_url; ?>/remove_from_cart.php">
+                        <form method="post" action="<?php echo $base_url; ?>/remove_from_cart.php" class="remove-cart-form">
                           <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
-                          <button class="btn btn-sm btn-danger remove-btn">Remove</button>
+                          <button type="submit" class="btn btn-sm btn-danger remove-btn">Remove</button>
                         </form>
                       </td>
                   </tr>
@@ -229,7 +232,7 @@ if($cart){
         <!-- Mobile stacked list -->
         <div class="cart-mobile-list">
           <?php foreach($products as $p): ?>
-            <article class="cart-mobile-item">
+            <article class="cart-mobile-item" data-product-id="<?php echo (int)$p['id']; ?>">
               <div class="cart-mobile-thumb">
                 <?php if($p['thumbnail']): ?>
                   <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" alt="<?php echo esc($p['name']); ?>" class="img-fluid rounded">
@@ -247,20 +250,20 @@ if($cart){
                   </div>
                   <div class="text-end">
                     <div class="small text-muted">Subtotal</div>
-                    <div class="fw-bold">₹<?php echo number_format((float)($p['subtotal'] ?? 0),2); ?></div>
+                    <div class="fw-bold subtotal-cell">₹<?php echo number_format((float)($p['subtotal'] ?? 0),2); ?></div>
                   </div>
                 </div>
 
                 <div class="mobile-actions">
-                  <form method="post" action="<?php echo $base_url; ?>/update_cart.php" class="d-flex gap-2">
+                  <form method="post" action="<?php echo $base_url; ?>/update_cart.php" class="d-flex gap-2 update-cart-form">
                     <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
-                    <input type="number" name="qty" value="<?php echo $p['qty']; ?>" min="1" max="<?php echo $p['stock']; ?>" class="form-control form-control-sm">
-                    <button class="btn btn-outline-primary btn-sm">Update</button>
+                    <input type="number" name="qty" value="<?php echo $p['qty']; ?>" min="1" max="<?php echo $p['stock']; ?>" class="form-control form-control-sm qty-input" style="width:80px;">
+                    <button type="submit" class="btn btn-outline-primary btn-sm">Update</button>
                   </form>
 
-                  <form method="post" action="<?php echo $base_url; ?>/remove_from_cart.php">
+                  <form method="post" action="<?php echo $base_url; ?>/remove_from_cart.php" class="remove-cart-form">
                     <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
-                    <button class="btn btn-danger btn-sm">Remove</button>
+                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                   </form>
                 </div>
               </div>
@@ -272,7 +275,7 @@ if($cart){
         <div class="d-none d-md-flex justify-content-between align-items-center mt-4">
             <div></div>
             <div class="d-flex gap-3 align-items-center">
-                <div class="total-box">Total: ₹<?php echo number_format((float)($total ?? 0),2); ?></div>
+                <div id="cartTotal" class="total-box">Total: ₹<?php echo number_format((float)($total ?? 0),2); ?></div>
                 <a href="<?php echo $base_url; ?>/checkout.php" class="btn btn-success checkout-btn px-4">Proceed to Checkout →</a>
             </div>
         </div>
@@ -281,7 +284,7 @@ if($cart){
 
     <!-- Sticky checkout for small screens -->
     <div class="sticky-checkout d-md-none">
-      <div class="total-box">Total: ₹<?php echo number_format((float)($total ?? 0),2); ?></div>
+      <div id="cartTotalMobile" class="total-box">Total: ₹<?php echo number_format((float)($total ?? 0),2); ?></div>
       <a href="<?php echo $base_url; ?>/checkout.php" class="btn btn-success checkout-btn px-3">Checkout</a>
     </div>
 
@@ -314,13 +317,110 @@ if($cart){
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-document.querySelectorAll('input[type="number"][name="qty"]').forEach(inp=>{
-  inp.addEventListener('input',function(){
-    let max=parseInt(this.getAttribute('max')||'0',10);
-    let val=parseInt(this.value||'0',10);
-    if(max>0&&val>max) this.value=max;
-    if(val<1) this.value=1;
+/*
+  Lightweight cart update enhancement:
+  - Ensures qty inputs stay within min/max
+  - Intercepts update forms and submits via fetch() to update_cart.php
+  - Expects JSON response like: { success: true, product_id: 12, qty: 2, subtotal: 199.00, total: 799.00 }
+  - If server does not return JSON or fetch fails, it falls back to normal submit (so server-side still works).
+  - Does not change your server endpoints or parameters.
+*/
+
+document.addEventListener('DOMContentLoaded', function(){
+
+  // enforce min/max on quantity inputs
+  document.querySelectorAll('input[type="number"][name="qty"]').forEach(inp=>{
+    inp.addEventListener('input',function(){
+      let max=parseInt(this.getAttribute('max')||'0',10);
+      let val=parseInt(this.value||'0',10);
+      if(max>0 && val>max) this.value = max;
+      if(isNaN(val) || val < 1) this.value = 1;
+    });
   });
+
+  // helper to format currency (matches your server formatting, adjust decimals if needed)
+  function fmt(num){
+    return '₹' + Number(num).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  // intercept update forms
+  document.querySelectorAll('form.update-cart-form').forEach(form => {
+    form.addEventListener('submit', function(e){
+      // allow ctrl/cmd or shift submit to perform normal submit if user wants (still, we handle ordinary clicks)
+      if(e.isTrusted === false) return; // ignore programmatic submits
+      // only intercept if fetch available
+      if(!window.fetch) return;
+      e.preventDefault();
+
+      let data = new FormData(form);
+      // Use fetch to post to the same action
+      fetch(form.action, {
+        method: form.method || 'POST',
+        body: data,
+        credentials: 'same-origin',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest' // hint for server
+        }
+      }).then(resp => {
+        // Attempt to parse JSON. If server responds with redirect/html, fallback to full reload
+        return resp.json().catch(()=> { throw new Error('non-json'); });
+      }).then(json => {
+        if(!json || !json.success){
+          // fallback: if server indicates failure, reload to show server-side message
+          return window.location.reload();
+        }
+
+        // update the row subtotal and totals on the page
+        let pid = String(json.product_id || data.get('product_id'));
+        let qty = Number(json.qty);
+        let subtotal = Number(json.subtotal || 0);
+        let total = Number(json.total || 0);
+
+        // find row elements by product id (desktop row)
+        let rowSel = '[data-product-id="'+pid+'"]';
+        let row = document.querySelector(rowSel);
+        if(row){
+          let subCell = row.querySelector('.subtotal-cell');
+          if(subCell) subCell.textContent = fmt(subtotal);
+        }
+        // mobile subtotal cells (article)
+        document.querySelectorAll('.cart-mobile-item[data-product-id="'+pid+'"]').forEach(item=>{
+          let s = item.querySelector('.subtotal-cell');
+          if(s) s.textContent = fmt(subtotal);
+        });
+
+        // update totals
+        let totalEl = document.getElementById('cartTotal');
+        if(totalEl) totalEl.textContent = 'Total: ' + fmt(total);
+        let totalMobile = document.getElementById('cartTotalMobile');
+        if(totalMobile) totalMobile.textContent = 'Total: ' + fmt(total);
+
+        // Optional: show a small success flash on the update button
+        let btn = form.querySelector('button[type="submit"]');
+        if(btn){
+          let old = btn.innerHTML;
+          btn.innerHTML = 'Updated ✓';
+          btn.disabled = true;
+          setTimeout(()=>{ btn.innerHTML = old; btn.disabled = false; }, 1200);
+        }
+
+      }).catch(err=>{
+        // if fetch fails or server didn't return json, fallback to normal submit to let server handle it
+        console.warn('AJAX update failed, falling back to normal submit.', err);
+        form.submit();
+      });
+    });
+  });
+
+  // keep remove forms as normal submits (unless you prefer AJAX here too)
+  // Optionally add a confirm prompt for remove
+  document.querySelectorAll('form.remove-cart-form').forEach(f=>{
+    f.addEventListener('submit', function(e){
+      // small confirm (feel free to remove)
+      if(!confirm('Remove this item from cart?')) e.preventDefault();
+    });
+  });
+
 });
 </script>
 

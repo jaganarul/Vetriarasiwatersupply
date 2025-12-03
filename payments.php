@@ -3,7 +3,7 @@ require_once 'init.php';
 if(!is_logged_in()){ $_SESSION['return_to'] = 'payments.php'; header('Location: ' . $base_url . '/login'); exit; }
 $cart = $_SESSION['checkout_cart'] ?? null;
 $total = $_SESSION['checkout_total'] ?? 0;
-if(!$cart){ header('Location: ' . $base_url . '/cart'); exit; }
+if(!$cart){ header('Location: ' . $base_url . '/cart.php'); exit; }
 
 // Simple payments flow: choose UPI or COD. For UPI we show instructions then confirm, for COD we create order immediately.
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
