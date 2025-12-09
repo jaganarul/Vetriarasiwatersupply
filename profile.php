@@ -1,6 +1,6 @@
 <?php
 require_once 'init.php';
-if(!is_logged_in()) { header('Location: ' . $base_url . '/login'); exit; }
+if(!is_logged_in()) { header('Location: ' . $base_url . '/login.php'); exit; }
 $stmt = $pdo->prepare('SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC');
 $stmt->execute([$_SESSION['user_id']]);
 $orders = $stmt->fetchAll();

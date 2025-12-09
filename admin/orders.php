@@ -159,6 +159,11 @@ body {
 
                 <div class="d-flex gap-2 flex-column flex-md-row">
 
+                <!-- VIEW INVOICE BUTTON -->
+                <a class="btn btn-sm btn-outline-info w-100 w-md-auto" href="<?php echo $base_url; ?>/invoice.php?order=<?php echo $o['id']; ?>" target="_blank">
+                  📄 Invoice
+                </a>
+
                 <!-- VIEW BUTTON -->
                 <a class="btn btn-sm btn-outline-secondary w-100 w-md-auto" href="order_view.php?id=<?php echo $o['id']; ?>">
                   View

@@ -64,6 +64,7 @@ if(empty($hero_images)){
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom.css">
+  <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/amazon-style.css">
 
   <!-- YOUR EXISTING STYLES (kept) -->
   <style>
@@ -104,6 +105,7 @@ if(empty($hero_images)){
   .container.py-4 { max-width: 1180px; }
   /* rest kept as before... (omitted here in the editor for brevity) */
   </style>
+  
 </head>
 <body>
 <?php include __DIR__ . '/templates/header.php'; ?>

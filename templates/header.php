@@ -1,18 +1,45 @@
 <?php
-// Get cart count
+// Ensure session is started before using $_SESSION in real project
+// session_start();
+
+// Get cart count safely
 $cart = $_SESSION['cart'] ?? [];
-$cart_count = array_sum($cart); // total quantity of items
+if (!is_array($cart)) {
+    $cart = [];
+}
+$cart_count = array_sum($cart); // total quantity of items (simple quantity array)
 
 // current request path for active link detection
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+/**
+ * Check if a given path or list of paths should be considered active
+ * $matchPaths can be string or array.
+ * Always pass **paths**, NOT full URLs.
+ *
+ * - Exact match: "/about.php" === "/about.php"
+ * - Prefix match: "/category" matches "/category/something"
+ */
 function is_active($matchPaths, $currentPath) {
-  // $matchPaths may be string or array
-  foreach ((array)$matchPaths as $m) {
-    // normalize slashes
-    $mNorm = '/' . ltrim($m, '/');
-    if ($m === $currentPath || $mNorm === $currentPath || strpos($currentPath, $m) === 0) return true;
-  }
-  return false;
+    foreach ((array)$matchPaths as $m) {
+        if (!$m) continue;
+
+        // Normalize to path form: "/something"
+        $path = parse_url($m, PHP_URL_PATH) ?: $m;
+        $mNorm = '/' . ltrim($path, '/');
+
+        // Exact match
+        if ($mNorm === $currentPath) {
+            return true;
+        }
+
+        // Prefix match, for things like "/category"
+        $prefix = rtrim($mNorm, '/');
+        if ($prefix !== '' && strpos($currentPath, $prefix) === 0) {
+            return true;
+        }
+    }
+    return false;
 }
 ?>
 
@@ -24,7 +51,7 @@ function is_active($matchPaths, $currentPath) {
   <nav class="navbar navbar-expand-lg navbar-light py-2" role="navigation" aria-label="Main navigation">
     <div class="container d-flex align-items-center">
 
-      <!-- Return (back) button - now visible on mobile and desktop; solid style and left aligned -->
+      <!-- Return (back) button - visible on mobile and desktop -->
       <button id="backButton" class="btn btn-water btn-sm me-2 d-flex align-items-center" aria-label="Go back" title="Go back" type="button">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16" aria-hidden="true">
           <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
@@ -33,38 +60,41 @@ function is_active($matchPaths, $currentPath) {
 
       <!-- Logo -->
       <a href="<?php echo $base_url; ?>/" class="d-flex align-items-center text-decoration-none brand-link" title="Home">
-           <img src="<?php echo $base_url; ?>/assets/images/logo.png"
+        <img src="<?php echo $base_url; ?>/assets/images/logo.png"
              alt="Vetriarasiwatersupply"
              class="me-2 site-logo img-fluid"
              loading="lazy">
         <span class="brand-text">Vetriarasiwatersupply</span>
       </a>
 
-      <!-- Mobile Menu Button (visible on small screens only) - solid on mobile and right aligned -->
+      <!-- Mobile Menu Button -->
       <button class="navbar-toggler btn btn-water-outline ms-auto d-lg-none" type="button" id="openMobileMenu" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
         <i class="bi bi-list fs-3" aria-hidden="true"></i>
       </button>
 
-      <!-- Desktop Menu (visible on >=992). We use d-lg-flex so it displays as flex on large screens -->
-      <div class="collapse navbar-collapse d-lg-flex justify-content-end" id="navMain" role="navigation" aria-label="Desktop navigation">
+      <!-- Desktop Menu -->
+      <div class="collapse navbar-collapse d-lg-flex justify-content-end" id="navMain" aria-label="Desktop navigation">
         <ul class="navbar-nav ms-lg-3 mb-2 mb-lg-0 align-items-lg-center">
 
+          <!-- Home - special handling, no is_active('/') to avoid matching all -->
           <li class="nav-item">
-            <a class="nav-link modern-link <?php echo is_active('/', $currentPath) || is_active($base_url.'/', $currentPath) ? 'active' : ''; ?>"
+            <a class="nav-link modern-link <?php echo in_array($currentPath, ['/', '/index.php']) ? 'active' : ''; ?>"
                href="<?php echo $base_url; ?>/">Home</a>
           </li>
 
-          <!-- products -> product.php -->
+          <!-- Products -->
           <li class="nav-item">
             <a class="nav-link modern-link <?php echo is_active('/product.php', $currentPath) ? 'active' : ''; ?>"
                href="<?php echo $base_url; ?>/product.php">Products</a>
           </li>
 
+          <!-- About -->
           <li class="nav-item">
             <a class="nav-link modern-link <?php echo is_active('/about.php', $currentPath) ? 'active' : ''; ?>"
                href="<?php echo $base_url; ?>/about.php">About</a>
           </li>
 
+          <!-- Contact -->
           <li class="nav-item">
             <a class="nav-link modern-link <?php echo is_active('/contact.php', $currentPath) ? 'active' : ''; ?>"
                href="<?php echo $base_url; ?>/contact.php">Contact</a>
@@ -72,14 +102,15 @@ function is_active($matchPaths, $currentPath) {
 
           <!-- Categories -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle <?php echo (strpos($currentPath, '/category') === 0) ? 'active' : ''; ?>" href="#" id="categoriesDropdown" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+            <a class="nav-link dropdown-toggle <?php echo is_active('/category', $currentPath) ? 'active' : ''; ?>"
+               href="#" id="categoriesDropdown" data-bs-toggle="dropdown" aria-expanded="false" role="button">
               Categories
             </a>
             <ul class="dropdown-menu shadow-sm border-0 rounded-3" aria-labelledby="categoriesDropdown">
               <?php foreach($catRows as $cr): if(!$cr['category']) continue; ?>
                 <li>
                   <a class="dropdown-item py-2"
-                    href="<?php echo $base_url; ?>/category/<?php echo urlencode($cr['category']); ?>">
+                     href="<?php echo $base_url; ?>/category/<?php echo urlencode($cr['category']); ?>">
                     <?php echo esc($cr['category']); ?>
                   </a>
                 </li>
@@ -87,8 +118,9 @@ function is_active($matchPaths, $currentPath) {
             </ul>
           </li>
 
+          <!-- Track Order -->
           <li class="nav-item">
-            <a class="nav-link <?php echo is_active('/track.php', $currentPath) ? 'active' : ''; ?>"
+            <a class="nav-link modern-link <?php echo is_active('/track.php', $currentPath) ? 'active' : ''; ?>"
                href="<?php echo $base_url; ?>/track.php">Track Order</a>
           </li>
         </ul>
@@ -97,8 +129,11 @@ function is_active($matchPaths, $currentPath) {
         <div class="d-flex align-items-center gap-2 ms-3">
 
           <!-- Cart with Badge -->
-          <a class="btn btn-outline-primary btn-sm px-3 position-relative d-flex align-items-center" href="<?php echo $base_url; ?>/cart.php" aria-label="View cart with <?php echo $cart_count; ?> items">
-            <i class="bi bi-cart3 me-1" aria-hidden="true"></i> <span class="d-none d-sm-inline">Cart</span>
+          <a class="btn btn-outline-primary btn-sm px-3 position-relative d-flex align-items-center"
+             href="<?php echo $base_url; ?>/cart.php"
+             aria-label="View cart with <?php echo $cart_count; ?> items">
+            <i class="bi bi-cart3 me-1" aria-hidden="true"></i>
+            <span class="d-none d-sm-inline">Cart</span>
             <?php if($cart_count > 0): ?>
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm cart-badge" style="font-size:0.75rem;">
                 <?php echo $cart_count; ?>
@@ -108,16 +143,22 @@ function is_active($matchPaths, $currentPath) {
           </a>
 
           <?php if(is_logged_in()): ?>
-            <a class="btn btn-link fw-semibold text-truncate" href="<?php echo $base_url; ?>/profile" title="<?php echo esc($_SESSION['user_name']); ?>">
+            <a class="btn btn-link fw-semibold text-truncate"
+               href="<?php echo $base_url; ?>/profile.php"
+               title="<?php echo esc($_SESSION['user_name']); ?>">
               <?php echo esc($_SESSION['user_name']); ?>
             </a>
-            <a class="btn btn-link text-danger" href="<?php echo $base_url; ?>/logout.php">Logout</a>
+            <a class="btn btn-link text-danger"
+               href="<?php echo $base_url; ?>/logout.php">Logout</a>
           <?php else: ?>
-            <a class="btn btn-primary btn-sm px-3" href="<?php echo $base_url; ?>/login.php">Login</a>
-            <a class="btn btn-outline-secondary btn-sm px-3" href="<?php echo $base_url; ?>/register.php">Register</a>
+            <a class="btn btn-primary btn-sm px-3"
+               href="<?php echo $base_url; ?>/login.php">Login</a>
+            <a class="btn btn-outline-secondary btn-sm px-3"
+               href="<?php echo $base_url; ?>/register.php">Register</a>
           <?php endif; ?>
 
-          <a class="btn btn-dark btn-sm px-3 rounded-pill admin-btn" href="<?php echo $base_url; ?>/admin" title="Admin Login">
+          <a class="btn btn-dark btn-sm px-3 rounded-pill admin-btn"
+             href="<?php echo $base_url; ?>/admin" title="Admin Login">
             Admin
           </a>
 
@@ -128,8 +169,8 @@ function is_active($matchPaths, $currentPath) {
   </nav>
 </header>
 
-<!-- MOBILE SLIDE MENU (unchanged structure) -->
-<nav id="mobileMenu" class="mobile-menu" aria-hidden="true" tabindex="-1" role="navigation" aria-label="Mobile menu">
+<!-- MOBILE SLIDE MENU -->
+<nav id="mobileMenu" class="mobile-menu" aria-hidden="true" tabindex="-1" aria-label="Mobile menu">
 
   <div class="mobile-top-strip" aria-hidden="true"></div>
 
@@ -139,28 +180,41 @@ function is_active($matchPaths, $currentPath) {
   </div>
 
   <div class="mobile-inner" role="menu" aria-label="Main mobile menu">
-    <a class="mm-item <?php echo is_active('/', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>" role="menuitem">
+
+    <!-- Home (same logic as desktop) -->
+    <a class="mm-item <?php echo in_array($currentPath, ['/', '/index.php']) ? 'active' : ''; ?>"
+       href="<?php echo $base_url; ?>/" role="menuitem">
       <i class="bi bi-house-door me-2" aria-hidden="true"></i> Home
     </a>
 
-    <a class="mm-item <?php echo is_active('/product.php', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>/product.php" role="menuitem">
+    <!-- Products -->
+    <a class="mm-item <?php echo is_active('/product.php', $currentPath) ? 'active' : ''; ?>"
+       href="<?php echo $base_url; ?>/product.php" role="menuitem">
       <i class="bi bi-bucket me-2" aria-hidden="true"></i> Products
     </a>
 
-    <a class="mm-item <?php echo is_active('/about.php', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>/about.php" role="menuitem">
+    <!-- About -->
+    <a class="mm-item <?php echo is_active('/about.php', $currentPath) ? 'active' : ''; ?>"
+       href="<?php echo $base_url; ?>/about.php" role="menuitem">
       <i class="bi bi-info-circle me-2" aria-hidden="true"></i> About
     </a>
 
-    <a class="mm-item <?php echo is_active('/contact.php', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>/contact.php" role="menuitem">
+    <!-- Contact -->
+    <a class="mm-item <?php echo is_active('/contact.php', $currentPath) ? 'active' : ''; ?>"
+       href="<?php echo $base_url; ?>/contact.php" role="menuitem">
       <i class="bi bi-telephone me-2" aria-hidden="true"></i> Contact
     </a>
 
-    <a class="mm-item <?php echo is_active('/track.php', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>/track.php" role="menuitem">
+    <!-- Track Order -->
+    <a class="mm-item <?php echo is_active('/track.php', $currentPath) ? 'active' : ''; ?>"
+       href="<?php echo $base_url; ?>/track.php" role="menuitem">
       <i class="bi bi-truck me-2" aria-hidden="true"></i> Track Order
     </a>
 
     <!-- Mobile Cart with Badge -->
-    <a class="mm-item position-relative <?php echo is_active('/cart.php', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>/cart.php" role="menuitem" aria-label="View cart with <?php echo $cart_count; ?> items">
+    <a class="mm-item position-relative <?php echo is_active('/cart.php', $currentPath) ? 'active' : ''; ?>"
+       href="<?php echo $base_url; ?>/cart.php" role="menuitem"
+       aria-label="View cart with <?php echo $cart_count; ?> items">
       <i class="bi bi-cart3 me-2" aria-hidden="true"></i> Cart
       <?php if($cart_count > 0): ?>
         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm mobile-cart-badge">
@@ -171,17 +225,21 @@ function is_active($matchPaths, $currentPath) {
     </a>
 
     <?php if(is_logged_in()): ?>
-      <a class="mm-item <?php echo is_active('/profile.php', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>/profile.php" role="menuitem">
+      <a class="mm-item <?php echo is_active('/profile.php', $currentPath) ? 'active' : ''; ?>"
+         href="<?php echo $base_url; ?>/profile.php" role="menuitem">
         <i class="bi bi-person-circle me-2" aria-hidden="true"></i> Profile
       </a>
-      <a class="mm-item text-danger" href="<?php echo $base_url; ?>/logout.php" role="menuitem">
+      <a class="mm-item text-danger"
+         href="<?php echo $base_url; ?>/logout.php" role="menuitem">
         <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> Logout
       </a>
     <?php else: ?>
-      <a class="mm-item <?php echo is_active('/login.php', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>/login.php" role="menuitem">
+      <a class="mm-item <?php echo is_active('/login.php', $currentPath) ? 'active' : ''; ?>"
+         href="<?php echo $base_url; ?>/login.php" role="menuitem">
         <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i> Login
       </a>
-      <a class="mm-item <?php echo is_active('/register.php', $currentPath) ? 'active' : ''; ?>" href="<?php echo $base_url; ?>/register.php" role="menuitem">
+      <a class="mm-item <?php echo is_active('/register.php', $currentPath) ? 'active' : ''; ?>"
+         href="<?php echo $base_url; ?>/register.php" role="menuitem">
         <i class="bi bi-person-plus me-2" aria-hidden="true"></i> Register
       </a>
     <?php endif; ?>
@@ -189,21 +247,27 @@ function is_active($matchPaths, $currentPath) {
     <div class="mobile-section">Categories</div>
 
     <?php foreach($catRows as $cr): if(!$cr['category']) continue; ?>
-      <a class="mm-item <?php echo (strpos($currentPath, '/category') === 0 && strpos($currentPath, urlencode($cr['category'])) !== false) ? 'active' : ''; ?>"
+      <?php
+        // Active if URL is /category/<urlencoded-category>...
+        $catPath = '/category/' . urlencode($cr['category']);
+        $isCatActive = is_active($catPath, $currentPath);
+      ?>
+      <a class="mm-item <?php echo $isCatActive ? 'active' : ''; ?>"
          href="<?php echo $base_url; ?>/category/<?php echo urlencode($cr['category']); ?>" role="menuitem">
         <i class="bi bi-tag me-2" aria-hidden="true"></i> <?php echo esc($cr['category']); ?>
       </a>
     <?php endforeach; ?>
+
   </div>
 
 </nav>
 
 <style>
-/* -------- Water / Glass header styling (updated) -------- */
+/* -------- Water / Glass header styling -------- */
 :root{
   --water-1: #e8fbff; /* very light aqua */
   --water-2: #d8f7ff; /* soft aqua */
-  --water-accent: #00b7e6; /* accent */
+  --water-accent: #006fe6; /* accent */
   --water-deep: #0b74ff; /* used in wave */
 }
 
@@ -215,7 +279,7 @@ function is_active($matchPaths, $currentPath) {
   transition: background 0.25s ease, padding 0.18s ease;
   z-index: 1035;
   position: relative;
-  overflow: visible; /* allow wave visible */
+  overflow: visible;
   padding-bottom: 56px; /* room for wave visual */
 }
 
@@ -243,18 +307,22 @@ function is_active($matchPaths, $currentPath) {
 /* Responsive logo */
 .site-logo { height: 36px; width: auto; }
 
-/* back button updated style (solid water colored) */
+/* Back button style */
 .btn-water {
   background: linear-gradient(180deg, rgba(0,183,230,0.12), rgba(11,116,255,0.06));
   border: 1px solid rgba(11,116,255,0.12);
   color: var(--water-deep);
   box-shadow: 0 1px 6px rgba(11,22,40,0.04);
 }
-.btn-water:active, .btn-water:focus { box-shadow: 0 2px 10px rgba(11,22,40,0.06); outline: none; }
+.btn-water:active,
+.btn-water:focus {
+  box-shadow: 0 2px 10px rgba(11,22,40,0.06);
+  outline: none;
+}
 
-/* toggler (menu) solid outline variant for mobile */
+/* Toggler (menu) solid outline variant for mobile */
 .btn-water-outline {
-  background: white;
+  background: #ffffff;
   border: 1px solid rgba(11,116,255,0.12);
   color: var(--water-deep);
   padding: .35rem .6rem;
@@ -262,20 +330,28 @@ function is_active($matchPaths, $currentPath) {
   box-shadow: 0 1px 6px rgba(11,22,40,0.04);
 }
 
-/* Desktop: ensure toggler hidden on large screens (keep original behavior) */
+/* Desktop: hide toggler, show nav */
 @media (min-width: 992px) {
-  .navbar-toggler { display: none; } /* hide toggler on large screens */
-  .navbar-collapse { display: flex !important; } /* ensure desktop menu visible */
+  .navbar-toggler { display: none; }
+  .navbar-collapse { display: flex !important; }
 }
 
 /* Mobile friendly brand wrap */
 @media (max-width: 991px) {
-  .brand-text { font-size: 1rem; max-width: 140px; color: var(--water-deep); }
+  .brand-text {
+    font-size: 1rem;
+    max-width: 140px;
+    color: var(--water-deep);
+  }
   .site-logo { height: 30px; }
-  .navbar .container { gap: 6px; flex-wrap: wrap; align-items:center; }
+  .navbar .container {
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
 }
 
-/* Floating Wave now covers whole header area but stays at back and non-interactive */
+/* Floating Wave background */
 .header-wave-bg {
   position: absolute;
   top: 0;
@@ -291,23 +367,35 @@ function is_active($matchPaths, $currentPath) {
   transform: translateZ(0);
 }
 
-/* ensure nav content sits above wave */
+/* Ensure nav content is above wave */
 .glass-header .navbar,
 .glass-header .container,
 .glass-header .brand-link,
 .glass-header .navbar-nav,
-.glass-header .btn { position: relative; z-index: 1080; }
+.glass-header .btn {
+  position: relative;
+  z-index: 1080;
+}
 
-/* Slightly adjust wave movement */
-@keyframes waveMove { from { background-position-x: 0; } to { background-position-x: 2000px; } }
+/* Wave movement */
+@keyframes waveMove {
+  from { background-position-x: 0; }
+  to   { background-position-x: 2000px; }
+}
 
-.cart-badge, .mobile-cart-badge { z-index: 1090; }
+.cart-badge,
+.mobile-cart-badge { z-index: 1090; }
+
 .admin-btn { white-space: nowrap; }
 .navbar-toggler { z-index: 1090; }
 
-/* --- Make full brand name visible on very small screens --- */
+/* Small screens: show full brand text */
 @media (max-width: 576px) {
-  .brand-link { display: inline-flex; align-items: center; gap: 8px; }
+  .brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
   .brand-text {
     white-space: normal !important;
     overflow: visible !important;
@@ -320,7 +408,7 @@ function is_active($matchPaths, $currentPath) {
   .site-logo { height: 30px; }
 }
 
-/* Mobile menu (unchanged sizing but keep consistent) */
+/* Mobile menu */
 .mobile-menu {
   position: fixed;
   top: 0;
@@ -339,23 +427,67 @@ function is_active($matchPaths, $currentPath) {
 }
 .mobile-menu.open { left: 0; }
 
-/* keep mobile inner styles you already had */
-.mobile-top-strip { height: 6px; background: linear-gradient(to right, #0b74ff, #4bb8ff, #00d4ff); }
-.mobile-header { display:flex; justify-content:space-between; align-items:center; padding: 14px 16px; border-bottom:1px solid rgba(0,0,0,0.05); }
-.mobile-header .btn-close { font-size: 1.2rem; color: #444; border: none; background: transparent; }
+.mobile-top-strip {
+  height: 6px;
+  background: linear-gradient(to right, #0b74ff, #4bb8ff, #00d4ff);
+}
+.mobile-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding: 14px 16px;
+  border-bottom:1px solid rgba(0,0,0,0.05);
+}
+.mobile-header .btn-close {
+  font-size: 1.2rem;
+  color: #444;
+  border: none;
+  background: transparent;
+}
 
-.mm-item { display:flex; align-items:center; padding: 12px 18px; font-size: 1rem; font-weight: 500; text-decoration: none; color:#222; transition: background 0.18s ease, transform 0.18s ease; border-radius: 6px; margin: 6px 12px; user-select: none; }
-.mm-item:hover, .mm-item:focus { background: rgba(11,116,255,0.08); transform: translateX(6px); outline: none; }
+.mm-item {
+  display:flex;
+  align-items:center;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  color:#222;
+  transition: background 0.18s ease, transform 0.18s ease;
+  border-radius: 6px;
+  margin: 6px 12px;
+  user-select: none;
+}
+.mm-item:hover,
+.mm-item:focus {
+  background: rgba(11,116,255,0.08);
+  transform: translateX(6px);
+  outline: none;
+}
 
-/* active states */
-.nav-link.active, .mm-item.active { color: var(--water-deep) !important; font-weight: 700; background: rgba(11,116,255,0.06); }
+/* Active states */
+.nav-link.active,
+.mm-item.active {
+  color: var(--water-deep) !important;
+  font-weight: 700;
+  background: rgba(11,116,255,0.06);
+}
 
-/* Ensure mobile overlay does not create page horizontal scroll */
+/* Prevent horizontal scroll */
 .mobile-menu,
 .header-wave-bg,
 .glass-header {
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.mobile-section {
+  margin: 12px 16px 4px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #666;
 }
 </style>
 
@@ -363,7 +495,7 @@ function is_active($matchPaths, $currentPath) {
 (function(){
   function $id(id){ return document.getElementById(id); }
 
-  // Back button behavior (unchanged, still uses history fallback)
+  // Back button behavior
   var backBtn = $id('backButton');
   if(backBtn){
     backBtn.addEventListener('click', function(e){
@@ -376,7 +508,7 @@ function is_active($matchPaths, $currentPath) {
     });
   }
 
-  // Mobile menu open/close (overlay) - unchanged logic, but ensures toggler works as solid button
+  // Mobile menu open/close
   var mobileMenu = $id('mobileMenu');
   var openBtn = $id('openMobileMenu');
   var closeBtn = $id('closeMobileMenu');
@@ -388,6 +520,7 @@ function is_active($matchPaths, $currentPath) {
     mobileMenu.classList.add('open');
     mobileMenu.setAttribute('aria-hidden','false');
     body.style.overflow = 'hidden';
+
     if(!document.getElementById('mobileMenuOverlay')){
       var ov = document.createElement('div');
       ov.id = 'mobileMenuOverlay';
@@ -401,6 +534,7 @@ function is_active($matchPaths, $currentPath) {
       ov.addEventListener('click', closeMenu);
       document.body.appendChild(ov);
     }
+
     lastFocused = document.activeElement;
     var first = mobileMenu.querySelector('[role="menuitem"]');
     if(first) first.focus();
@@ -412,8 +546,10 @@ function is_active($matchPaths, $currentPath) {
     mobileMenu.classList.remove('open');
     mobileMenu.setAttribute('aria-hidden','true');
     body.style.overflow = '';
+
     var ov = document.getElementById('mobileMenuOverlay');
     if(ov) ov.remove();
+
     if(lastFocused) lastFocused.focus();
     if(openBtn) openBtn.setAttribute('aria-expanded','false');
   }
@@ -429,6 +565,7 @@ function is_active($matchPaths, $currentPath) {
       }
     });
   }
+
   if(closeBtn){
     closeBtn.addEventListener('click', function(e){
       e.preventDefault();
@@ -436,14 +573,14 @@ function is_active($matchPaths, $currentPath) {
     });
   }
 
-  // close on ESC
+  // Close on ESC
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' || e.key === 'Esc'){
       closeMenu();
     }
   });
 
-  // header scroll class
+  // Header scroll class
   window.addEventListener('scroll', function(){
     var header = document.querySelector('.glass-header');
     if(!header) return;
@@ -451,7 +588,7 @@ function is_active($matchPaths, $currentPath) {
     else header.classList.remove('scrolled');
   });
 
-  // make sure overlay closes when resizing to large screen
+  // Close mobile menu when resizing to large screen
   window.addEventListener('resize', function(){
     if(window.innerWidth >= 992){
       if(mobileMenu && mobileMenu.classList.contains('open')) closeMenu();

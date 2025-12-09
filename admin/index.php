@@ -187,6 +187,7 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
   <a href="index.php">Dashboard</a>
   <a href="products.php">Products</a>
   <a href="orders.php">Orders <?php if($newOrdersCount>0): ?><span class="badge bg-danger" style="margin-left:8px;"><?php echo $newOrdersCount; ?></span><?php endif; ?></a>
+  <a href="invoices.php">📄 Invoices</a>
   <a href="users.php">Customers</a>
   <a href="messages.php">Messages <?php if($unreadMessagesCount>0): ?><span class="badge bg-warning text-dark" style="margin-left:8px;"><?php echo $unreadMessagesCount; ?></span><?php endif; ?></a>
   <a href="logout.php">Logout</a>
@@ -238,7 +239,8 @@ $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 5
       </div>
 
       <a class="btn btn-primary w-100 mb-2" href="products.php">Manage Products</a>
-      <a class="btn btn-secondary w-100" href="orders.php">Manage Orders</a>
+      <a class="btn btn-secondary w-100 mb-2" href="orders.php">Manage Orders</a>
+      <a class="btn btn-info w-100" href="invoices.php">View All Invoices</a>
     </div>
   </div>
 
