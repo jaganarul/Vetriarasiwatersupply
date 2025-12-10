@@ -1,9 +1,24 @@
 <?php
 require_once 'init.php';
+
+// Admin credentials
+$admin_email = 'admin@Vetriarasiwatersupply.com';
+$admin_password = 'Admin@104';
+
 $errors = [];
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $email = trim($_POST['email']);
     $pass = $_POST['password'];
+    
+    // Check if admin credentials
+    if ($email === $admin_email && $pass === $admin_password) {
+        $_SESSION['admin_id'] = 1;
+        $_SESSION['admin_name'] = 'Site Admin';
+        header('Location: ' . $base_url . '/admin/index.php');
+        exit;
+    }
+    
+    // Check user credentials
     $stmt = $pdo->prepare('SELECT id,name,password FROM users WHERE email = ?');
     $stmt->execute([$email]);
     $u = $stmt->fetch();
@@ -86,6 +101,23 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     color: #007bff;
     margin-bottom: 10px;
 }
+
+/* Mobile Responsive */
+@media (max-width: 575.98px) {
+    .login-bg { padding: 20px 12px; }
+    .login-card { padding: 24px; max-width: 100%; }
+    .login-title { font-size: 24px; }
+    .login-icon { font-size: 36px; }
+    .login-card input { height: 44px; font-size: 16px; padding: 10px 12px; }
+    .login-card button { height: 48px; font-size: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-check { margin-top: 12px; }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .login-card { padding: 28px; max-width: 380px; }
+    .login-title { font-size: 26px; }
+}
 </style>
 
 </head>
@@ -97,10 +129,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
     <div class="login-card">
 
-        <div class="text-center mb-3">
+        <div class="text-center mb-4">
+            <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo" style="height: 60px; margin-bottom: 15px;">
             <div class="login-icon">🔐</div>
             <div class="login-title">Welcome Back</div>
-            <p class="text-muted">Login to continue</p>
+            <p class="text-muted">Login with your credentials</p>
         </div>
 
         <?php if($errors): ?>

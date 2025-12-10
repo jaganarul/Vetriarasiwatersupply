@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../init.php';
-if(!is_admin_logged_in()) { header('Location: login.php'); exit; }
+if(!is_admin_logged_in()) { header('Location: ' . $base_url . '/login.php'); exit; }
 
 // update status
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset($_POST['status'])){

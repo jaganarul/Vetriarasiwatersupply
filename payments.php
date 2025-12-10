@@ -92,6 +92,31 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     .qr-img { width:220px; height:220px; object-fit:contain; }
     .muted-small { color:#69748a; font-size:0.95rem; }
     .app-open-note { font-size:0.9rem; color:#3b3b3b; }
+    
+    /* Mobile Responsive Improvements */
+    @media (max-width: 575.98px) {
+      .container { padding-left: 12px; padding-right: 12px; }
+      h3 { font-size: 1.5rem; margin-bottom: 16px; }
+      .card { padding: 16px !important; margin-bottom: 16px; border-radius: 10px; }
+      .upi-btn { min-width: auto; width: 100%; padding: 12px; font-size: 14px; }
+      .qr-img { width: 180px; height: 180px; }
+      .d-grid.gap-2 { display: grid; gap: 10px; grid-template-columns: 1fr; }
+      .row > .col-md-6 { flex: 0 0 100%; max-width: 100%; }
+      button[type="button"].btn-close { padding: 0.25rem; }
+      .modal-body { padding: 16px; }
+      .modal-dialog { margin: 12px auto; }
+    }
+    
+    @media (min-width: 576px) and (max-width: 767.98px) {
+      .qr-img { width: 200px; height: 200px; }
+      .container { padding-left: 16px; padding-right: 16px; }
+      .row > .col-md-6 { flex: 0 0 100%; max-width: 100%; margin-bottom: 16px; }
+    }
+    
+    @media (min-width: 768px) {
+      .row > .col-md-6:not(:last-child) { margin-bottom: 0; }
+      .d-grid.gap-2 { display: flex; gap: 12px; flex-wrap: wrap; }
+    }
   </style>
 </head>
 <body>

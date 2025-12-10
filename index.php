@@ -270,76 +270,127 @@ if(empty($hero_images)){
 </div>
 
 <!-- Products Section -->
-<div id="products" class="row g-3">
-  <div class="col-md-3 d-none d-md-block">
-    <div class="card categories-card p-3 mb-3 shadow-sm rounded">
-      <h6><i class="bi bi-list"></i> Categories</h6>
-      <ul class="list-unstyled mt-3 category-list">
-        <?php
-          $cats = $pdo->query("SELECT category, (SELECT thumbnail FROM products p2 WHERE p2.category = products.category AND p2.thumbnail IS NOT NULL LIMIT 1) AS thumb FROM products WHERE category IS NOT NULL AND category <> '' GROUP BY category ORDER BY category")->fetchAll();
-          foreach($cats as $c){ if(empty($c['category'])) continue; $catSlug = urlencode($c['category']); $thumb = $c['thumb'] ? ($base_url . '/uploads/' . $c['thumb']) : null;
-        ?>
-          <li class="d-flex align-items-center mb-2">
-            <a href="<?php echo $base_url; ?>/category.php/<?php echo $catSlug; ?>" class="category-link d-flex align-items-center w-100" title="View products in <?php echo esc($c['category']); ?>">
-              <?php if($thumb): ?>
-                <img src="<?php echo esc($thumb); ?>" alt="<?php echo esc($c['category']); ?>" class="category-thumb rounded me-2" loading="lazy" width="54" height="54">
-              <?php else: ?>
-                <div class="category-thumb-placeholder rounded me-2 d-flex align-items-center justify-content-center" aria-hidden="true"><i class="bi bi-list"></i></div>
-              <?php endif; ?>
-              <div class="flex-grow-1">
-                <div class="fw-semibold text-truncate"><?php echo esc($c['category']); ?></div>
-                <small class="text-muted">View products</small>
-              </div>
-              <i class="bi bi-chevron-right ms-2"></i>
-            </a>
-          </li>
-        <?php } ?>
-      </ul>
+<div id="products" class="row g-4">
+  <!-- Categories Sidebar -->
+  <div class="col-lg-3 d-none d-lg-block">
+    <div class="sticky-top" style="top: 20px;">
+      <!-- Categories Header -->
+      <div class="mb-4">
+        <div class="d-flex align-items-center mb-3">
+          <h5 class="mb-0" style="color: #0b74ff; font-weight: 700;">
+            <i class="bi bi-grid-3x3-gap"></i> Categories
+          </h5>
+        </div>
+        
+        <!-- Categories Grid -->
+        <div class="row row-cols-2 g-3">
+          <?php
+            $cats = $pdo->query("SELECT category, (SELECT thumbnail FROM products p2 WHERE p2.category = products.category AND p2.thumbnail IS NOT NULL LIMIT 1) AS thumb FROM products WHERE category IS NOT NULL AND category <> '' GROUP BY category ORDER BY category")->fetchAll();
+            foreach($cats as $c){ if(empty($c['category'])) continue; $catSlug = urlencode($c['category']); $thumb = $c['thumb'] ? ($base_url . '/uploads/' . $c['thumb']) : null;
+          ?>
+            <div class="col">
+              <a href="<?php echo $base_url; ?>/category.php?name=<?php echo urlencode($c['category']); ?>" class="category-box text-decoration-none" title="View products in <?php echo esc($c['category']); ?>" style="display: block; border-radius: 10px; overflow: hidden; transition: all 0.3s ease; border: 1px solid #e0e0e0; background: white;">
+                <div style="position: relative; height: 120px; overflow: hidden; background: #f5f5f5;">
+                  <?php if($thumb): ?>
+                    <img src="<?php echo esc($thumb); ?>" alt="<?php echo esc($c['category']); ?>" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                  <?php else: ?>
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                      <i class="bi bi-droplet" style="font-size: 2.5rem; color: white; opacity: 0.8;"></i>
+                    </div>
+                  <?php endif; ?>
+                  <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 100%); opacity: 0; transition: opacity 0.3s ease;"></div>
+                </div>
+                <div style="padding: 12px; text-align: center;">
+                  <div style="font-weight: 600; font-size: 13px; color: #333; text-truncate;"><?php echo esc($c['category']); ?></div>
+                  <div style="font-size: 11px; color: #999; margin-top: 4px;">View</div>
+                </div>
+              </a>
+            </div>
+          <?php } ?>
+        </div>
+
+        <!-- View All Categories Button -->
+        <div style="margin-top: 16px; text-align: center;">
+          <a href="<?php echo $base_url; ?>/category.php" class="btn btn-sm" style="background: linear-gradient(90deg, #0b74ff, #00d4ff); color: white; border: none; font-weight: 600;">
+            <i class="bi bi-arrow-right"></i> View All Categories
+          </a>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="col-md-9">
-    <div class="products-section mb-3">
-      <h5><i class="bi bi-star"></i> <?php echo $q? 'Search results for: '.esc($q) : ($category? 'Category: '.esc($category) : 'Latest Products'); ?></h5>
+  <!-- Products Main Content -->
+  <div class="col-lg-9">
+    <!-- Section Header -->
+    <div class="mb-4">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+        <div style="width: 4px; height: 28px; background: linear-gradient(90deg, #0b74ff, #00d4ff); border-radius: 2px;"></div>
+        <h4 style="margin: 0; color: #1a1a1a; font-weight: 700;">
+          <?php echo $q? 'Search Results: '.esc($q) : ($category? 'Category: '.esc($category) : 'Latest Products'); ?>
+        </h4>
+      </div>
     </div>
+
+    <!-- Products Grid -->
     <div class="row g-4">
       <?php foreach($products as $p): ?>
-        <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3 product-card-wrapper">
-          <div class="card card-product shadow-sm position-relative h-100 product-card">
+        <div class="col-sm-6 col-md-4 col-xl-3 product-card-wrapper">
+          <div class="card card-product shadow-sm position-relative h-100 product-card" style="border: 1px solid #e8e8e8; border-radius: 12px; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+            
+            <!-- Stock Badge -->
             <?php if((int)$p['stock'] <= 5 && (int)$p['stock'] > 0): ?>
-              <span class="badge badge-low-stock position-absolute" style="right:10px; top:10px;">
-                <i class="bi bi-exclamation-lg"></i> Low stock
+              <span class="badge badge-low-stock position-absolute" style="right: 12px; top: 12px; background: linear-gradient(135deg, #ff9800, #ff6f00); color: white; font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 6px; z-index: 10;">
+                <i class="bi bi-exclamation-circle"></i> Low Stock
               </span>
             <?php elseif((int)$p['stock'] <= 0): ?>
-              <span class="badge bg-danger position-absolute" style="right:10px; top:10px;">
-                <i class="bi bi-x-lg"></i> Out of Stock
+              <span class="badge position-absolute" style="right: 12px; top: 12px; background: #ff4444; color: white; font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 6px; z-index: 10;">
+                <i class="bi bi-x-circle"></i> Out of Stock
               </span>
             <?php endif; ?>
-            <?php if($p['thumbnail']): ?>
-                  <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" 
-                    class="card-img-top thumbnail rounded-top img-fluid" 
-                   alt="<?php echo esc($p['name']); ?>" 
-                   loading="lazy"
-                   decoding="async">
-            <?php else: ?>
-              <div class="bg-light p-5 text-center d-flex align-items-center justify-content-center" style="height:220px;">
-                <span class="text-muted"><i class="bi bi-image"></i> No image</span>
-              </div>
-            <?php endif; ?>
-            <div class="card-body d-flex flex-column">
-              <h6 class="card-title h6 mb-1 text-truncate" title="<?php echo esc($p['name']); ?>">
+            
+            <!-- Product Image -->
+            <div style="position: relative; height: 220px; overflow: hidden; background: #f9f9f9;">
+              <?php if($p['thumbnail']): ?>
+                <img src="<?php echo $base_url; ?>/uploads/<?php echo esc($p['thumbnail']); ?>" 
+                  class="card-img-top thumbnail img-fluid" 
+                  alt="<?php echo esc($p['name']); ?>" 
+                  loading="lazy"
+                  decoding="async"
+                  style="width: 100%; height: 100%; object-fit: cover;">
+              <?php else: ?>
+                <div style="height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                  <i class="bi bi-image" style="font-size: 2.5rem; opacity: 0.6;"></i>
+                </div>
+              <?php endif; ?>
+            </div>
+
+            <!-- Product Details -->
+            <div class="card-body d-flex flex-column" style="padding: 16px;">
+              <h6 class="card-title h6 mb-2 text-truncate" title="<?php echo esc($p['name']); ?>" style="color: #1a1a1a; font-weight: 600; font-size: 14px;">
                 <?php echo esc($p['name']); ?>
               </h6>
-              <p class="mb-1 fw-bold text-primary fs-5">₹<?php echo number_format((float)($p['price'] ?? 0), 2); ?></p>
-              <p class="text-muted small mb-3"><i class="bi bi-boxes"></i> Stock: <?php echo (int)$p['stock']; ?></p>
+              
+              <div style="margin-bottom: 12px;">
+                <p class="mb-1 fw-bold text-primary fs-5" style="background: linear-gradient(90deg, #0b74ff, #00d4ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                  ₹<?php echo number_format((float)($p['price'] ?? 0), 2); ?>
+                </p>
+                <p class="text-muted small" style="font-size: 12px;">
+                  <i class="bi bi-boxes"></i> 
+                  <span style="color: <?php echo (int)$p['stock'] > 0 ? '#4caf50' : '#f44444'; ?>; font-weight: 500;">
+                    <?php echo (int)$p['stock'] > 0 ? (int)$p['stock'] . ' in stock' : 'Out of stock'; ?>
+                  </span>
+                </p>
+              </div>
+
+              <!-- Action Buttons -->
               <div class="mt-auto d-flex gap-2">
-                <a href="<?php echo $base_url; ?>/singleproduct.php?id=<?php echo $p['id']; ?>" class="btn btn-sm btn-outline-primary flex-grow-1" aria-label="View product <?php echo esc($p['name']); ?>">
+                <a href="<?php echo $base_url; ?>/singleproduct.php?id=<?php echo $p['id']; ?>" class="btn btn-sm flex-grow-1" style="background: white; color: #0b74ff; border: 2px solid #0b74ff; font-weight: 600; border-radius: 8px; transition: all 0.3s;" aria-label="View product <?php echo esc($p['name']); ?>">
                   <i class="bi bi-eye"></i> View
                 </a>
                 <?php if($p['stock'] > 0): ?>
                   <form method="post" action="<?php echo $base_url; ?>/add_to_cart.php" class="d-inline-block flex-grow-1" aria-label="Add product <?php echo esc($p['name']); ?> to cart">
                     <input type="hidden" name="product_id" value="<?php echo $p['id']; ?>">
                     <input type="hidden" name="qty" value="1">
-                    <button class="btn btn-sm btn-success w-100">
+                    <button class="btn btn-sm w-100" style="background: linear-gradient(90deg, #0b74ff, #00d4ff); color: white; font-weight: 600; border: none; border-radius: 8px; transition: all 0.3s;">
                       <i class="bi bi-cart-plus"></i> Add
                     </button>
                   </form>
@@ -349,17 +400,72 @@ if(empty($hero_images)){
           </div>
         </div>
       <?php endforeach; ?>
-      <?php if(empty($products)): ?>
-        <div class="text-center py-5">
-          <p class="text-muted lead">No products found</p>
-          <p class="text-muted">Try adjusting your search or filter criteria</p>
-        </div>
-      <?php endif; ?>
     </div>
+
+    <!-- No Products Message -->
+    <?php if(empty($products)): ?>
+      <div style="text-align: center; padding: 60px 20px;">
+        <div style="margin-bottom: 20px;">
+          <i class="bi bi-inbox" style="font-size: 4rem; color: #ddd;"></i>
+        </div>
+        <p style="font-size: 18px; color: #666; font-weight: 500; margin-bottom: 8px;">No products found</p>
+        <p style="color: #999; margin-bottom: 24px;">Try adjusting your search or filter criteria</p>
+        <a href="<?php echo $base_url; ?>/" class="btn btn-sm" style="background: linear-gradient(90deg, #0b74ff, #00d4ff); color: white; border: none; font-weight: 600;">
+          <i class="bi bi-arrow-left"></i> Browse All Products
+        </a>
+      </div>
+    <?php endif; ?>
   </div>
 </div>
 
 <style>
+  /* Enhanced Categories & Products Styles */
+  .category-box {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  .category-box:hover {
+    box-shadow: 0 12px 32px rgba(11, 116, 255, 0.15);
+    border-color: #0b74ff;
+    transform: translateY(-4px);
+  }
+  .category-box:hover img {
+    transform: scale(1.08);
+  }
+  .category-box img {
+    transition: transform 0.3s ease;
+  }
+
+  /* Product Card Hover Effects */
+  .product-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .product-card:hover {
+    box-shadow: 0 16px 48px rgba(11, 116, 255, 0.18);
+    transform: translateY(-6px);
+    border-color: #0b74ff !important;
+  }
+  .product-card:hover .card-img-top {
+    transform: scale(1.05);
+  }
+  .product-card .card-img-top {
+    transition: transform 0.3s ease;
+  }
+
+  /* Button Hover Effects */
+  .product-card .btn-sm[style*="white"] {
+    transition: all 0.3s ease;
+  }
+  .product-card .btn-sm[style*="white"]:hover {
+    background: linear-gradient(90deg, #0b74ff, #00d4ff) !important;
+    color: white !important;
+    border-color: #0b74ff !important;
+  }
+  .product-card .btn-sm[style*="linear-gradient"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(11, 116, 255, 0.3);
+  }
+
   /* Animate features sliding in smoothly */
   @keyframes slideInUp {
     0% {

@@ -71,6 +71,22 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     font-size: 17px;
     font-weight: 600;
 }
+
+/* Mobile Responsive */
+@media (max-width: 575.98px) {
+    .register-bg { padding: 20px 12px; }
+    .register-card { padding: 24px; max-width: 100%; }
+    .register-card h2 { font-size: 22px; }
+    .register-card input { height: 44px; font-size: 16px; padding: 10px 12px; }
+    .register-card button { height: 48px; font-size: 16px; }
+    .form-group { margin-bottom: 14px; }
+    .form-text { font-size: 12px; }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .register-card { padding: 28px; max-width: 420px; }
+    .register-card h2 { font-size: 24px; }
+}
 </style>
 </head>
 <body>
@@ -80,8 +96,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 <div class="register-bg">
   <div class="register-card">
 
-    <h3 class="text-center fw-bold mb-2 text-primary">Create Account</h3>
-    <p class="text-center text-muted mb-4">Register to continue</p>
+    <div class="text-center mb-4">
+      <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo" style="height: 60px; margin-bottom: 15px;">
+      <h3 class="text-center fw-bold mb-2 text-primary">Create Account</h3>
+      <p class="text-center text-muted">Register to continue</p>
+    </div>
 
     <?php if($errors): ?>
       <div class="alert alert-danger text-center">

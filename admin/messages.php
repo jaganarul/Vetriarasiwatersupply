@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../init.php';
-if (!is_admin_logged_in()) { header('Location: login.php'); exit; }
+if (!is_admin_logged_in()) { header('Location: ' . $base_url . '/login.php'); exit; }
 
 // Ensure messages table exists and has an is_read column
 $hasMessages = false;

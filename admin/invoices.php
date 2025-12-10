@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../init.php';
-if(!is_admin_logged_in()) { header('Location: login.php'); exit; }
+if(!is_admin_logged_in()) { header('Location: ' . $base_url . '/login.php'); exit; }
 
 // Get all orders with invoice data
 $sql = '
@@ -127,11 +127,17 @@ body {
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-dark px-3">
-  <div class="container-fluid">
-    <span class="navbar-brand mb-0">
-      <i class="bi bi-file-earmark-pdf"></i> Invoice Management
-    </span>
-    <a href="index.php" class="btn btn-sm btn-outline-light">← Back to Dashboard</a>
+  <div class="container-fluid d-flex align-items-center">
+    <div class="d-flex align-items-center">
+      <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo" style="height: 40px; margin-right: 12px;">
+      <span class="navbar-brand mb-0">
+        <i class="bi bi-file-earmark-pdf"></i> Invoice Management
+      </span>
+    </div>
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <span class="text-white me-3">Admin</span>
+      <a href="index.php" class="btn btn-sm btn-outline-light">← Back to Dashboard</a>
+    </div>
   </div>
 </nav>
 

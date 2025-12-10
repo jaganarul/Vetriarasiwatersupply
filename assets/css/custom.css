@@ -223,6 +223,223 @@ a:focus, button:focus, input:focus{outline:3px solid rgba(10,102,194,0.12); outl
     transform: scale(1.02);
 }
 
+/* ============================================
+   COMPREHENSIVE MOBILE RESPONSIVE FIXES
+   ============================================ */
+
+/* Extra Small Screens (Mobile) - 0px to 575px */
+@media (max-width: 575.98px) {
+  /* Navbar adjustments for mobile */
+  .navbar { padding: 0.75rem 0; }
+  .navbar .container { flex-wrap: nowrap; gap: 0.5rem; }
+  .navbar-brand { font-size: 0.95rem; gap: 8px; }
+  .navbar-brand img { width: 32px; height: 32px; }
+  .navbar-brand strong { font-size: 0.9rem; }
+  
+  /* Hide desktop elements on mobile */
+  .d-sm-inline { display: none !important; }
+  .d-none.d-sm-inline { display: none !important; }
+  
+  /* Mobile menu toggler */
+  .navbar-toggler { padding: 0.25rem; }
+  
+  /* Search bar mobile */
+  .navbar .input-group { max-width: 100%; }
+  .navbar .form-control { font-size: 14px; padding: 8px 12px; }
+  
+  /* Container padding */
+  .container { padding-left: 12px; padding-right: 12px; }
+  
+  /* Headings */
+  h1, .h1 { font-size: 1.75rem; }
+  h2, .h2 { font-size: 1.5rem; }
+  h3, .h3 { font-size: 1.25rem; }
+  h4, .h4 { font-size: 1.1rem; }
+  h5, .h5 { font-size: 1rem; }
+  h6, .h6 { font-size: 0.95rem; }
+  
+  /* Form inputs */
+  input.form-control, textarea.form-control, select.form-control {
+    padding: 12px 10px;
+    font-size: 16px; /* Prevent zoom on iOS */
+    border-radius: 8px;
+  }
+  
+  /* Buttons */
+  .btn-sm { padding: 6px 10px; font-size: 13px; }
+  .btn { padding: 10px 16px; font-size: 14px; }
+  .btn-lg { padding: 14px 20px; font-size: 16px; }
+  
+  /* Cards */
+  .card { border-radius: 10px; margin-bottom: 12px; }
+  .card-body { padding: 12px; }
+  
+  /* Product cards */
+  .product-card-wrapper { margin-bottom: 8px; }
+  .card-product .card-img-top { height: 200px; }
+  
+  /* Footer */
+  footer { padding: 24px 0; }
+  .footer-container { width: 95%; }
+  .footer-grid { gap: 24px; }
+  
+  /* Breadcrumb */
+  .breadcrumb { font-size: 0.9rem; padding: 0.5rem 0; }
+  
+  /* Tables */
+  .table { font-size: 13px; }
+  .table th, .table td { padding: 8px 4px; }
+  
+  /* Flex utilities */
+  .d-flex { flex-wrap: wrap; }
+  .gap-2, .gap-3, .gap-4 { gap: 8px !important; }
+  
+  /* Text utilities */
+  .text-center-mobile { text-align: center; }
+  
+  /* Modals */
+  .modal-dialog { margin: 12px auto; }
+  .modal-content { border-radius: 12px; }
+  
+  /* Alert boxes */
+  .alert { padding: 12px; margin-bottom: 12px; border-radius: 10px; }
+  
+  /* Margin/Padding utilities for mobile */
+  .mt-sm { margin-top: 8px; }
+  .mb-sm { margin-bottom: 8px; }
+  .pt-sm { padding-top: 8px; }
+  .pb-sm { padding-bottom: 8px; }
+}
+
+/* Small Screens (Tablets) - 576px to 767px */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .navbar { padding: 0.875rem 0; }
+  .container { padding-left: 16px; padding-right: 16px; }
+  h1, .h1 { font-size: 2rem; }
+  h2, .h2 { font-size: 1.75rem; }
+  .card-product .card-img-top { height: 210px; }
+  .footer-grid { gap: 32px; }
+}
+
+/* Medium Screens (Tablets/Small Desktop) - 768px to 991px */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .navbar { padding: 1rem 0; }
+  .navbar-brand img { width: 36px; height: 36px; }
+  .container { padding-left: 20px; padding-right: 20px; }
+  h1, .h1 { font-size: 2.25rem; }
+  h2, .h2 { font-size: 1.9rem; }
+  .card-product .card-img-top { height: 220px; }
+  
+  /* Grid adjustments */
+  .row { margin-right: -10px; margin-left: -10px; }
+  .col { padding-right: 10px; padding-left: 10px; }
+}
+
+/* Large Screens (Desktop) - 992px+ */
+@media (min-width: 992px) {
+  .navbar { padding: 1rem 0; }
+  .container { max-width: 1320px; }
+  .navbar-brand img { width: 40px; height: 40px; }
+  
+  /* Show desktop elements */
+  .d-lg-flex { display: flex; }
+  .d-md-none { display: none; }
+  
+  /* Desktop grid columns */
+  .col-lg-3 { flex: 0 0 25%; }
+  .col-lg-4 { flex: 0 0 33.333%; }
+  .col-lg-6 { flex: 0 0 50%; }
+  .col-lg-9 { flex: 0 0 75%; }
+}
+
+/* Extra Large Screens - 1200px+ */
+@media (min-width: 1200px) {
+  .container { max-width: 1320px; padding-left: 24px; padding-right: 24px; }
+  h1, .h1 { font-size: 2.5rem; }
+  h2, .h2 { font-size: 2rem; }
+}
+
+/* Extra Extra Large Screens - 1400px+ */
+@media (min-width: 1400px) {
+  .container { max-width: 1400px; }
+}
+
+/* ============================================
+   PORTRAIT AND LANDSCAPE ORIENTATION FIXES
+   ============================================ */
+
+@media (orientation: portrait) {
+  body { font-size: 15px; }
+  .navbar { padding: 0.75rem 0; }
+  .container { padding-left: 12px; padding-right: 12px; }
+}
+
+@media (orientation: landscape) {
+  body { font-size: 14px; }
+  .navbar { padding: 0.5rem 0; }
+  h1, .h1 { font-size: 1.5rem; }
+  h2, .h2 { font-size: 1.3rem; }
+  .card-product .card-img-top { height: 160px; }
+}
+
+/* ============================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ============================================ */
+
+/* Increase touch target sizes */
+@media (hover: none) and (pointer: coarse) {
+  .btn { min-height: 44px; padding: 10px 14px; }
+  .btn-sm { min-height: 40px; padding: 8px 12px; }
+  a, button { min-height: 44px; }
+  
+  /* Remove hover effects on touch devices */
+  .btn:hover { transform: none; }
+  .card:hover { transform: none; }
+  
+  /* Add active state feedback */
+  .btn:active { opacity: 0.8; }
+  .card:active { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+}
+
+/* ============================================
+   KEYBOARD ACCESSIBLE FOCUS STATES
+   ============================================ */
+
+/* Better focus states for keyboard navigation */
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--deep-blue);
+  outline-offset: 2px;
+}
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--deep-blue);
+  outline-offset: 4px;
+}
+
+/* ============================================
+   PRINT MEDIA QUERY
+   ============================================ */
+
+@media print {
+  header, footer, .navbar, .mobile-menu { display: none; }
+  .container { max-width: 100%; }
+  body { background: white; }
+  .card { box-shadow: none; border: 1px solid #ddd; }
+}
+
+/* ============================================
+   SAFE AREA INSETS (notch support)
+   ============================================ */
+
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
 
 
 

@@ -45,10 +45,7 @@ function is_active($matchPaths, $currentPath) {
 
 <header class="glass-header sticky-top shadow-sm" role="banner" id="siteHeader">
 
-  <!-- Wave Background (covers full header, non-interactive) -->
-  <div class="header-wave-bg" aria-hidden="true"></div>
-
-  <nav class="navbar navbar-expand-lg navbar-light py-2" role="navigation" aria-label="Main navigation">
+  <nav class="navbar navbar-expand-lg navbar-light py-3 curved-nav" role="navigation" aria-label="Main navigation">
     <div class="container d-flex align-items-center">
 
       <!-- Return (back) button - visible on mobile and desktop -->
@@ -129,7 +126,7 @@ function is_active($matchPaths, $currentPath) {
         <div class="d-flex align-items-center gap-2 ms-3">
 
           <!-- Cart with Badge -->
-          <a class="btn btn-outline-primary btn-sm px-3 position-relative d-flex align-items-center"
+          <a class="btn btn-outline-primary btn-sm px-3 position-relative d-flex align-items-center floating-btn"
              href="<?php echo $base_url; ?>/cart.php"
              aria-label="View cart with <?php echo $cart_count; ?> items">
             <i class="bi bi-cart3 me-1" aria-hidden="true"></i>
@@ -143,13 +140,19 @@ function is_active($matchPaths, $currentPath) {
           </a>
 
           <?php if(is_logged_in()): ?>
-            <a class="btn btn-link fw-semibold text-truncate"
+            <a class="btn btn-link fw-semibold text-truncate user-link" 
                href="<?php echo $base_url; ?>/profile.php"
                title="<?php echo esc($_SESSION['user_name']); ?>">
               <?php echo esc($_SESSION['user_name']); ?>
             </a>
             <a class="btn btn-link text-danger"
                href="<?php echo $base_url; ?>/logout.php">Logout</a>
+          <?php elseif(is_admin_logged_in()): ?>
+            <span class="btn btn-link fw-semibold" title="Admin">
+              <?php echo $_SESSION['admin_name'] ?? 'Admin'; ?>
+            </span>
+            <a class="btn btn-link text-danger"
+               href="<?php echo $base_url; ?>/admin/logout.php">Logout</a>
           <?php else: ?>
             <a class="btn btn-primary btn-sm px-3"
                href="<?php echo $base_url; ?>/login.php">Login</a>
@@ -157,10 +160,10 @@ function is_active($matchPaths, $currentPath) {
                href="<?php echo $base_url; ?>/register.php">Register</a>
           <?php endif; ?>
 
-          <a class="btn btn-dark btn-sm px-3 rounded-pill admin-btn"
+   <!--       <a class="btn btn-admin btn-sm px-3 rounded-pill admin-btn floating-btn"
              href="<?php echo $base_url; ?>/admin" title="Admin Login">
             Admin
-          </a>
+          </a> -->
 
         </div>
       </div>
@@ -233,6 +236,14 @@ function is_active($matchPaths, $currentPath) {
          href="<?php echo $base_url; ?>/logout.php" role="menuitem">
         <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> Logout
       </a>
+    <?php elseif(is_admin_logged_in()): ?>
+      <a class="mm-item" role="menuitem">
+        <i class="bi bi-shield-lock me-2" aria-hidden="true"></i> Admin: <?php echo $_SESSION['admin_name'] ?? 'Admin'; ?>
+      </a>
+      <a class="mm-item text-danger"
+         href="<?php echo $base_url; ?>/admin/logout.php" role="menuitem">
+        <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> Logout
+      </a>
     <?php else: ?>
       <a class="mm-item <?php echo is_active('/login.php', $currentPath) ? 'active' : ''; ?>"
          href="<?php echo $base_url; ?>/login.php" role="menuitem">
@@ -263,231 +274,175 @@ function is_active($matchPaths, $currentPath) {
 </nav>
 
 <style>
-/* -------- Water / Glass header styling -------- */
+/* -----------------------------
+   APPLE-STYLE: PREMIUM GLASS NAV
+   UI ONLY — logic unchanged
+   ----------------------------- */
+
+/* Inter font for crisp look */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
 :root{
-  --water-1: #e8fbff; /* very light aqua */
-  --water-2: #d8f7ff; /* soft aqua */
-  --water-accent: #006fe6; /* accent */
-  --water-deep: #0b74ff; /* used in wave */
+  --bg-start: #f8fbff;
+  --bg-end: #eef7ff;
+  --glass-accent: #00d4ff;
+  --neon: #0b74ff;
+  --muted: #6c7684;
+  --glass-border: rgba(11,116,255,0.08);
+  --glass-strong: rgba(11,116,255,0.12);
+  --shadow-strong: rgba(11,116,255,0.12);
 }
 
-/* Glass Header */
+/* Header base */
 .glass-header {
-  backdrop-filter: blur(10px);
-  background: linear-gradient(180deg, rgba(232,251,255,0.92) 0%, rgba(216,247,255,0.88) 100%);
-  border-bottom: 1px solid rgba(13,108,128,0.06);
-  transition: background 0.25s ease, padding 0.18s ease;
-  z-index: 1035;
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  border: none;
+  padding: 18px 0 14px;
+  transition: padding 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+  z-index: 1040;
   position: relative;
-  overflow: visible;
-  padding-bottom: 56px; /* room for wave visual */
 }
 
-/* On scroll slightly darker */
-.glass-header.scrolled {
-  background: linear-gradient(180deg, rgba(216,247,255,0.98) 0%, rgba(200,238,250,0.96) 100%);
-  box-shadow: 0 6px 20px rgba(11,22,40,0.06);
-  padding-bottom: 46px;
-}
-
-/* Brand text */
-.brand-text {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--water-deep);
-  font-family: 'Inter', sans-serif;
-  user-select: none;
-  white-space: nowrap;
-  transition: color 0.25s ease, font-size 0.18s ease;
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Responsive logo */
-.site-logo { height: 36px; width: auto; }
-
-/* Back button style */
-.btn-water {
-  background: linear-gradient(180deg, rgba(0,183,230,0.12), rgba(11,116,255,0.06));
-  border: 1px solid rgba(11,116,255,0.12);
-  color: var(--water-deep);
-  box-shadow: 0 1px 6px rgba(11,22,40,0.04);
-}
-.btn-water:active,
-.btn-water:focus {
-  box-shadow: 0 2px 10px rgba(11,22,40,0.06);
-  outline: none;
-}
-
-/* Toggler (menu) solid outline variant for mobile */
-.btn-water-outline {
-  background: #ffffff;
-  border: 1px solid rgba(11,116,255,0.12);
-  color: var(--water-deep);
-  padding: .35rem .6rem;
-  border-radius: .35rem;
-  box-shadow: 0 1px 6px rgba(11,22,40,0.04);
-}
-
-/* Desktop: hide toggler, show nav */
-@media (min-width: 992px) {
-  .navbar-toggler { display: none; }
-  .navbar-collapse { display: flex !important; }
-}
-
-/* Mobile friendly brand wrap */
-@media (max-width: 991px) {
-  .brand-text {
-    font-size: 1rem;
-    max-width: 140px;
-    color: var(--water-deep);
-  }
-  .site-logo { height: 30px; }
-  .navbar .container {
-    gap: 6px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-}
-
-/* Floating Wave background */
-.header-wave-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
+/* Curved navbar wrapper */
+.curved-nav {
+  background: rgba(255,255,255,0.6);
+  border-radius: 14px;
+  padding: 10px 18px;
   width: 100%;
-  height: 100%;
-  background:
-    url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path fill="%2300b7e6" fill-opacity="0.10" d="M0 110 C150 180 350 40 600 110 C850 180 1050 30 1200 110 V220 H0 Z" /></svg>') repeat-x;
-  background-size: 60% 100%;
-  animation: waveMove 10s linear infinite;
-  pointer-events: none;
-  z-index: 0;
-  transform: translateZ(0);
+  box-shadow: 0 8px 30px rgba(9,30,66,0.06), 0 1px 0 rgba(255,255,255,0.6) inset;
+  border: 1px solid var(--glass-border);
+  align-items: center;
 }
 
-/* Ensure nav content is above wave */
-.glass-header .navbar,
-.glass-header .container,
-.glass-header .brand-link,
-.glass-header .navbar-nav,
-.glass-header .btn {
-  position: relative;
-  z-index: 1080;
+/* shrink header on scroll */
+.glass-header.scrolled { padding: 8px 0 8px; transform: translateY(-2px); box-shadow: 0 10px 40px rgba(8,28,60,0.06); }
+
+/* Logo + brand */
+.brand-link { display:inline-flex; align-items:center; gap:12px; z-index:1060; }
+.site-logo { height:44px; width:auto; transition: height 160ms ease; }
+.brand-text { font-weight:800; color: #08284f; font-size:1.15rem; letter-spacing:-0.02em; }
+
+/* Nav links (desktop) */
+.navbar-nav .nav-link {
+  color: #0e2b56;
+  font-weight:600;
+  padding: 8px 12px;
+  border-radius:10px;
+  transition: transform 160ms ease, box-shadow 160ms ease, color 120ms ease;
+}
+.navbar-nav .nav-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 26px rgba(11,116,255,0.08);
+  background: linear-gradient(90deg, rgba(11,116,255,0.06), rgba(0,212,255,0.02));
+}
+.navbar-nav .nav-link.active {
+  color: var(--neon);
+  background: linear-gradient(90deg, rgba(11,116,255,0.08), rgba(0,212,255,0.02));
+  box-shadow: inset 0 -2px 0 rgba(11,116,255,0.02);
 }
 
-/* Wave movement */
-@keyframes waveMove {
-  from { background-position-x: 0; }
-  to   { background-position-x: 2000px; }
+/* Dropdown menu */
+.dropdown-menu {
+  border-radius: 12px;
+  padding: 6px;
+  border: 1px solid rgba(11,116,255,0.06);
+  box-shadow: 0 14px 40px rgba(6,22,48,0.06);
+  min-width: 200px;
 }
 
-.cart-badge,
-.mobile-cart-badge { z-index: 1090; }
-
-.admin-btn { white-space: nowrap; }
-.navbar-toggler { z-index: 1090; }
-
-/* Small screens: show full brand text */
-@media (max-width: 576px) {
-  .brand-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .brand-text {
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-    max-width: none !important;
-    display: inline-block;
-    font-size: 1rem;
-    line-height: 1.05;
-  }
-  .site-logo { height: 30px; }
+/* Buttons: floating style */
+.floating-btn {
+  transform: translateY(-2px);
+  border-radius: 12px;
+  padding: 8px 14px;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.floating-btn:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 40px var(--shadow-strong);
 }
 
-/* Mobile menu */
+/* Outline primary (cart) */
+.btn-outline-primary {
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.5));
+  border: 1px solid rgba(11,116,255,0.08);
+  color: var(--neon);
+}
+.btn-outline-primary .bi { opacity: 0.95; }
+
+/* Primary buttons */
+.btn-primary {
+  background: linear-gradient(90deg, var(--neon), var(--glass-accent));
+  border: none;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(11,116,255,0.12);
+}
+
+/* Admin variant */
+.btn-admin {
+  background: linear-gradient(90deg, #02203b, var(--neon));
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(11,116,255,0.10);
+}
+
+/* user link */
+.user-link { color: #0b3a66; margin-right: 6px; }
+
+/* badges */
+.cart-badge, .mobile-cart-badge {
+  transform: translate(30%, -30%);
+  font-weight:700;
+  border: 2px solid white;
+}
+
+/* Mobile: compact */
+@media (max-width: 991px) {
+  .site-logo { height:36px; }
+  .brand-text { font-size:1rem; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .curved-nav { padding: 8px 12px; border-radius: 12px; }
+}
+
+/* Mobile menu panel */
 .mobile-menu {
   position: fixed;
   top: 0;
   left: -320px;
-  width: 300px;
+  width: 320px;
   max-width: 92%;
   height: 100vh;
-  background: rgba(255,255,255,0.98);
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(246,252,255,0.98));
   backdrop-filter: blur(14px);
-  box-shadow: 6px 0 30px rgba(0,0,0,0.16);
-  transition: left 0.32s ease;
+  box-shadow: 6px 0 40px rgba(0,0,0,0.16);
+  transition: left 0.32s cubic-bezier(.2,.9,.3,1);
   z-index: 1060;
-  border-right: 1px solid rgba(0,0,0,0.04);
+  border-right: 1px solid rgba(11,116,255,0.04);
   overflow-y: auto;
-  overscroll-behavior: contain;
 }
 .mobile-menu.open { left: 0; }
 
-.mobile-top-strip {
-  height: 6px;
-  background: linear-gradient(to right, #0b74ff, #4bb8ff, #00d4ff);
-}
-.mobile-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding: 14px 16px;
-  border-bottom:1px solid rgba(0,0,0,0.05);
-}
-.mobile-header .btn-close {
-  font-size: 1.2rem;
-  color: #444;
-  border: none;
-  background: transparent;
-}
+/* mobile strip */
+.mobile-top-strip { height:6px; background: linear-gradient(90deg, var(--neon), var(--glass-accent)); }
 
-.mm-item {
-  display:flex;
-  align-items:center;
-  padding: 12px 18px;
-  font-size: 1rem;
-  font-weight: 500;
-  text-decoration: none;
-  color:#222;
-  transition: background 0.18s ease, transform 0.18s ease;
-  border-radius: 6px;
-  margin: 6px 12px;
-  user-select: none;
-}
-.mm-item:hover,
-.mm-item:focus {
-  background: rgba(11,116,255,0.08);
-  transform: translateX(6px);
-  outline: none;
-}
+/* mobile items */
+.mm-item { display:block; padding:12px 18px; font-size:1rem; font-weight:600; color:#143a65; margin:8px 12px; border-radius:10px; }
+.mm-item:hover { background: rgba(11,116,255,0.06); transform: translateX(8px); }
 
-/* Active states */
-.nav-link.active,
-.mm-item.active {
-  color: var(--water-deep) !important;
-  font-weight: 700;
-  background: rgba(11,116,255,0.06);
-}
+/* active */
+.nav-link.active, .mm-item.active { color: var(--neon) !important; background: rgba(11,116,255,0.06); font-weight:700; }
 
-/* Prevent horizontal scroll */
-.mobile-menu,
-.header-wave-bg,
-.glass-header {
-  max-width: 100%;
-  box-sizing: border-box;
-}
+/* focus */
+a:focus, button:focus { outline: 3px solid rgba(11,116,255,0.12); outline-offset: 3px; border-radius: 8px; }
 
-.mobile-section {
-  margin: 12px 16px 4px;
-  font-size: 0.92rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #666;
+/* small screens tweak */
+@media (max-width: 575px) {
+  .brand-text { font-size: 0.95rem; }
+  .site-logo { height: 32px; }
+  .btn-primary, .btn-outline-primary { padding: 6px 10px; font-size: 0.95rem; }
 }
 </style>
 
@@ -495,7 +450,7 @@ function is_active($matchPaths, $currentPath) {
 (function(){
   function $id(id){ return document.getElementById(id); }
 
-  // Back button behavior
+  // Back button behavior (unchanged behavior)
   var backBtn = $id('backButton');
   if(backBtn){
     backBtn.addEventListener('click', function(e){
@@ -508,7 +463,7 @@ function is_active($matchPaths, $currentPath) {
     });
   }
 
-  // Mobile menu open/close
+  // Mobile menu open/close (preserved behavior)
   var mobileMenu = $id('mobileMenu');
   var openBtn = $id('openMobileMenu');
   var closeBtn = $id('closeMobileMenu');
@@ -529,7 +484,7 @@ function is_active($matchPaths, $currentPath) {
       ov.style.left = 0;
       ov.style.right = 0;
       ov.style.bottom = 0;
-      ov.style.background = 'rgba(0,0,0,0.24)';
+      ov.style.background = 'rgba(0,0,0,0.22)';
       ov.style.zIndex = 1055;
       ov.addEventListener('click', closeMenu);
       document.body.appendChild(ov);
@@ -580,18 +535,27 @@ function is_active($matchPaths, $currentPath) {
     }
   });
 
-  // Header scroll class
+  // Header shrink on scroll with subtle neon line
   window.addEventListener('scroll', function(){
     var header = document.querySelector('.glass-header');
     if(!header) return;
-    if(window.scrollY > 30) header.classList.add('scrolled');
+    if(window.scrollY > 28) header.classList.add('scrolled');
     else header.classList.remove('scrolled');
   });
 
-  // Close mobile menu when resizing to large screen
+  // Close mobile menu on resize to large screen
   window.addEventListener('resize', function(){
     if(window.innerWidth >= 992){
       if(mobileMenu && mobileMenu.classList.contains('open')) closeMenu();
+    }
+  });
+
+  // small ARIA improvement: focus trap fallback
+  document.addEventListener('focusin', function(e){
+    if(mobileMenu && mobileMenu.classList.contains('open')){
+      if(!mobileMenu.contains(e.target) && e.target.id !== 'openMobileMenu'){
+        mobileMenu.querySelector('[role="menuitem"]')?.focus();
+      }
     }
   });
 

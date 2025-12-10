@@ -15,7 +15,29 @@ if(!$order) { echo 'Order not found'; exit; }
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom.css">
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/amazon-style.css">
 <title>Order Confirmed</title>
+
 <style>
+
+/* --------------------------------------------------
+   🎨 EXACT COLOR PALETTE (INSERTED HERE)
+-------------------------------------------------- */
+:root {
+    --primary-blue: #0B74FF;
+    --accent-cyan: #00D4FF;
+    --success-green: #22C55E;
+
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F7F9FC;
+    --bg-tertiary: #E9EEF7;
+
+    --text-primary: #0A1F44;
+    --text-secondary: #6B7C93;
+
+    --border-light: #DCE3EC;
+}
+/* -------------------------------------------------- */
+
+
 .success-container {
     min-height: 80vh;
     display: flex;
@@ -37,14 +59,8 @@ if(!$order) { echo 'Order not found'; exit; }
 }
 
 @keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .success-icon {
@@ -140,7 +156,7 @@ if(!$order) { echo 'Order not found'; exit; }
 }
 
 .btn-action.secondary:hover {
-    background: #e5e7eb;
+    background: #d7e3fa;
 }
 
 .info-box {
@@ -159,22 +175,12 @@ if(!$order) { echo 'Order not found'; exit; }
 }
 
 @media (max-width: 576px) {
-    .success-card {
-        padding: 32px 20px;
-    }
-
-    .success-title {
-        font-size: 24px;
-    }
-
-    .action-buttons {
-        flex-direction: column;
-    }
-
-    .btn-action {
-        width: 100%;
-    }
+    .success-card { padding: 32px 20px; }
+    .success-title { font-size: 24px; }
+    .action-buttons { flex-direction: column; }
+    .btn-action { width: 100%; }
 }
+
 </style>
 </head>
 <body>
@@ -183,10 +189,11 @@ if(!$order) { echo 'Order not found'; exit; }
 
 <div class="success-container">
     <div class="success-card">
+
         <!-- Success Icon -->
         <div class="success-icon">✓</div>
 
-        <!-- Title & Subtitle -->
+        <!-- Title -->
         <h1 class="success-title">Order Confirmed!</h1>
         <p class="success-subtitle">Thank you for your order. We're preparing your items for shipment.</p>
 
@@ -214,13 +221,14 @@ if(!$order) { echo 'Order not found'; exit; }
             </div>
         </div>
 
-        <!-- Info Box -->
+        <!-- Info -->
         <div class="info-box">
             <strong>📧 What Next?</strong><br>
-            You'll receive an email confirmation shortly with a link to track your order. You can also track it using your tracking code: <strong><?php echo esc($order['tracking_code']); ?></strong>
+            You'll receive an email confirmation shortly with your tracking details.  
+            Track using your code: <strong><?php echo esc($order['tracking_code']); ?></strong>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Buttons -->
         <div class="action-buttons">
             <a href="<?php echo $base_url; ?>/invoice.php?order=<?php echo $order['id']; ?>" class="btn-action primary">
                 <i class="bi bi-file-earmark-pdf"></i> Download Invoice
@@ -232,6 +240,7 @@ if(!$order) { echo 'Order not found'; exit; }
                 <i class="bi bi-shop"></i> Continue Shopping
             </a>
         </div>
+
     </div>
 </div>
 
