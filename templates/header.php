@@ -49,8 +49,8 @@ function is_active($matchPaths, $currentPath) {
     <div class="container d-flex align-items-center">
 
       <!-- Return (back) button - visible on mobile and desktop -->
-      <button id="backButton" class="btn btn-water btn-sm me-2 d-flex align-items-center" aria-label="Go back" title="Go back" type="button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16" aria-hidden="true">
+      <button id="backButton" class="btn btn-primary btn-sm me-2 d-flex align-items-center" aria-label="Go back" title="Go back" type="button" style="background: linear-gradient(90deg, #0b74ff, #00d4ff) !important; border: none !important; padding: 8px 12px !important; min-width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" class="bi bi-arrow-left" viewBox="0 0 16 16" aria-hidden="true">
           <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
         </svg>
       </button>
@@ -65,8 +65,8 @@ function is_active($matchPaths, $currentPath) {
       </a>
 
       <!-- Mobile Menu Button -->
-      <button class="navbar-toggler btn btn-water-outline ms-auto d-lg-none" type="button" id="openMobileMenu" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
-        <i class="bi bi-list fs-3" aria-hidden="true"></i>
+      <button class="btn btn-primary ms-auto d-lg-none" type="button" id="openMobileMenu" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false" style="background: linear-gradient(90deg, #0b74ff, #00d4ff) !important; border: none !important; padding: 8px 12px !important; min-width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+        <i class="bi bi-list" aria-hidden="true" style="font-size: 1.25rem; color: white;"></i>
       </button>
 
       <!-- Desktop Menu -->
@@ -107,7 +107,7 @@ function is_active($matchPaths, $currentPath) {
               <?php foreach($catRows as $cr): if(!$cr['category']) continue; ?>
                 <li>
                   <a class="dropdown-item py-2"
-                     href="<?php echo $base_url; ?>/category/<?php echo urlencode($cr['category']); ?>">
+                     href="<?php echo $base_url; ?>/category.php/<?php echo urlencode($cr['category']); ?>">
                     <?php echo esc($cr['category']); ?>
                   </a>
                 </li>
@@ -402,9 +402,30 @@ function is_active($matchPaths, $currentPath) {
 
 /* Mobile: compact */
 @media (max-width: 991px) {
-  .site-logo { height:36px; }
-  .brand-text { font-size:1rem; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .curved-nav { padding: 8px 12px; border-radius: 12px; }
+  .site-logo { height: 40px; }
+  .brand-text { 
+    font-size: 1rem; 
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+  .curved-nav { padding: 10px 8px; border-radius: 12px; }
+}
+
+@media (max-width: 768px) {
+  .site-logo { height: 36px; }
+  .brand-text { font-size: 0.95rem; }
+  .curved-nav { padding: 8px 6px; }
+}
+
+@media (max-width: 575px) {
+  .site-logo { height: 32px; }
+  .brand-text { 
+    font-size: 0.85rem;
+    line-height: 1.2;
+  }
+  .curved-nav { padding: 6px 4px; }
 }
 
 /* Mobile menu panel */

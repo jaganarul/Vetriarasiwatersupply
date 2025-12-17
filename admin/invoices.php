@@ -23,10 +23,48 @@ $orders = $stmt->fetchAll();
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 <title>Invoice Management</title>
 <style>
+:root {
+  --bg: #f4f6f9;
+  --accent: #0b74ff;
+}
+
 body {
-    background: #f4f6f9;
+    background: var(--bg);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* Sidebar styles */
+.sidebar {
+    width: 230px;
+    height: 100vh;
+    background: #222;
+    color: white;
+    position: fixed;
+    padding-top: 20px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+.sidebar a {
+    color: #ddd;
+    display: block;
+    padding: 12px 20px;
+    text-decoration: none;
+    font-size: 15px;
+    transition: 0.2s;
+}
+.sidebar a:hover {
+    background: #444;
+}
+.logo-img {
+    width: 150px;
+    margin-bottom: 20px;
+}
+
+.main {
+    margin-left: 240px;
+    min-height: 100vh;
+}
+
 .navbar {
     background: linear-gradient(90deg, #0b74ff, #00d4ff);
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -121,13 +159,43 @@ body {
     padding: 24px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
+
+/* Mobile responsiveness */
+@media (max-width: 992px) {
+  .sidebar { 
+    position: fixed; 
+    left: -260px; 
+    top: 0; 
+    height: 100vh; 
+    width: 240px; 
+    z-index: 1050; 
+    transition: left 0.35s ease; 
+  }
+  .sidebar.open { left: 0; }
+  .main { margin-left: 0; }
+}
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
+<!-- SIDEBAR -->
+<div class="sidebar text-center">
+  <img src="<?php echo $base_url; ?>/assets/images/logo.png" class="logo-img img-fluid" alt="Logo">
+  <h5 class="text-white mb-4">Admin Panel</h5>
+  <a href="index.php">Dashboard</a>
+  <a href="products.php">Products</a>
+  <a href="orders.php">Orders</a>
+  <a href="invoices.php" style="background: #444; font-weight: bold;">📄 Invoices</a>
+  <a href="user.php">Customers</a>
+  <a href="messages.php">Messages</a>
+  <a href="logout.php">Logout</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
 <nav class="navbar navbar-dark px-3">
   <div class="container-fluid d-flex align-items-center">
+    <button id="sidebarToggle" class="btn btn-light d-md-none me-2" aria-label="Toggle sidebar"><i class="bi bi-list"></i></button>
     <div class="d-flex align-items-center">
       <img src="<?php echo $base_url; ?>/assets/images/logo.png" alt="Logo" style="height: 40px; margin-right: 12px;">
       <span class="navbar-brand mb-0">
@@ -136,7 +204,7 @@ body {
     </div>
     <div class="ms-auto d-flex align-items-center gap-2">
       <span class="text-white me-3">Admin</span>
-      <a href="index.php" class="btn btn-sm btn-outline-light">← Back to Dashboard</a>
+      <a href="logout.php" class="btn btn-sm btn-outline-light">Logout</a>
     </div>
   </div>
 </nav>
@@ -238,9 +306,32 @@ body {
       <i class="bi bi-info-circle"></i> No invoices found yet.
     </div>
   <?php endif; ?>
-
+</div>
+<!-- END MAIN CONTENT -->
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebar = document.querySelector('.sidebar');
+  
+  if(sidebarToggle && sidebar) {
+    sidebarToggle.addEventListener('click', function(){
+      sidebar.classList.toggle('open');
+    });
+  }
+  
+  // Close sidebar when a link is clicked on mobile
+  const sidebarLinks = document.querySelectorAll('.sidebar a');
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', function(){
+      if(window.innerWidth <= 992) {
+        sidebar.classList.remove('open');
+      }
+    });
+  });
+});
+</script>
 </body>
 </html>

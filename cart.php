@@ -77,6 +77,8 @@ if($cart){
     height: 48px;
     border-radius: 12px;
     font-size: 16px;
+    font-weight: 600;
+    padding: 12px 20px;
 }
 
 /* Mobile stacked cards */
@@ -129,12 +131,32 @@ if($cart){
     bottom: 12px;
     z-index: 11000;
     display: flex;
-    gap: 12px;
+    gap: 8px;
     align-items: center;
+    flex-wrap: wrap;
   }
-  .sticky-checkout .total-box { flex: 1; text-align: left; padding-left: 14px; padding-right: 14px; }
-  .sticky-checkout .checkout-btn { min-width: 140px; }
-  body { padding-bottom: 92px; }
+  .sticky-checkout .total-box { 
+    flex: 1;
+    min-width: 140px;
+    text-align: center; 
+    padding: 12px 14px;
+    font-size: 15px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sticky-checkout .checkout-btn { 
+    flex: 1;
+    min-width: 140px;
+    height: 48px;
+    font-size: 15px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  body { padding-bottom: 100px; }
 }
 
 /* fade animation */
@@ -272,9 +294,9 @@ if($cart){
         </div>
 
         <!-- Desktop totals row -->
-        <div class="d-none d-md-flex justify-content-between align-items-center mt-4">
+        <div class="d-none d-md-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
             <div></div>
-            <div class="d-flex gap-3 align-items-center">
+            <div class="d-flex gap-3 align-items-center flex-wrap">
                 <div id="cartTotal" class="total-box">Total: ₹<?php echo number_format((float)($total ?? 0),2); ?></div>
                 <a href="<?php echo $base_url; ?>/checkout.php" class="btn btn-success checkout-btn px-4">Proceed to Checkout →</a>
             </div>

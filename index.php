@@ -29,11 +29,12 @@ $products = $stmt->fetchAll();
 // ----------------------
 // Place hero images in /uploads named hero1.jpg, hero2.jpg, ... or change filenames below.
 $hero_candidates = [
-  'Natural.png',
+  'NaturalBottle.png',
+  'NaturalTruck.png',
+  'christmasOffer1.png',
+  'TruckUR.png',
   'deliverytruck.png',
-  'HydrateNaturally.png',
-  'SpecialOffers.png',
-  'TropicalDelivery.png'
+  'ClearBottle.png'
 ];
 $hero_images = [];
 foreach($hero_candidates as $f){
