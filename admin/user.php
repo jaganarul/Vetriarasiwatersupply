@@ -30,7 +30,6 @@ $users = $stmt->fetchAll();
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
-    /* Sidebar styles */
     .sidebar {
         width: 230px;
         height: 100vh;
@@ -162,14 +161,12 @@ $users = $stmt->fetchAll();
               <td><?php echo nl2br(esc($u['address'])); ?></td>
               <td><?php echo $u['created_at']; ?></td>
               <td>
+                  <a href="user_view.php?id=<?php echo $u['id']; ?>" 
+                     class="btn btn-sm btn-primary w-100 w-md-auto">View</a>
 
-                     <a href="user_view.php?id=<?php echo $u['id']; ?>" 
-                         class="btn btn-sm btn-primary w-100 w-md-auto">View</a>
-
-                     <a href="user_delete.php?id=<?php echo $u['id']; ?>" 
-                   onclick="return confirm('Delete this user?');"
-                         class="btn btn-sm btn-danger w-100 w-md-auto">Delete</a>
-
+                  <a href="user_delete.php?id=<?php echo $u['id']; ?>" 
+                     onclick="return confirm('Delete this user?');"
+                     class="btn btn-sm btn-danger w-100 w-md-auto">Delete</a>
               </td>
           </tr>
       <?php endforeach; ?>
@@ -178,7 +175,6 @@ $users = $stmt->fetchAll();
     </div>
 
 </div>
-<!-- END MAIN CONTENT -->
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

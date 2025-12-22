@@ -173,103 +173,133 @@ function is_active($matchPaths, $currentPath) {
 </header>
 
 <!-- MOBILE SLIDE MENU -->
-<nav id="mobileMenu" class="mobile-menu" aria-hidden="true" tabindex="-1" aria-label="Mobile menu">
+<nav id="mobileMenu"
+     class="mobile-menu"
+     aria-hidden="true"
+     tabindex="-1"
+     aria-label="Mobile navigation">
 
+  <!-- Decorative strip -->
   <div class="mobile-top-strip" aria-hidden="true"></div>
 
+  <!-- Header -->
   <div class="mobile-header">
     <span class="fw-bold fs-5">Menu</span>
-    <button id="closeMobileMenu" class="btn-close" aria-label="Close menu" type="button"></button>
+    <button id="closeMobileMenu"
+            class="btn-close"
+            type="button"
+            aria-label="Close menu"></button>
   </div>
 
-  <div class="mobile-inner" role="menu" aria-label="Main mobile menu">
+  <!-- Menu items -->
+  <div class="mobile-inner" aria-label="Main mobile menu">
 
-    <!-- Home (same logic as desktop) -->
-    <a class="mm-item <?php echo in_array($currentPath, ['/', '/index.php']) ? 'active' : ''; ?>"
-       href="<?php echo $base_url; ?>/" role="menuitem">
+    <!-- Home -->
+    <a class="mm-item <?= in_array($currentPath, ['/', '/index.php']) ? 'active' : ''; ?>"
+       href="<?= $base_url; ?>/">
       <i class="bi bi-house-door me-2" aria-hidden="true"></i> Home
     </a>
 
     <!-- Products -->
-    <a class="mm-item <?php echo is_active('/product.php', $currentPath) ? 'active' : ''; ?>"
-       href="<?php echo $base_url; ?>/product.php" role="menuitem">
+    <a class="mm-item <?= is_active('/product.php', $currentPath) ? 'active' : ''; ?>"
+       href="<?= $base_url; ?>/product.php">
       <i class="bi bi-bucket me-2" aria-hidden="true"></i> Products
     </a>
 
     <!-- About -->
-    <a class="mm-item <?php echo is_active('/about.php', $currentPath) ? 'active' : ''; ?>"
-       href="<?php echo $base_url; ?>/about.php" role="menuitem">
+    <a class="mm-item <?= is_active('/about.php', $currentPath) ? 'active' : ''; ?>"
+       href="<?= $base_url; ?>/about.php">
       <i class="bi bi-info-circle me-2" aria-hidden="true"></i> About
     </a>
 
     <!-- Contact -->
-    <a class="mm-item <?php echo is_active('/contact.php', $currentPath) ? 'active' : ''; ?>"
-       href="<?php echo $base_url; ?>/contact.php" role="menuitem">
+    <a class="mm-item <?= is_active('/contact.php', $currentPath) ? 'active' : ''; ?>"
+       href="<?= $base_url; ?>/contact.php">
       <i class="bi bi-telephone me-2" aria-hidden="true"></i> Contact
     </a>
 
     <!-- Track Order -->
-    <a class="mm-item <?php echo is_active('/track.php', $currentPath) ? 'active' : ''; ?>"
-       href="<?php echo $base_url; ?>/track.php" role="menuitem">
+    <a class="mm-item <?= is_active('/track.php', $currentPath) ? 'active' : ''; ?>"
+       href="<?= $base_url; ?>/track.php">
       <i class="bi bi-truck me-2" aria-hidden="true"></i> Track Order
     </a>
 
-    <!-- Mobile Cart with Badge -->
-    <a class="mm-item position-relative <?php echo is_active('/cart.php', $currentPath) ? 'active' : ''; ?>"
-       href="<?php echo $base_url; ?>/cart.php" role="menuitem"
-       aria-label="View cart with <?php echo $cart_count; ?> items">
+    <!-- Cart -->
+    <a class="mm-item position-relative <?= is_active('/cart.php', $currentPath) ? 'active' : ''; ?>"
+       href="<?= $base_url; ?>/cart.php"
+       aria-label="View cart (<?= (int)$cart_count; ?> items)">
       <i class="bi bi-cart3 me-2" aria-hidden="true"></i> Cart
-      <?php if($cart_count > 0): ?>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm mobile-cart-badge">
-          <?php echo $cart_count; ?>
+
+      <?php if ($cart_count > 0): ?>
+        <span class="position-absolute top-0 start-100 translate-middle
+                     badge rounded-pill bg-danger shadow-sm mobile-cart-badge">
+          <?= (int)$cart_count; ?>
           <span class="visually-hidden">items in cart</span>
         </span>
       <?php endif; ?>
     </a>
 
-    <?php if(is_logged_in()): ?>
-      <a class="mm-item <?php echo is_active('/profile.php', $currentPath) ? 'active' : ''; ?>"
-         href="<?php echo $base_url; ?>/profile.php" role="menuitem">
+    <!-- AUTH STATES -->
+    <?php if (is_logged_in()): ?>
+
+      <a class="mm-item <?= is_active('/profile.php', $currentPath) ? 'active' : ''; ?>"
+         href="<?= $base_url; ?>/profile.php">
         <i class="bi bi-person-circle me-2" aria-hidden="true"></i> Profile
       </a>
+
       <a class="mm-item text-danger"
-         href="<?php echo $base_url; ?>/logout.php" role="menuitem">
+         href="<?= $base_url; ?>/logout.php">
         <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> Logout
       </a>
-    <?php elseif(is_admin_logged_in()): ?>
-      <a class="mm-item" role="menuitem">
-        <i class="bi bi-shield-lock me-2" aria-hidden="true"></i> Admin: <?php echo $_SESSION['admin_name'] ?? 'Admin'; ?>
-      </a>
+
+    <?php elseif (is_admin_logged_in()): ?>
+
+      <span class="mm-item disabled">
+        <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>
+        Admin: <?= esc($_SESSION['admin_name'] ?? 'Admin'); ?>
+      </span>
+
       <a class="mm-item text-danger"
-         href="<?php echo $base_url; ?>/admin/logout.php" role="menuitem">
+         href="<?= $base_url; ?>/admin/logout.php">
         <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> Logout
       </a>
+
     <?php else: ?>
-      <a class="mm-item <?php echo is_active('/login.php', $currentPath) ? 'active' : ''; ?>"
-         href="<?php echo $base_url; ?>/login.php" role="menuitem">
+
+      <a class="mm-item <?= is_active('/login.php', $currentPath) ? 'active' : ''; ?>"
+         href="<?= $base_url; ?>/login.php">
         <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i> Login
       </a>
-      <a class="mm-item <?php echo is_active('/register.php', $currentPath) ? 'active' : ''; ?>"
-         href="<?php echo $base_url; ?>/register.php" role="menuitem">
+
+      <a class="mm-item <?= is_active('/register.php', $currentPath) ? 'active' : ''; ?>"
+         href="<?= $base_url; ?>/register.php">
         <i class="bi bi-person-plus me-2" aria-hidden="true"></i> Register
       </a>
+
     <?php endif; ?>
 
+    <!-- Categories -->
     <div class="mobile-section">Categories</div>
 
-    <?php foreach($catRows as $cr): if(!$cr['category']) continue; ?>
+    <?php foreach ($catRows as $cr): ?>
+      <?php if (empty($cr['category'])) continue; ?>
+
       <?php
-        // Active if URL is /category/<urlencoded-category>...
-        $catPath = '/category/' . urlencode($cr['category']);
-        $isCatActive = is_active($catPath, $currentPath);
+        $encodedCat = urlencode($cr['category']);
+        $catPath   = "/category/{$encodedCat}";
+        $isActive  = is_active($catPath, $currentPath);
       ?>
-      <a class="mm-item <?php echo $isCatActive ? 'active' : ''; ?>"
-         href="<?php echo $base_url; ?>/category/<?php echo urlencode($cr['category']); ?>" role="menuitem">
-        <i class="bi bi-tag me-2" aria-hidden="true"></i> <?php echo esc($cr['category']); ?>
+
+      <a class="mm-item <?= $isActive ? 'active' : ''; ?>"
+         href="<?= $base_url; ?>/category/<?= $encodedCat; ?>">
+        <i class="bi bi-tag me-2" aria-hidden="true"></i>
+        <?= esc($cr['category']); ?>
       </a>
+
     <?php endforeach; ?>
 
   </div>
+</nav>
 
 </nav>
 

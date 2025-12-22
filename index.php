@@ -147,11 +147,11 @@ if(empty($hero_images)){
     </a>
   </div>
 
-  <div class="d-none d-md-block hero-right">
+   <!-- <div class="d-none d-md-block hero-right">
     <div style="font-size:120px; opacity:0.9; animation: float 4s ease-in-out infinite;">
       💧
     </div>
-  </div>
+  </div>  -->      
 
 </div>
 

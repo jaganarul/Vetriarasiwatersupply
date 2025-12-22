@@ -49,7 +49,8 @@ if (!empty($product['images'])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
   <!-- Main stylesheet -->
-  <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom.css">
+  <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/responsive.css">
+  <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom-clean.css">
 
   <!-- Enhanced eCommerce Styles -->
   <style>

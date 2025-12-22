@@ -12,7 +12,8 @@ if(!$order) { echo 'Order not found'; exit; }
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom.css">
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/responsive.css">
+  <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/custom-clean.css">
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/amazon-style.css">
 <title>Order Confirmed</title>
 

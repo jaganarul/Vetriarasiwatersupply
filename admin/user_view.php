@@ -33,16 +33,22 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $orders = $stmt->fetchAll();
 
-// Fetch user's invoices
-$stmt = $pdo->prepare("
-    SELECT i.id, i.order_id, i.invoice_number, i.total, i.status, i.created_at, i.due_date
-    FROM invoices i
-    INNER JOIN orders o ON i.order_id = o.id
-    WHERE o.user_id = ?
-    ORDER BY i.created_at DESC
-");
-$stmt->execute([$user_id]);
-$invoices = $stmt->fetchAll();
+// Fetch user's invoices (if table exists)
+$invoices = [];
+try {
+    $stmt = $pdo->prepare("
+        SELECT i.id, i.order_id, i.invoice_number, i.total, i.status, i.created_at, i.due_date
+        FROM invoices i
+        INNER JOIN orders o ON i.order_id = o.id
+        WHERE o.user_id = ?
+        ORDER BY i.created_at DESC
+    ");
+    $stmt->execute([$user_id]);
+    $invoices = $stmt->fetchAll();
+} catch (PDOException $e) {
+    // Invoices table might not exist yet
+    $invoices = [];
+}
 ?>
 <!doctype html>
 <html>
