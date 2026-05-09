@@ -7,9 +7,10 @@
 
 server
 $db_host = 'db.fr-pari1.bengt.wasmernet.com';
-$db_name = 'f188d84d7881800021d00dde2278';
-$db_user = '10272';
-$db_pass = '069ff188-d84d-799f-8000-f37fcbd73278';
+$db_name = 'dbGzriJgjVHk7SjDuoSZ9aiK';
+$db_user = 'f4d7875f746980008c0ed194fac4';
+$db_pass = '069ff4d7-875f-7557-8000-df4c27224a54';
+$db_port = '10272';
 
 // server
 //$db_host = 'sql113.infinityfree.com';
