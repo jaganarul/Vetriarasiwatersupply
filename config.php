@@ -1,9 +1,15 @@
 <?php
 // config.php - set your DB credentials here
-$db_host = 'localhost';
-$db_name = 'if0_40473744_vetriarasiwatersupply';
-$db_user = 'root';
-$db_pass = 'root';
+//$db_host = 'localhost';
+//$db_name = 'if0_40473744_vetriarasiwatersupply';
+//$db_user = 'root';
+//$db_pass = 'root';
+
+server
+$db_host = 'db.fr-pari1.bengt.wasmernet.com';
+$db_name = 'f188d84d7881800021d00dde2278';
+$db_user = '10272';
+$db_pass = '069ff188-d84d-799f-8000-f37fcbd73278';
 
 // server
 //$db_host = 'sql113.infinityfree.com';
