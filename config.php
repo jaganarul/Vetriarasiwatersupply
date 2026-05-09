@@ -5,7 +5,7 @@
 //$db_user = 'root';
 //$db_pass = 'root';
 
-//server
+// server
 $db_host = 'db.fr-pari1.bengt.wasmernet.com';
 $db_name = 'dbGzriJgjVHk7SjDuoSZ9aiK';
 $db_user = 'f4d7875f746980008c0ed194fac4';
