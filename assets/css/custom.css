@@ -1,0 +1,445 @@
+/* Vetriarasi Water Supply - Modern Minimal Premium Theme */
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+:root{
+  --deep-blue: #0A66C2;
+  --accent-orange: #FF9900;
+  --charcoal: #111827;
+  --soft-grey: #F3F4F6;
+  --white: #FFFFFF;
+  --muted: #6B7280; /* grey-500 */
+  --radius: 12px; /* default rounded corners */
+  --easing: cubic-bezier(0.2,0.9,0.25,1);
+  --gap: 8px; /* 8-point grid */
+}
+
+/* Base layout */
+html,body{height:100%;}
+body{
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-size:16px;
+  color:var(--charcoal);
+  background:var(--soft-grey);
+  margin:0;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+/* Prevent horizontal page scroll caused by wide elements */
+html, body { overflow-x: hidden; }
+
+/* Ensure default img scaling across site - keep tampered images safe via explicit selectors */
+img { max-width:100%; height:auto; }
+
+/* Utility spacing following 8pt grid */
+.p-1{padding:4px;} .p-2{padding:8px;} .p-3{padding:16px;} .p-4{padding:24px;}
+.m-1{margin:4px;} .m-2{margin:8px;} .m-3{margin:16px;} .m-4{margin:24px;}
+
+/* Header / Navbar */
+.navbar{background:var(--white) !important; border-radius:var(--radius); box-shadow:0 6px 20px rgba(17,24,39,0.06);}
+.navbar .container{display:flex;align-items:center;gap:var(--gap);}
+.navbar-brand{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--deep-blue);}
+.navbar-brand svg{border-radius:10px}
+.navbar-brand strong{color:var(--deep-blue) !important;font-size:1.05rem;}
+
+/* Logo image styling - use explicit <img> in header templates for portability */
+.navbar-brand svg{display:none !important}
+.navbar-brand img{width:40px;height:40px;margin-right:10px;vertical-align:middle;border-radius:8px;object-fit:contain}
+
+@media (max-width:575px){
+  .navbar-brand::before{width:34px;height:34px;margin-right:8px}
+}
+
+.navbar .form-control{border-radius:999px; border:1px solid rgba(17,24,39,0.06); padding:10px 14px; box-shadow:none;}
+.navbar .input-group .btn{border-radius:999px; background:var(--deep-blue); border:none; color:var(--white); padding:8px 12px}
+.navbar .input-group .btn i{font-size:1rem}
+
+.navbar .nav-link{color:var(--muted); font-weight:500; padding:8px 12px}
+.navbar .nav-link:hover{color:var(--charcoal)}
+
+/* Right actions */
+.navbar .btn{border-radius:10px}
+.navbar .btn-primary{background:var(--deep-blue); border:1px solid var(--deep-blue); color:var(--white); box-shadow:0 6px 18px rgba(10,102,194,0.12);}
+.navbar .btn-outline-primary{background:transparent;border:1px solid rgba(17,24,39,0.06); color:var(--deep-blue)}
+.navbar .btn-outline-secondary{border:1px solid rgba(17,24,39,0.06); color:var(--muted)}
+.btn-dark{background:var(--charcoal);color:var(--white);border-radius:10px;border:none;padding:8px 12px}
+
+/* Product grid and cards */
+.card-product{border-radius:var(--radius); overflow:hidden; background:var(--white); border:1px solid rgba(17,24,39,0.04); transition:transform 220ms var(--easing), box-shadow 220ms var(--easing);}
+.card-product:hover{transform:translateY(-6px); box-shadow:0 18px 44px rgba(17,24,39,0.08)}
+.card-product .card-img-top, .thumbnail{height:220px; object-fit:cover; width:100%; display:block}
+.card-product .card-body{padding:16px}
+.card-product .card-title{font-size:0.98rem;font-weight:600;color:var(--charcoal);margin-bottom:6px}
+.card-product .card-text{color:var(--muted);font-size:0.9rem}
+
+.product-price{font-weight:700;color:var(--charcoal); font-size:1.02rem}
+.product-old-price{text-decoration:line-through;color:rgba(17,24,39,0.3);margin-left:8px;font-size:0.9rem}
+
+/* Buttons used across site */
+.btn-primary{background:var(--deep-blue); border-color:var(--deep-blue); color:var(--white); border-radius:10px; padding:8px 14px}
+.btn-primary:hover{background:#094fb0; box-shadow:0 10px 30px rgba(10,102,194,0.12); transform:translateY(-2px)}
+.btn-accent{background:var(--accent-orange); border:1px solid rgba(0,0,0,0.03); color:var(--white)}
+.btn-outline{background:transparent;border:1px solid rgba(17,24,39,0.06); color:var(--charcoal)}
+
+/* Forms (login, signup, checkout) */
+input.form-control, textarea.form-control, select.form-control{border-radius:10px; border:1px solid rgba(17,24,39,0.08); padding:10px 12px; box-shadow:none}
+input.form-control:focus, textarea.form-control:focus{outline:none; box-shadow:0 6px 18px rgba(10,102,194,0.06); border-color:var(--deep-blue)}
+label{font-weight:600;color:var(--muted);}
+
+/* Cart and checkout layout */
+.cart-summary{background:var(--white); border-radius:var(--radius); padding:16px; border:1px solid rgba(17,24,39,0.04);}
+.cart-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(17,24,39,0.03)}
+
+/* Order tracking timeline */
+.order-timeline{list-style:none;padding:0;margin:0}
+.order-timeline li{display:flex;gap:12px;align-items:flex-start;padding:12px 0}
+.order-dot{width:12px;height:12px;border-radius:50%;background:var(--soft-grey);box-shadow:inset 0 1px 0 rgba(255,255,255,0.6)}
+.order-dot.complete{background:var(--deep-blue)}
+
+/* Admin visual theme (only visual) */
+.admin-card{background:linear-gradient(180deg,rgba(17,24,39,0.04),var(--white)); border-radius:10px; padding:12px; border:1px solid rgba(17,24,39,0.03)}
+.table-modern th, .table-modern td{vertical-align:middle;padding:12px 8px}
+/* Set admin thumbnail fixed height with responsive scaling */
+.admin-thumb{ max-height: 60px; height: auto; width: auto; }
+
+/* Cart thumbnails */
+.cart-thumb { max-width: 96px; height: auto; display: inline-block; object-fit: cover; }
+.cart-placeholder{ width: 96px; height:72px; display:flex; align-items:center; justify-content:center; background:#f1f7fb; border-radius:8px; color:#9aa9bd; }
+
+/* QR images responsive */
+.qr-img { max-width: 260px; width: 100%; height: auto; object-fit: contain; }
+
+/* Table col for small thumbnail */
+td.col-thumb { width: 110px; min-width: 80px; }
+.col-qty { width: 160px; min-width: 80px; }
+
+/* Hero right-side placeholder */
+.hero-right { max-width: 350px; position: relative; z-index: 2; }
+
+/* Footer */
+footer{background:transparent;padding:28px 0;color:var(--muted)}
+footer .footer-col{background:var(--white); border-radius:10px; padding:16px; border:1px solid rgba(17,24,39,0.03)}
+
+/* Badges / labels */
+.badge{border-radius:8px;padding:6px 8px;font-weight:600;background:rgba(10,102,194,0.06);color:var(--deep-blue)}
+
+/* Small helpers */
+.text-muted{color:var(--muted)}
+.text-small{font-size:0.9rem}
+
+/* Utility: display only on desktop (>=992) */
+@media (min-width:992px){
+  .d-desktop-only{display:block!important}
+}
+@media (max-width:991.98px){
+  .d-desktop-only{display:none!important}
+}
+
+/* Utility: display only on mobile (<992) */
+@media (max-width:991.98px){
+  .d-mobile-only{display:block!important}
+}
+@media (min-width:992px){
+  .d-mobile-only{display:none!important}
+}
+
+  /* Ensure images in responsive tables do not overflow */
+  .table-responsive img{ max-width:100%; height:auto; display:block; }
+
+/* Accessibility: focus visible */
+a:focus, button:focus, input:focus{outline:3px solid rgba(10,102,194,0.12); outline-offset:2px}
+
+/* Responsive tweaks */
+@media (max-width:991px){
+  .card-product .card-img-top, .thumbnail{height:180px}
+  .navbar .form-control{max-width:360px}
+}
+@media (max-width:575px){
+  .card-product .card-img-top, .thumbnail{height:160px}
+  .navbar .container{flex-direction:column;align-items:stretch;gap:12px}
+  .navbar .me-auto{order:3}
+}
+
+/* gentle image zoom on hover for product images */
+.card-product .card-img-top{transition:transform 300ms var(--easing)}
+.card-product:hover .card-img-top{transform:scale(1.04)}
+
+/* text truncation keep same selectors */
+.text-truncate{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* keep existing thumbnail/secondary-image selectors for compatibility */
+.thumbnail{cursor:pointer}
+.secondary-image{border-radius:10px; border:1px solid rgba(17,24,39,0.04);}
+
+/* small animation for hero sections if present */
+.hero-banner{border-radius:var(--radius);overflow:hidden}
+
+
+/* Header design */
+.modern-search input {
+  border-radius: 50px 0 0 50px !important;
+  padding-left: 16px;
+}
+
+.modern-search .btn {
+  border-radius: 0 50px 50px 0 !important;
+}
+
+.nav-link.modern-link {
+  font-weight: 500;
+  padding: 8px 14px !important;
+  transition: 0.2s;
+}
+
+.nav-link.modern-link:hover {
+  color: #0b74ff !important;
+  background: #f1f7ff;
+  border-radius: 8px;
+}
+
+.dropdown-menu {
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Payment design */
+.card {
+    transition: 0.2s ease;
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.btn {
+    transition: 0.2s ease;
+}
+
+.btn:hover {
+    transform: scale(1.02);
+}
+
+/* ============================================
+   COMPREHENSIVE MOBILE RESPONSIVE FIXES
+   ============================================ */
+
+/* Extra Small Screens (Mobile) - 0px to 575px */
+@media (max-width: 575.98px) {
+  /* Navbar adjustments for mobile */
+  .navbar { padding: 0.75rem 0; }
+  .navbar .container { flex-wrap: nowrap; gap: 0.5rem; }
+  .navbar-brand { font-size: 0.95rem; gap: 8px; }
+  .navbar-brand img { width: 32px; height: 32px; }
+  .navbar-brand strong { font-size: 0.9rem; }
+  
+  /* Hide desktop elements on mobile */
+  .d-sm-inline { display: none !important; }
+  .d-none.d-sm-inline { display: none !important; }
+  
+  /* Mobile menu toggler */
+  .navbar-toggler { padding: 0.25rem; }
+  
+  /* Search bar mobile */
+  .navbar .input-group { max-width: 100%; }
+  .navbar .form-control { font-size: 14px; padding: 8px 12px; }
+  
+  /* Container padding */
+  .container { padding-left: 12px; padding-right: 12px; }
+  
+  /* Headings */
+  h1, .h1 { font-size: 1.75rem; }
+  h2, .h2 { font-size: 1.5rem; }
+  h3, .h3 { font-size: 1.25rem; }
+  h4, .h4 { font-size: 1.1rem; }
+  h5, .h5 { font-size: 1rem; }
+  h6, .h6 { font-size: 0.95rem; }
+  
+  /* Form inputs */
+  input.form-control, textarea.form-control, select.form-control {
+    padding: 12px 10px;
+    font-size: 16px; /* Prevent zoom on iOS */
+    border-radius: 8px;
+  }
+  
+  /* Buttons */
+  .btn-sm { padding: 6px 10px; font-size: 13px; }
+  .btn { padding: 10px 16px; font-size: 14px; }
+  .btn-lg { padding: 14px 20px; font-size: 16px; }
+  
+  /* Cards */
+  .card { border-radius: 10px; margin-bottom: 12px; }
+  .card-body { padding: 12px; }
+  
+  /* Product cards */
+  .product-card-wrapper { margin-bottom: 8px; }
+  .card-product .card-img-top { height: 200px; }
+  
+  /* Footer */
+  footer { padding: 24px 0; }
+  .footer-container { width: 95%; }
+  .footer-grid { gap: 24px; }
+  
+  /* Breadcrumb */
+  .breadcrumb { font-size: 0.9rem; padding: 0.5rem 0; }
+  
+  /* Tables */
+  .table { font-size: 13px; }
+  .table th, .table td { padding: 8px 4px; }
+  
+  /* Flex utilities */
+  .d-flex { flex-wrap: wrap; }
+  .gap-2, .gap-3, .gap-4 { gap: 8px !important; }
+  
+  /* Text utilities */
+  .text-center-mobile { text-align: center; }
+  
+  /* Modals */
+  .modal-dialog { margin: 12px auto; }
+  .modal-content { border-radius: 12px; }
+  
+  /* Alert boxes */
+  .alert { padding: 12px; margin-bottom: 12px; border-radius: 10px; }
+  
+  /* Margin/Padding utilities for mobile */
+  .mt-sm { margin-top: 8px; }
+  .mb-sm { margin-bottom: 8px; }
+  .pt-sm { padding-top: 8px; }
+  .pb-sm { padding-bottom: 8px; }
+}
+
+/* Small Screens (Tablets) - 576px to 767px */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .navbar { padding: 0.875rem 0; }
+  .container { padding-left: 16px; padding-right: 16px; }
+  h1, .h1 { font-size: 2rem; }
+  h2, .h2 { font-size: 1.75rem; }
+  .card-product .card-img-top { height: 210px; }
+  .footer-grid { gap: 32px; }
+}
+
+/* Medium Screens (Tablets/Small Desktop) - 768px to 991px */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .navbar { padding: 1rem 0; }
+  .navbar-brand img { width: 36px; height: 36px; }
+  .container { padding-left: 20px; padding-right: 20px; }
+  h1, .h1 { font-size: 2.25rem; }
+  h2, .h2 { font-size: 1.9rem; }
+  .card-product .card-img-top { height: 220px; }
+  
+  /* Grid adjustments */
+  .row { margin-right: -10px; margin-left: -10px; }
+  .col { padding-right: 10px; padding-left: 10px; }
+}
+
+/* Large Screens (Desktop) - 992px+ */
+@media (min-width: 992px) {
+  .navbar { padding: 1rem 0; }
+  .container { max-width: 1320px; }
+  .navbar-brand img { width: 40px; height: 40px; }
+  
+  /* Show desktop elements */
+  .d-lg-flex { display: flex; }
+  .d-md-none { display: none; }
+  
+  /* Desktop grid columns */
+  .col-lg-3 { flex: 0 0 25%; }
+  .col-lg-4 { flex: 0 0 33.333%; }
+  .col-lg-6 { flex: 0 0 50%; }
+  .col-lg-9 { flex: 0 0 75%; }
+}
+
+/* Extra Large Screens - 1200px+ */
+@media (min-width: 1200px) {
+  .container { max-width: 1320px; padding-left: 24px; padding-right: 24px; }
+  h1, .h1 { font-size: 2.5rem; }
+  h2, .h2 { font-size: 2rem; }
+}
+
+/* Extra Extra Large Screens - 1400px+ */
+@media (min-width: 1400px) {
+  .container { max-width: 1400px; }
+}
+
+/* ============================================
+   PORTRAIT AND LANDSCAPE ORIENTATION FIXES
+   ============================================ */
+
+@media (orientation: portrait) {
+  body { font-size: 15px; }
+  .navbar { padding: 0.75rem 0; }
+  .container { padding-left: 12px; padding-right: 12px; }
+}
+
+@media (orientation: landscape) {
+  body { font-size: 14px; }
+  .navbar { padding: 0.5rem 0; }
+  h1, .h1 { font-size: 1.5rem; }
+  h2, .h2 { font-size: 1.3rem; }
+  .card-product .card-img-top { height: 160px; }
+}
+
+/* ============================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ============================================ */
+
+/* Increase touch target sizes */
+@media (hover: none) and (pointer: coarse) {
+  .btn { min-height: 44px; padding: 10px 14px; }
+  .btn-sm { min-height: 40px; padding: 8px 12px; }
+  a, button { min-height: 44px; }
+  
+  /* Remove hover effects on touch devices */
+  .btn:hover { transform: none; }
+  .card:hover { transform: none; }
+  
+  /* Add active state feedback */
+  .btn:active { opacity: 0.8; }
+  .card:active { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+}
+
+/* ============================================
+   KEYBOARD ACCESSIBLE FOCUS STATES
+   ============================================ */
+
+/* Better focus states for keyboard navigation */
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--deep-blue);
+  outline-offset: 2px;
+}
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--deep-blue);
+  outline-offset: 4px;
+}
+
+/* ============================================
+   PRINT MEDIA QUERY
+   ============================================ */
+
+@media print {
+  header, footer, .navbar, .mobile-menu { display: none; }
+  .container { max-width: 100%; }
+  body { background: white; }
+  .card { box-shadow: none; border: 1px solid #ddd; }
+}
+
+/* ============================================
+   SAFE AREA INSETS (notch support)
+   ============================================ */
+
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
+
+
+
