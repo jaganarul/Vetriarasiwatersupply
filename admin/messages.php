@@ -9,11 +9,11 @@ $hasMessages = true;
 // POST actions: mark read/unread or delete
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     if(isset($_POST['mark_read'])){
-        $stmt = $pdo->prepare('UPDATE messages SET is_read = 1 WHERE id = ?');
+      $stmt = $pdo->prepare('UPDATE messages SET is_read = TRUE WHERE id = ?');
         $stmt->execute([(int)$_POST['mark_read']]);
     }
     if(isset($_POST['mark_unread'])){
-        $stmt = $pdo->prepare('UPDATE messages SET is_read = 0 WHERE id = ?');
+      $stmt = $pdo->prepare('UPDATE messages SET is_read = FALSE WHERE id = ?');
         $stmt->execute([(int)$_POST['mark_unread']]);
     }
     if(isset($_POST['delete_msg'])){
