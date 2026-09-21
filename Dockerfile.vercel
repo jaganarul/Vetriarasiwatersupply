@@ -1,0 +1,14 @@
+FROM dunglas/frankenphp:php8.3-bookworm
+
+RUN install-php-extensions pdo_pgsql pgsql
+
+RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+
+WORKDIR /app/public
+
+COPY . /app/public
+
+COPY config.vercel.php /app/public/config.php
+
+ENV SERVER_NAME=:80
+ENV SERVER_ROOT=/app/public

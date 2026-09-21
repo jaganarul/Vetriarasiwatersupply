@@ -135,10 +135,10 @@ if($cart){
     align-items: center;
     flex-wrap: wrap;
   }
-  .sticky-checkout .total-box { 
+  .sticky-checkout .total-box {
     flex: 1;
     min-width: 140px;
-    text-align: center; 
+    text-align: center;
     padding: 12px 14px;
     font-size: 15px;
     min-height: 48px;
@@ -146,7 +146,7 @@ if($cart){
     align-items: center;
     justify-content: center;
   }
-  .sticky-checkout .checkout-btn { 
+  .sticky-checkout .checkout-btn {
     flex: 1;
     min-width: 140px;
     height: 48px;
@@ -316,7 +316,7 @@ if($cart){
       <div class="row g-3">
         <?php
         // demo suggested products: pick 4 random products (replace with real query in production)
-        $suggested = $pdo->query('SELECT * FROM products ORDER BY RAND() LIMIT 4')->fetchAll();
+        $suggested = $pdo->query('SELECT * FROM products ORDER BY RANDOM() LIMIT 4')->fetchAll();
         foreach($suggested as $sp): ?>
           <div class="col-6 col-md-3">
             <div class="card p-2">

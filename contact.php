@@ -8,13 +8,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     if(!$name || !filter_var($email, FILTER_VALIDATE_EMAIL) || !$message){
         $errors[] = 'Please provide name, valid email and message.';
     } else {
-        // create messages table if necessary
-        $pdo->exec("CREATE TABLE IF NOT EXISTS messages (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(200), email VARCHAR(255), message TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB;");
-        // ensure is_read column exists to track admin read/unread status
-        $colm = $pdo->query("SHOW COLUMNS FROM messages LIKE 'is_read'")->fetch();
-        if(!$colm){
-          $pdo->exec("ALTER TABLE messages ADD COLUMN is_read TINYINT(1) NOT NULL DEFAULT 0");
-        }
+        // The messages table and is_read column already exist in Supabase PostgreSQL.
         $stmt = $pdo->prepare('INSERT INTO messages (name,email,message) VALUES (?,?,?)');
         $stmt->execute([$name,$email,$message]);
         $saved = true;

@@ -1,0 +1,10 @@
+
+# Local migration files
+vetriarasi_mysql_backup.sql
+migrate_to_supabase.php
+supabase_test.php
+
+# Database credentials
+config.php
+config.php.backup
+.env

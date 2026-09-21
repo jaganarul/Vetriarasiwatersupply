@@ -12,49 +12,21 @@ require_once __DIR__ . '/init.php';
 $show_form = true;
 $setup_status = [];
 
-// If form is submitted, create tables
+// Supabase PostgreSQL database is already configured.
+// This legacy setup page no longer creates tables at runtime.
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_tables'])) {
-    try {
-        // Create invoices table if it doesn't exist
-        $sql = "
-        CREATE TABLE IF NOT EXISTS `invoices` (
-          `id` INT AUTO_INCREMENT PRIMARY KEY,
-          `order_id` INT NOT NULL UNIQUE,
-          `invoice_number` VARCHAR(100) NOT NULL UNIQUE,
-          `invoice_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          `due_date` DATE,
-          `subtotal` DECIMAL(10,2) DEFAULT 0,
-          `tax` DECIMAL(10,2) DEFAULT 0,
-          `total` DECIMAL(10,2) NOT NULL,
-          `status` ENUM('Draft','Sent','Viewed','Paid','Overdue','Cancelled') DEFAULT 'Draft',
-          `notes` TEXT,
-          `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-          INDEX (`order_id`),
-          INDEX (`invoice_number`),
-          INDEX (`status`),
-          CONSTRAINT `fk_invoices_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-        ";
-        
-        $pdo->exec($sql);
-        $setup_status['invoices'] = ['status' => 'success', 'message' => '✅ Invoices table created successfully'];
-        
-    } catch (PDOException $e) {
-        if (strpos($e->getMessage(), 'already exists') !== false) {
-            $setup_status['invoices'] = ['status' => 'info', 'message' => 'ℹ️ Invoices table already exists'];
-        } else {
-            $setup_status['invoices'] = ['status' => 'error', 'message' => '❌ Error: ' . $e->getMessage()];
-        }
-    }
-    
+    $setup_status['invoices'] = [
+        'status' => 'info',
+        'message' => 'Supabase database is already configured. No table creation was required.'
+    ];
     $show_form = false;
 }
 
 // Check which tables exist
 $tables = [];
 try {
-    $stmt = $pdo->query("SHOW TABLES");
+    $stmt = $pdo->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name");
     $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
 } catch (Exception $e) {
     // Can't check tables

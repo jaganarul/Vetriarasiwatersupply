@@ -4,8 +4,8 @@ if(!is_admin_logged_in()) { header('Location: ' . $base_url . '/login.php'); exi
 
 // update status
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset($_POST['status'])){
-    // When admin updates status, mark the order as handled (is_new = 0)
-    $stmt = $pdo->prepare('UPDATE orders SET status = ?, updated_at = NOW(), is_new = 0 WHERE id = ?');
+    // When admin updates status, mark the order as handled (is_new = FALSE)
+    $stmt = $pdo->prepare('UPDATE orders SET status = ?, updated_at = NOW(), is_new = FALSE WHERE id = ?');
     $stmt->execute([$_POST['status'], (int)$_POST['order_id']]);
 }
 
@@ -17,11 +17,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_order'])){
 
 // mark new/read
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_new'])){
-  $stmt = $pdo->prepare('UPDATE orders SET is_new = 1 WHERE id = ?');
+  $stmt = $pdo->prepare('UPDATE orders SET is_new = TRUE WHERE id = ?');
   $stmt->execute([(int)$_POST['mark_new']]);
 }
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_read'])){
-  $stmt = $pdo->prepare('UPDATE orders SET is_new = 0 WHERE id = ?');
+  $stmt = $pdo->prepare('UPDATE orders SET is_new = FALSE WHERE id = ?');
   $stmt->execute([(int)$_POST['mark_read']]);
 }
 
@@ -121,7 +121,7 @@ body {
         <tr>
           <td>
             <?php echo $o['id']; ?>
-            <?php if(isset($o['is_new']) && $o['is_new'] == 1): ?>
+            <?php if(isset($o['is_new']) && $o['is_new'] === true): ?>
               <span class="badge bg-danger ms-2">New</span>
             <?php endif; ?>
           </td>
@@ -170,7 +170,7 @@ body {
                   View
                 </a>
 
-                <?php if(isset($o['is_new']) && $o['is_new'] == 1): ?>
+                <?php if(isset($o['is_new']) && $o['is_new'] === true): ?>
                   <form method="post" style="display:inline-block;">
                     <input type="hidden" name="mark_read" value="<?php echo $o['id']; ?>">
                     <button class="btn btn-sm btn-outline-success w-100 w-md-auto">Mark Read</button>

@@ -1,0 +1,15 @@
+config.php
+config.php.backup
+.env
+.env.*
+.git
+.gitignore
+.DS_Store
+
+vetriarasi_mysql_backup.sql
+backup_before_migration.sql
+migrate_to_supabase.php
+supabase_test.php
+db_driver_test.php
+
+migrations/

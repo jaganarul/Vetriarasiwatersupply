@@ -12,7 +12,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     // If user confirms payment (UPI) or chooses COD, create the order.
     if($action === 'confirm_payment' || $method === 'COD'){
         // create payments table if not exists (safe to run)
-        $pdo->exec("CREATE TABLE IF NOT EXISTS payments (id INT AUTO_INCREMENT PRIMARY KEY, order_id INT NOT NULL, method VARCHAR(50) NOT NULL, status VARCHAR(50), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE) ENGINE=InnoDB;");
+
 
         // Begin transaction: verify stock, create order, items and payment record
         $ids = array_keys($cart);
@@ -37,17 +37,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $delivery_address = $u['address'] ?? null;
             // Ensure the `is_new` column exists on orders so admin can be notified of new orders
             // Ensure the `is_new` column exists on orders so admin can be notified of new orders
-            $hasOrdersTbl = $pdo->query("SHOW TABLES LIKE 'orders'")->fetch();
-            if($hasOrdersTbl){
-              $col = $pdo->query("SHOW COLUMNS FROM orders LIKE 'is_new'")->fetch();
-              if(!$col){
-                $pdo->exec("ALTER TABLE orders ADD COLUMN is_new TINYINT(1) NOT NULL DEFAULT 1");
-              }
-            }
-
-            $stmtIns = $pdo->prepare('INSERT INTO orders (user_id,total,delivery_phone,delivery_address,tracking_code,status,is_new) VALUES (?,?,?,?,?,?,?)');
+            $stmtIns = $pdo->prepare('INSERT INTO orders (user_id,total,delivery_phone,delivery_address,tracking_code,status,is_new) VALUES (?,?,?,?,?,?,?) RETURNING id');
             $stmtIns->execute([$_SESSION['user_id'], $calcTotal, $delivery_phone, $delivery_address, $tracking, 'Pending', 1]);
-            $order_id = $pdo->lastInsertId();
+            $order_id = $stmtIns->fetchColumn();
             $stmtItem = $pdo->prepare('INSERT INTO order_items (order_id,product_id,qty,price) VALUES (?,?,?,?)');
             $stmtUpdate = $pdo->prepare('UPDATE products SET stock = stock - ? WHERE id = ?');
             foreach($rows as $r){
@@ -93,7 +85,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     .qr-img { width:220px; height:220px; object-fit:contain; }
     .muted-small { color:#69748a; font-size:0.95rem; }
     .app-open-note { font-size:0.9rem; color:#3b3b3b; }
-    
+
     /* Mobile Responsive Improvements */
     @media (max-width: 575.98px) {
       .container { padding-left: 12px; padding-right: 12px; }
@@ -107,13 +99,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       .modal-body { padding: 16px; }
       .modal-dialog { margin: 12px auto; }
     }
-    
+
     @media (min-width: 576px) and (max-width: 767.98px) {
       .qr-img { width: 200px; height: 200px; }
       .container { padding-left: 16px; padding-right: 16px; }
       .row > .col-md-6 { flex: 0 0 100%; max-width: 100%; margin-bottom: 16px; }
     }
-    
+
     @media (min-width: 768px) {
       .row > .col-md-6:not(:last-child) { margin-bottom: 0; }
       .d-grid.gap-2 { display: flex; gap: 12px; flex-wrap: wrap; }

@@ -20,10 +20,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $errors[] = 'Email already registered.';
         } else {
             $hash = password_hash($pass, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare('INSERT INTO users (name,email,phone,password,address) VALUES (?,?,?,?,?)');
+            $stmt = $pdo->prepare('INSERT INTO users (name,email,phone,password,address) VALUES (?,?,?,?,?) RETURNING id');
             $stmt->execute([$name, $email, $phone, $hash, $delivery]);
 
-            $_SESSION['user_id'] = $pdo->lastInsertId();
+            $_SESSION['user_id'] = $stmt->fetchColumn();
             $_SESSION['user_name'] = $name;
             header('Location: ' . $base_url . '/'); exit;
         }

@@ -12,9 +12,9 @@ if(!$order) { echo 'Not found'; exit; }
 
 // Mark the order as read/seen for admin notifications (if is_new column exists)
 try{
-  $col = $pdo->query("SHOW COLUMNS FROM orders LIKE 'is_new'")->fetch();
+  $col = true;
   if($col && !empty($order['is_new'])){
-    $pdo->prepare('UPDATE orders SET is_new = 0 WHERE id = ?')->execute([$id]);
+    $pdo->prepare('UPDATE orders SET is_new = FALSE WHERE id = ?')->execute([$id]);
   }
 } catch(Exception $e) { /* no-op on error */ }
 
@@ -26,7 +26,7 @@ $items = $stmt->fetchAll();
 // fetch payment info (last payment, if any) - safe check if payments table exists
 $payment = null;
 try{
-  $hasPayments = (bool)$pdo->query("SHOW TABLES LIKE 'payments'")->fetch();
+  $hasPayments = true;
   if($hasPayments){
     $stmt = $pdo->prepare('SELECT method, status, created_at FROM payments WHERE order_id = ? ORDER BY created_at DESC LIMIT 1');
     $stmt->execute([$id]);
@@ -80,14 +80,14 @@ $delivery_phone = $order['delivery_phone'] ?? $order['phone'] ?? 'Not provided';
   <div class="card card-order p-4">
     <div class="order-header d-flex justify-content-between align-items-center">
       <h3>Order #<?php echo $order['id']; ?></h3>
-      <span class="badge bg-<?php 
+      <span class="badge bg-<?php
           switch(strtolower($order['status'])){
               case 'delivered': echo 'success'; break;
               case 'shipped': echo 'info'; break;
               case 'processing': echo 'warning'; break;
               case 'cancelled': echo 'danger'; break;
               default: echo 'secondary';
-          } 
+          }
       ?> badge-status">
         <?php echo esc($order['status']); ?>
       </span>

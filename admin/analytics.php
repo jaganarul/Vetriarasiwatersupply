@@ -12,19 +12,18 @@ $revenue = $pdo->query('SELECT COALESCE(SUM(total),0) FROM orders')->fetchColumn
 $orders = $pdo->query('SELECT id,user_id,total,status,tracking_code,created_at FROM orders ORDER BY created_at DESC LIMIT 20')->fetchAll();
 
 // Contact messages
-$pdo->exec("CREATE TABLE IF NOT EXISTS messages (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(200), email VARCHAR(255), message TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB;");
 $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 50')->fetchAll();
 
 // --- New: Sales for last 30 days (used by the modern chart)
 // This query returns one row per date (for last 30 days), date ascending
 $salesStmt = $pdo->query("
     SELECT
-      DATE(created_at) AS d,
+      created_at::date AS d,
       COALESCE(SUM(total),0) AS s
     FROM orders
-    WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
-    GROUP BY DATE(created_at)
-    ORDER BY DATE(created_at) ASC
+    WHERE created_at >= CURRENT_DATE - INTERVAL '29 days'
+    GROUP BY created_at::date
+    ORDER BY created_at::date ASC
 ");
 $salesRows = $salesStmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -183,7 +182,7 @@ foreach($period as $dt){
   </div>
 
   <h5 class="mt-4 mb-3">Recent Orders</h5>
-  
+
   <div class="table-responsive">
   <table class="table table-striped">
     <thead class="table-dark">
@@ -220,7 +219,7 @@ foreach($period as $dt){
     <ul class="list-group mb-5">
       <?php foreach($messages as $m): ?>
       <li class="list-group-item">
-        <strong><?php echo esc($m['name']); ?></strong> 
+        <strong><?php echo esc($m['name']); ?></strong>
         &lt;<?php echo esc($m['email']); ?>&gt;
         <span class="text-muted small">(<?php echo $m['created_at']; ?>)</span>
         <div class="mt-2 small"><?php echo nl2br(esc($m['message'])); ?></div>

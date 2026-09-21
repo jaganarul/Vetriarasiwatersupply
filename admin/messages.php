@@ -2,32 +2,10 @@
 require_once __DIR__ . '/../init.php';
 if (!is_admin_logged_in()) { header('Location: ' . $base_url . '/login.php'); exit; }
 
-// Ensure messages table exists and has an is_read column
-$hasMessages = false;
-try{
-  $hasMessages = (bool)$pdo->query("SHOW TABLES LIKE 'messages'")->fetch();
-} catch(Exception $e){ $hasMessages = false; }
+// Messages table already exists in Supabase PostgreSQL
 
-if(!$hasMessages){
-  // create messages table if it doesn't exist
-  $pdo->exec("CREATE TABLE IF NOT EXISTS messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(200),
-    email VARCHAR(255),
-    message TEXT,
-    is_read TINYINT(1) NOT NULL DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-  $hasMessages = true;
-}
+$hasMessages = true;
 
-// ensure is_read column exists when table is present
-if($hasMessages){
-  $col = $pdo->query("SHOW COLUMNS FROM messages LIKE 'is_read'")->fetch();
-  if(!$col){
-    $pdo->exec("ALTER TABLE messages ADD COLUMN is_read TINYINT(1) NOT NULL DEFAULT 0");
-  }
-}
 // POST actions: mark read/unread or delete
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     if(isset($_POST['mark_read'])){
