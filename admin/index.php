@@ -7,31 +7,31 @@ $filter = $_GET['filter'] ?? 'daily';
 
 switch ($filter) {
     case 'yearly':
-        $sql = "SELECT YEAR(created_at) AS d, SUM(total) AS s 
-                FROM orders 
-                GROUP BY YEAR(created_at) 
+        $sql = "SELECT EXTRACT(YEAR FROM created_at)::int AS d, SUM(total) AS s
+                FROM orders
+                GROUP BY EXTRACT(YEAR FROM created_at)
                 ORDER BY d DESC LIMIT 5";
         break;
 
     case 'monthly':
-        $sql = "SELECT DATE_FORMAT(created_at,'%Y-%m') AS d, SUM(total) AS s 
-                FROM orders 
-                GROUP BY YEAR(created_at), MONTH(created_at) 
+        $sql = "SELECT TO_CHAR(created_at, 'YYYY-MM') AS d, SUM(total) AS s
+                FROM orders
+                GROUP BY TO_CHAR(created_at, 'YYYY-MM')
                 ORDER BY d DESC LIMIT 12";
         break;
 
     case 'weekly':
-        $sql = "SELECT DATE_FORMAT(created_at,'%x-W%v') AS d, SUM(total) AS s 
-                FROM orders 
-                GROUP BY YEARWEEK(created_at) 
+        $sql = "SELECT TO_CHAR(DATE_TRUNC('week', created_at), 'IYYY-WIW') AS d, SUM(total) AS s
+                FROM orders
+                GROUP BY DATE_TRUNC('week', created_at)
                 ORDER BY d DESC LIMIT 12";
         break;
 
     default:
     case 'daily':
-        $sql = "SELECT DATE(created_at) AS d, SUM(total) AS s 
-                FROM orders 
-                GROUP BY DATE(created_at) 
+        $sql = "SELECT created_at::date AS d, SUM(total) AS s
+                FROM orders
+                GROUP BY created_at::date
                 ORDER BY d DESC LIMIT 30";
         break;
 }
@@ -53,20 +53,13 @@ $top = $stmt->fetchAll();
 $newOrdersCount = 0;
 $unreadMessagesCount = 0;
 try{
-  $hasOrders = $pdo->query("SHOW TABLES LIKE 'orders'")->fetch();
-  if($hasOrders){
-    $col = $pdo->query("SHOW COLUMNS FROM orders LIKE 'is_new'")->fetch();
-    if($col){
-      $newOrdersCount = (int)$pdo->query('SELECT COUNT(*) FROM orders WHERE is_new = 1')->fetchColumn();
-    }
-  }
-  $hasMessages = $pdo->query("SHOW TABLES LIKE 'messages'")->fetch();
-  if($hasMessages){
-    $colm = $pdo->query("SHOW COLUMNS FROM messages LIKE 'is_read'")->fetch();
-    if($colm){
-      $unreadMessagesCount = (int)$pdo->query('SELECT COUNT(*) FROM messages WHERE is_read = 0')->fetchColumn();
-    }
-  }
+  $newOrdersCount = (int)$pdo->query(
+    'SELECT COUNT(*) FROM orders WHERE is_new = TRUE'
+  )->fetchColumn();
+
+  $unreadMessagesCount = (int)$pdo->query(
+    'SELECT COUNT(*) FROM messages WHERE is_read = FALSE'
+  )->fetchColumn();
 } catch(Exception $e) { /* ignore */ }
 
 // ------- BASIC METRICS (from your second snippet) -------
@@ -76,24 +69,24 @@ $delivered = $pdo->query("SELECT COUNT(*) FROM orders WHERE status='Delivered'")
 $revenue = $pdo->query('SELECT COALESCE(SUM(total),0) FROM orders')->fetchColumn();
 
 // Revenue Today
-$revenueToday = $pdo->query("SELECT COALESCE(SUM(total),0) 
-                             FROM orders 
-                             WHERE DATE(created_at) = CURDATE()")->fetchColumn();
+$revenueToday = $pdo->query("SELECT COALESCE(SUM(total),0)
+                             FROM orders
+                             WHERE created_at::date = CURRENT_DATE")->fetchColumn();
 
 // Revenue This Month
-$revenueMonth = $pdo->query("SELECT COALESCE(SUM(total),0) 
-                             FROM orders 
-                             WHERE MONTH(created_at) = MONTH(CURDATE()) 
-                             AND YEAR(created_at) = YEAR(CURDATE())")->fetchColumn();
+$revenueMonth = $pdo->query("SELECT COALESCE(SUM(total),0)
+                             FROM orders
+                             WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
+                             AND created_at < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'")->fetchColumn();
 
 // Monthly Orders + Revenue (Last 6 Months) (kept from your second snippet)
 $monthlyData = $pdo->query(" 
     SELECT 
-        DATE_FORMAT(created_at, '%Y-%m') AS month,
+        TO_CHAR(created_at, 'YYYY-MM') AS month,
         COUNT(*) AS total_orders,
         COALESCE(SUM(total),0) AS total_revenue
     FROM orders
-    GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+    GROUP BY TO_CHAR(created_at, 'YYYY-MM')
     ORDER BY month ASC
 ")->fetchAll();
 
@@ -101,7 +94,7 @@ $monthlyData = $pdo->query("
 $orders = $pdo->query('SELECT id,user_id,total,status,tracking_code,created_at FROM orders ORDER BY created_at DESC LIMIT 20')->fetchAll();
 
 // Contact messages (ensure table exists)
-$pdo->exec("CREATE TABLE IF NOT EXISTS messages (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(200), email VARCHAR(255), message TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB;");
+
 $messages = $pdo->query('SELECT * FROM messages ORDER BY created_at DESC LIMIT 50')->fetchAll();
 ?>
 <!doctype html>
